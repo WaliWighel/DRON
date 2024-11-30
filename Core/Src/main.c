@@ -1136,11 +1136,11 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			MYDRON.YAW = pid_angular_rate_yaw;
 
 
-			wobble_strenght = Wobble_Detect();
-			if(wobble_strenght > 1){
-				wanted_thrust = MYDRON.THRUST/wobble_strenght;
-				Wobble_handler();
-			}
+//			wobble_strenght = Wobble_Detect();
+//			if(wobble_strenght > 1){
+//				wanted_thrust = MYDRON.THRUST/wobble_strenght;
+//				Wobble_handler();
+//			}
 
 
 			Thrust_filter(1);

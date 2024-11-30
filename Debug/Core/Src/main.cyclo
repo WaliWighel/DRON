@@ -6,7 +6,7 @@
 ../Core/Src/main.c:882:6:HAL_TIM_PeriodElapsedCallback	16
 ../Core/Src/main.c:968:6:HAL_GPIO_EXTI_Callback	19
 ../Core/Src/main.c:1053:6:HAL_UART_RxCpltCallback	3
-../Core/Src/main.c:1077:6:HAL_I2C_MemRxCpltCallback	11
+../Core/Src/main.c:1077:6:HAL_I2C_MemRxCpltCallback	10
 ../Core/Src/main.c:1202:6:convert_array_to_value	2
 ../Core/Src/main.c:1213:6:convert_value_to_array	4
 ../Core/Src/main.c:1230:10:potenga	7
