@@ -485,9 +485,12 @@ int main(void)
 
   	uint8_t o[3] = "Odb";
   	uint8_t n[3] = "Nad";
-
-
-  	i = 0;
+/*
+ *
+ * NIGGER
+ *
+ *
+ */
 
   	LED_5_1;
   	LED_6_1;
