@@ -482,6 +482,9 @@ int main(void)
   	pid_angular_rate_yaw = 0;
   	pid_angular_rate_rool = 0;
 
+  	MYDRON.PITCH_STA = 0;
+  	MYDRON.ROOL_STA = 0;
+  	MYDRON.YAW_STA = 0;
 
   	uint8_t o[3] = "Odb";
   	uint8_t n[3] = "Nad";
@@ -1123,13 +1126,13 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			PID_cal(&pid_angular_rate_yaw, PID_FAC_Angular_Rate_Yaw, 6);
 
 
-			old_error_pitch = wanted_pitch - now_pitch;
-			old_error_rool = wanted_rool - now_rool;
-			old_error_yaw = wanted_yaw - now_yaw;
+			old_error_pitch = (MYDRON.PITCH_STA != 0) ? old_error_pitch : wanted_pitch - now_pitch;
+			old_error_rool = (MYDRON.ROOL_STA != 0) ? old_error_rool : wanted_rool - now_rool;
+			old_error_yaw = (MYDRON.YAW_STA != 0) ? old_error_yaw : wanted_yaw - now_yaw;
 
-			old_error_angular_rate_pitch = pid_pitch - gx;
-			old_error_angular_rate_rool = pid_rool - gy;
-			old_error_angular_rate_yaw = wanted_yaw - gz;
+			old_error_angular_rate_pitch = (MYDRON.PITCH_STA != 0) ? old_error_angular_rate_pitch : pid_pitch - gx;
+			old_error_angular_rate_rool = (MYDRON.ROOL_STA != 0) ? old_error_angular_rate_rool : pid_rool - gy;
+			old_error_angular_rate_yaw = (MYDRON.YAW_STA != 0) ? old_error_angular_rate_yaw : wanted_yaw - gz;
 
 
 			//MYDRON.ROOL 	= ((pid_angular_rate_rool > -5000) && (pid_angular_rate_rool < 5000)) ? pid_angular_rate_rool: (pid_angular_rate_rool > 0) ? 5000: -5000;
