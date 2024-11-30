@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  0003c9c6  00000000  00000000  0008558b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00038691  00000000  00000000  000c1f51  2**0
+ 18 .debug_line   0003868f  00000000  00000000  000c1f51  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    0016e1ab  00000000  00000000  000fa5e2  2**0
+ 19 .debug_str    0016e1ab  00000000  00000000  000fa5e0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0026878d  2**0
+ 20 .comment      00000043  00000000  00000000  0026878b  2**0
                   CONTENTS, READONLY
  21 .debug_frame  00009fc8  00000000  00000000  002687d0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -1582,7 +1582,7 @@ void ESC_INT(TIM_HandleTypeDef *htim)
  8000f50:	6013      	str	r3, [r2, #0]
 
 
-	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_1);//450Hz
  8000f52:	4b1f      	ldr	r3, [pc, #124]	@ (8000fd0 <ESC_INT+0x8c>)
  8000f54:	681b      	ldr	r3, [r3, #0]
  8000f56:	2100      	movs	r1, #0
@@ -9708,7 +9708,6 @@ int main(void)
   /* MPU Configuration--------------------------------------------------------*/
   MPU_Config();
  8004d1e:	f002 feff 	bl	8007b20 <MPU_Config>
-  //SCB_EnableICache();
 
   /* MCU Configuration--------------------------------------------------------*/
 
