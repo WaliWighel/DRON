@@ -1,0 +1,7 @@
+../Core/Src/ESC.c:10:6:ESC_1_SPEED	16	static
+../Core/Src/ESC.c:23:6:ESC_2_SPEED	16	static
+../Core/Src/ESC.c:37:6:ESC_3_SPEED	16	static
+../Core/Src/ESC.c:51:6:ESC_4_SPEED	16	static
+../Core/Src/ESC.c:65:6:ESC_SETALL	16	static
+../Core/Src/ESC.c:79:6:ESC_INT	16	static
+../Core/Src/ESC.c:105:6:ESC_Calibration	4	static

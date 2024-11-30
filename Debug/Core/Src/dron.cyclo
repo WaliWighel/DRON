@@ -1,0 +1,11 @@
+../Core/Src/dron.c:46:6:Thrust_filter	10
+../Core/Src/dron.c:105:8:Thrust_filter_2	2
+../Core/Src/dron.c:119:7:Wobble_Detect	10
+../Core/Src/dron.c:174:6:Wobble_handler	1
+../Core/Src/dron.c:211:7:APV	6
+../Core/Src/dron.c:239:7:ADV	6
+../Core/Src/dron.c:264:6:acceleration_stabilizer	1
+../Core/Src/dron.c:274:6:PID_cal	13
+../Core/Src/dron.c:393:6:Get_batteryvalue	5
+../Core/Src/dron.c:421:6:IS_DRON_ON_GROUND	2
+../Core/Src/dron.c:433:6:PID_Self_Regulation	5
