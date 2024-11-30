@@ -1,7 +1,7 @@
-../Core/Src/ESC.c:10:6:ESC_1_SPEED	3
-../Core/Src/ESC.c:23:6:ESC_2_SPEED	3
-../Core/Src/ESC.c:37:6:ESC_3_SPEED	3
-../Core/Src/ESC.c:51:6:ESC_4_SPEED	3
-../Core/Src/ESC.c:65:6:ESC_SETALL	1
-../Core/Src/ESC.c:79:6:ESC_INT	1
-../Core/Src/ESC.c:105:6:ESC_Calibration	1
+../Core/Src/ESC.c:10:6:ESC_1_SPEED	2
+../Core/Src/ESC.c:26:6:ESC_2_SPEED	2
+../Core/Src/ESC.c:33:6:ESC_3_SPEED	2
+../Core/Src/ESC.c:40:6:ESC_4_SPEED	2
+../Core/Src/ESC.c:47:6:ESC_SETALL	1
+../Core/Src/ESC.c:61:6:ESC_INT	1
+../Core/Src/ESC.c:87:6:ESC_Calibration	1

@@ -39,15 +39,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  0003c9b4  00000000  00000000  0008558b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00038667  00000000  00000000  000c1f3f  2**0
+ 18 .debug_line   000386e1  00000000  00000000  000c1f3f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    0016e175  00000000  00000000  000fa5a6  2**0
+ 19 .debug_str    0016e175  00000000  00000000  000fa620  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0026871b  2**0
+ 20 .comment      00000043  00000000  00000000  00268795  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00009fc8  00000000  00000000  00268760  2**2
+ 21 .debug_frame  00009fc8  00000000  00000000  002687d8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000004d  00000000  00000000  00272728  2**0
+ 22 .debug_line_str 0000004d  00000000  00000000  002727a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1399,26 +1399,26 @@ void ESC_1_SPEED(uint16_t a)
  8000e38:	af00      	add	r7, sp, #0
  8000e3a:	4603      	mov	r3, r0
  8000e3c:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed)
+//	  if(a >  max_speed)
+//	  {
+//		  a =  max_speed;
+//	  }
+
+	a = (a < min_speed) ? min_speed : (a > max_speed) ? max_speed : a;
  8000e3e:	88fb      	ldrh	r3, [r7, #6]
  8000e40:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000e44:	4293      	cmp	r3, r2
- 8000e46:	d802      	bhi.n	8000e4e <ESC_1_SPEED+0x1a>
-	  {
-		  a = min_speed;
- 8000e48:	f642 1304 	movw	r3, #10500	@ 0x2904
- 8000e4c:	80fb      	strh	r3, [r7, #6]
-	  }
-	  if(a >  max_speed)
- 8000e4e:	88fb      	ldrh	r3, [r7, #6]
- 8000e50:	f644 422c 	movw	r2, #19500	@ 0x4c2c
- 8000e54:	4293      	cmp	r3, r2
- 8000e56:	d902      	bls.n	8000e5e <ESC_1_SPEED+0x2a>
-	  {
-		  a =  max_speed;
- 8000e58:	f644 432c 	movw	r3, #19500	@ 0x4c2c
+ 8000e46:	d907      	bls.n	8000e58 <ESC_1_SPEED+0x24>
+ 8000e48:	88fb      	ldrh	r3, [r7, #6]
+ 8000e4a:	f644 422c 	movw	r2, #19500	@ 0x4c2c
+ 8000e4e:	4293      	cmp	r3, r2
+ 8000e50:	bf28      	it	cs
+ 8000e52:	4613      	movcs	r3, r2
+ 8000e54:	b29b      	uxth	r3, r3
+ 8000e56:	e001      	b.n	8000e5c <ESC_1_SPEED+0x28>
+ 8000e58:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000e5c:	80fb      	strh	r3, [r7, #6]
-	  }
+
 	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_1, a);
  8000e5e:	4b05      	ldr	r3, [pc, #20]	@ (8000e74 <ESC_1_SPEED+0x40>)
  8000e60:	681b      	ldr	r3, [r3, #0]
@@ -1442,26 +1442,20 @@ void ESC_2_SPEED(uint16_t a)
  8000e7c:	af00      	add	r7, sp, #0
  8000e7e:	4603      	mov	r3, r0
  8000e80:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed)
+	a = (a < min_speed) ? min_speed : (a > max_speed) ? max_speed : a;
  8000e82:	88fb      	ldrh	r3, [r7, #6]
  8000e84:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000e88:	4293      	cmp	r3, r2
- 8000e8a:	d802      	bhi.n	8000e92 <ESC_2_SPEED+0x1a>
-	  {
-		  a = min_speed;
- 8000e8c:	f642 1304 	movw	r3, #10500	@ 0x2904
- 8000e90:	80fb      	strh	r3, [r7, #6]
-	  }
-	  if(a >  max_speed)
- 8000e92:	88fb      	ldrh	r3, [r7, #6]
- 8000e94:	f644 422c 	movw	r2, #19500	@ 0x4c2c
- 8000e98:	4293      	cmp	r3, r2
- 8000e9a:	d902      	bls.n	8000ea2 <ESC_2_SPEED+0x2a>
-	  {
-		  a =  max_speed;
- 8000e9c:	f644 432c 	movw	r3, #19500	@ 0x4c2c
+ 8000e8a:	d907      	bls.n	8000e9c <ESC_2_SPEED+0x24>
+ 8000e8c:	88fb      	ldrh	r3, [r7, #6]
+ 8000e8e:	f644 422c 	movw	r2, #19500	@ 0x4c2c
+ 8000e92:	4293      	cmp	r3, r2
+ 8000e94:	bf28      	it	cs
+ 8000e96:	4613      	movcs	r3, r2
+ 8000e98:	b29b      	uxth	r3, r3
+ 8000e9a:	e001      	b.n	8000ea0 <ESC_2_SPEED+0x28>
+ 8000e9c:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000ea0:	80fb      	strh	r3, [r7, #6]
-	  }
 
 	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_2, a);
  8000ea2:	4b05      	ldr	r3, [pc, #20]	@ (8000eb8 <ESC_2_SPEED+0x40>)
@@ -1486,26 +1480,20 @@ void ESC_3_SPEED(uint16_t a)
  8000ec0:	af00      	add	r7, sp, #0
  8000ec2:	4603      	mov	r3, r0
  8000ec4:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed)
+	a = (a < min_speed) ? min_speed : (a > max_speed) ? max_speed : a;
  8000ec6:	88fb      	ldrh	r3, [r7, #6]
  8000ec8:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000ecc:	4293      	cmp	r3, r2
- 8000ece:	d802      	bhi.n	8000ed6 <ESC_3_SPEED+0x1a>
-	  {
-		  a = min_speed;
- 8000ed0:	f642 1304 	movw	r3, #10500	@ 0x2904
- 8000ed4:	80fb      	strh	r3, [r7, #6]
-	  }
-	  if(a >  max_speed)
- 8000ed6:	88fb      	ldrh	r3, [r7, #6]
- 8000ed8:	f644 422c 	movw	r2, #19500	@ 0x4c2c
- 8000edc:	4293      	cmp	r3, r2
- 8000ede:	d902      	bls.n	8000ee6 <ESC_3_SPEED+0x2a>
-	  {
-		  a =  max_speed;
- 8000ee0:	f644 432c 	movw	r3, #19500	@ 0x4c2c
+ 8000ece:	d907      	bls.n	8000ee0 <ESC_3_SPEED+0x24>
+ 8000ed0:	88fb      	ldrh	r3, [r7, #6]
+ 8000ed2:	f644 422c 	movw	r2, #19500	@ 0x4c2c
+ 8000ed6:	4293      	cmp	r3, r2
+ 8000ed8:	bf28      	it	cs
+ 8000eda:	4613      	movcs	r3, r2
+ 8000edc:	b29b      	uxth	r3, r3
+ 8000ede:	e001      	b.n	8000ee4 <ESC_3_SPEED+0x28>
+ 8000ee0:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000ee4:	80fb      	strh	r3, [r7, #6]
-	  }
 
 	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_3, a);
  8000ee6:	4b05      	ldr	r3, [pc, #20]	@ (8000efc <ESC_3_SPEED+0x40>)
@@ -1530,26 +1518,20 @@ void ESC_4_SPEED(uint16_t a)
  8000f04:	af00      	add	r7, sp, #0
  8000f06:	4603      	mov	r3, r0
  8000f08:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed)
+	a = (a < min_speed) ? min_speed : (a > max_speed) ? max_speed : a;
  8000f0a:	88fb      	ldrh	r3, [r7, #6]
  8000f0c:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000f10:	4293      	cmp	r3, r2
- 8000f12:	d802      	bhi.n	8000f1a <ESC_4_SPEED+0x1a>
-	  {
-		  a = min_speed;
- 8000f14:	f642 1304 	movw	r3, #10500	@ 0x2904
- 8000f18:	80fb      	strh	r3, [r7, #6]
-	  }
-	  if(a > max_speed)
- 8000f1a:	88fb      	ldrh	r3, [r7, #6]
- 8000f1c:	f644 422c 	movw	r2, #19500	@ 0x4c2c
- 8000f20:	4293      	cmp	r3, r2
- 8000f22:	d902      	bls.n	8000f2a <ESC_4_SPEED+0x2a>
-	  {
-		  a = max_speed;
- 8000f24:	f644 432c 	movw	r3, #19500	@ 0x4c2c
+ 8000f12:	d907      	bls.n	8000f24 <ESC_4_SPEED+0x24>
+ 8000f14:	88fb      	ldrh	r3, [r7, #6]
+ 8000f16:	f644 422c 	movw	r2, #19500	@ 0x4c2c
+ 8000f1a:	4293      	cmp	r3, r2
+ 8000f1c:	bf28      	it	cs
+ 8000f1e:	4613      	movcs	r3, r2
+ 8000f20:	b29b      	uxth	r3, r3
+ 8000f22:	e001      	b.n	8000f28 <ESC_4_SPEED+0x28>
+ 8000f24:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000f28:	80fb      	strh	r3, [r7, #6]
-	  }
 
 	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_4, a);
  8000f2a:	4b05      	ldr	r3, [pc, #20]	@ (8000f40 <ESC_4_SPEED+0x40>)
@@ -12382,66 +12364,58 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  8006154:	4b3e      	ldr	r3, [pc, #248]	@ (8006250 <HAL_GPIO_EXTI_Callback+0x2d0>)
  8006156:	801a      	strh	r2, [r3, #0]
 
-				if(wanted_rool_rx >= 30){
+
+				wanted_rool_rx = (wanted_rool_rx >= 30) ? 30 : (wanted_rool_rx <= -30) ? -30 : wanted_rool_rx;
  8006158:	4b39      	ldr	r3, [pc, #228]	@ (8006240 <HAL_GPIO_EXTI_Callback+0x2c0>)
  800615a:	f9b3 3000 	ldrsh.w	r3, [r3]
  800615e:	2b1d      	cmp	r3, #29
- 8006160:	dd02      	ble.n	8006168 <HAL_GPIO_EXTI_Callback+0x1e8>
-					wanted_rool_rx = 30;
+ 8006160:	dc09      	bgt.n	8006176 <HAL_GPIO_EXTI_Callback+0x1f6>
  8006162:	4b37      	ldr	r3, [pc, #220]	@ (8006240 <HAL_GPIO_EXTI_Callback+0x2c0>)
- 8006164:	221e      	movs	r2, #30
- 8006166:	801a      	strh	r2, [r3, #0]
-				}
-				if(wanted_rool_rx <= -30){
- 8006168:	4b35      	ldr	r3, [pc, #212]	@ (8006240 <HAL_GPIO_EXTI_Callback+0x2c0>)
- 800616a:	f9b3 3000 	ldrsh.w	r3, [r3]
- 800616e:	f113 0f1d 	cmn.w	r3, #29
- 8006172:	da03      	bge.n	800617c <HAL_GPIO_EXTI_Callback+0x1fc>
-					wanted_rool_rx = -30;
- 8006174:	4b32      	ldr	r3, [pc, #200]	@ (8006240 <HAL_GPIO_EXTI_Callback+0x2c0>)
- 8006176:	f64f 72e2 	movw	r2, #65506	@ 0xffe2
- 800617a:	801a      	strh	r2, [r3, #0]
-				}
-				if(wanted_pitch_rx >= 30){
+ 8006164:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8006168:	f06f 021d 	mvn.w	r2, #29
+ 800616c:	4293      	cmp	r3, r2
+ 800616e:	bfb8      	it	lt
+ 8006170:	4613      	movlt	r3, r2
+ 8006172:	b21b      	sxth	r3, r3
+ 8006174:	e000      	b.n	8006178 <HAL_GPIO_EXTI_Callback+0x1f8>
+ 8006176:	231e      	movs	r3, #30
+ 8006178:	4a31      	ldr	r2, [pc, #196]	@ (8006240 <HAL_GPIO_EXTI_Callback+0x2c0>)
+ 800617a:	8013      	strh	r3, [r2, #0]
+				wanted_pitch_rx = (wanted_pitch_rx >= 30) ? 30 : (wanted_pitch_rx <= -30) ? -30 : wanted_pitch_rx;
  800617c:	4b32      	ldr	r3, [pc, #200]	@ (8006248 <HAL_GPIO_EXTI_Callback+0x2c8>)
  800617e:	f9b3 3000 	ldrsh.w	r3, [r3]
  8006182:	2b1d      	cmp	r3, #29
- 8006184:	dd02      	ble.n	800618c <HAL_GPIO_EXTI_Callback+0x20c>
-					wanted_pitch_rx = 30;
+ 8006184:	dc09      	bgt.n	800619a <HAL_GPIO_EXTI_Callback+0x21a>
  8006186:	4b30      	ldr	r3, [pc, #192]	@ (8006248 <HAL_GPIO_EXTI_Callback+0x2c8>)
- 8006188:	221e      	movs	r2, #30
- 800618a:	801a      	strh	r2, [r3, #0]
-				}
-				if(wanted_pitch_rx <= -30){
- 800618c:	4b2e      	ldr	r3, [pc, #184]	@ (8006248 <HAL_GPIO_EXTI_Callback+0x2c8>)
- 800618e:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8006192:	f113 0f1d 	cmn.w	r3, #29
- 8006196:	da03      	bge.n	80061a0 <HAL_GPIO_EXTI_Callback+0x220>
-					wanted_pitch_rx = -30;
- 8006198:	4b2b      	ldr	r3, [pc, #172]	@ (8006248 <HAL_GPIO_EXTI_Callback+0x2c8>)
- 800619a:	f64f 72e2 	movw	r2, #65506	@ 0xffe2
- 800619e:	801a      	strh	r2, [r3, #0]
-				}
-				if(wanted_yaw_rx >= 30){
+ 8006188:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 800618c:	f06f 021d 	mvn.w	r2, #29
+ 8006190:	4293      	cmp	r3, r2
+ 8006192:	bfb8      	it	lt
+ 8006194:	4613      	movlt	r3, r2
+ 8006196:	b21b      	sxth	r3, r3
+ 8006198:	e000      	b.n	800619c <HAL_GPIO_EXTI_Callback+0x21c>
+ 800619a:	231e      	movs	r3, #30
+ 800619c:	4a2a      	ldr	r2, [pc, #168]	@ (8006248 <HAL_GPIO_EXTI_Callback+0x2c8>)
+ 800619e:	8013      	strh	r3, [r2, #0]
+				wanted_yaw_rx = (wanted_yaw_rx >= 30) ? 30 : (wanted_yaw_rx <= -30) ? -30 : wanted_yaw_rx;
  80061a0:	4b2b      	ldr	r3, [pc, #172]	@ (8006250 <HAL_GPIO_EXTI_Callback+0x2d0>)
  80061a2:	f9b3 3000 	ldrsh.w	r3, [r3]
  80061a6:	2b1d      	cmp	r3, #29
- 80061a8:	dd02      	ble.n	80061b0 <HAL_GPIO_EXTI_Callback+0x230>
-					wanted_yaw_rx = 30;
+ 80061a8:	dc09      	bgt.n	80061be <HAL_GPIO_EXTI_Callback+0x23e>
  80061aa:	4b29      	ldr	r3, [pc, #164]	@ (8006250 <HAL_GPIO_EXTI_Callback+0x2d0>)
- 80061ac:	221e      	movs	r2, #30
- 80061ae:	801a      	strh	r2, [r3, #0]
-				}
-				if(wanted_yaw_rx <= -30){
- 80061b0:	4b27      	ldr	r3, [pc, #156]	@ (8006250 <HAL_GPIO_EXTI_Callback+0x2d0>)
- 80061b2:	f9b3 3000 	ldrsh.w	r3, [r3]
- 80061b6:	f113 0f1d 	cmn.w	r3, #29
- 80061ba:	da03      	bge.n	80061c4 <HAL_GPIO_EXTI_Callback+0x244>
-					wanted_yaw_rx = -30;
- 80061bc:	4b24      	ldr	r3, [pc, #144]	@ (8006250 <HAL_GPIO_EXTI_Callback+0x2d0>)
- 80061be:	f64f 72e2 	movw	r2, #65506	@ 0xffe2
- 80061c2:	801a      	strh	r2, [r3, #0]
-				}
+ 80061ac:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 80061b0:	f06f 021d 	mvn.w	r2, #29
+ 80061b4:	4293      	cmp	r3, r2
+ 80061b6:	bfb8      	it	lt
+ 80061b8:	4613      	movlt	r3, r2
+ 80061ba:	b21b      	sxth	r3, r3
+ 80061bc:	e000      	b.n	80061c0 <HAL_GPIO_EXTI_Callback+0x240>
+ 80061be:	231e      	movs	r3, #30
+ 80061c0:	4a23      	ldr	r2, [pc, #140]	@ (8006250 <HAL_GPIO_EXTI_Callback+0x2d0>)
+ 80061c2:	8013      	strh	r3, [r2, #0]
+//				if(wanted_yaw_rx <= -30){
+//					wanted_yaw_rx = -30;
+//				}
 
 
 				NRF_TIM_Inte = 0;

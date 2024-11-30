@@ -1041,24 +1041,28 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				wanted_pitch_rx = (wanted_pitch_v - 500)*wanted_pitch_factro;// (-450 <-> 450)
 				wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;
 
-				if(wanted_rool_rx >= 30){
-					wanted_rool_rx = 30;
-				}
-				if(wanted_rool_rx <= -30){
-					wanted_rool_rx = -30;
-				}
-				if(wanted_pitch_rx >= 30){
-					wanted_pitch_rx = 30;
-				}
-				if(wanted_pitch_rx <= -30){
-					wanted_pitch_rx = -30;
-				}
-				if(wanted_yaw_rx >= 30){
-					wanted_yaw_rx = 30;
-				}
-				if(wanted_yaw_rx <= -30){
-					wanted_yaw_rx = -30;
-				}
+
+				wanted_rool_rx = (wanted_rool_rx >= 30) ? 30 : (wanted_rool_rx <= -30) ? -30 : wanted_rool_rx;
+				wanted_pitch_rx = (wanted_pitch_rx >= 30) ? 30 : (wanted_pitch_rx <= -30) ? -30 : wanted_pitch_rx;
+				wanted_yaw_rx = (wanted_yaw_rx >= 30) ? 30 : (wanted_yaw_rx <= -30) ? -30 : wanted_yaw_rx;
+//				if(wanted_rool_rx >= 30){
+//					wanted_rool_rx = 30;
+//				}
+//				if(wanted_rool_rx <= -30){
+//					wanted_rool_rx = -30;
+//				}
+//				if(wanted_pitch_rx >= 30){
+//					wanted_pitch_rx = 30;
+//				}
+//				if(wanted_pitch_rx <= -30){
+//					wanted_pitch_rx = -30;
+//				}
+//				if(wanted_yaw_rx >= 30){
+//					wanted_yaw_rx = 30;
+//				}
+//				if(wanted_yaw_rx <= -30){
+//					wanted_yaw_rx = -30;
+//				}
 
 
 				NRF_TIM_Inte = 0;
