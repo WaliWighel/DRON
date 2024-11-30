@@ -485,12 +485,7 @@ int main(void)
 
   	uint8_t o[3] = "Odb";
   	uint8_t n[3] = "Nad";
-/*
- *
- * NIGGER
- *
- *
- */
+
 
   	LED_5_1;
   	LED_6_1;
@@ -1160,10 +1155,10 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			Stack_Push(now_rool);
 
 
-			SPEED1 = (MYDRON.THRUST*0.7)+ MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//trust 7000 max
-			SPEED2 = (MYDRON.THRUST*0.7)- MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
-			SPEED3 = (MYDRON.THRUST*0.7)+ MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
-			SPEED4 = (MYDRON.THRUST*0.7)- MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//
+			SPEED1 = (MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//trust 7000 max
+			SPEED2 = (MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
+			SPEED3 = (MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
+			SPEED4 = (MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//
 
 			if(SPEED1 != OLD_SPEED1){
 				ESC_1_SPEED(SPEED1);
