@@ -487,6 +487,8 @@ int main(void)
   	uint8_t n[3] = "Nad";
 
 
+  	i = 0;
+
   	LED_5_1;
   	LED_6_1;
   	LED_7_1;
