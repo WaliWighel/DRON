@@ -38,34 +38,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := DRON_2.2
+BUILD_ARTIFACT_NAME := DRON 2.2
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-DRON_2.2.elf \
+DRON\ 2.2.elf \
 
 MAP_FILES += \
-DRON_2.2.map \
+DRON\ 2.2.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-DRON_2.2.list \
+DRON\ 2.2.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: DRON_2.2.elf secondary-outputs
+main-build: DRON\ 2.2.elf secondary-outputs
 
 # Tool invocations
-DRON_2.2.elf DRON_2.2.map: $(OBJS) $(USER_OBJS) D:\Micro\ procesor\xyz\DRON_2.2\STM32H723ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "DRON_2.2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\Micro procesor\xyz\DRON_2.2\STM32H723ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DRON_2.2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+DRON\ 2.2.elf DRON\ 2.2.map: $(OBJS) $(USER_OBJS) D:\Micro\ procesor\xyz\DRON\ 2.2\STM32H723ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "DRON 2.2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\Micro procesor\xyz\DRON 2.2\STM32H723ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DRON 2.2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -74,14 +74,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-DRON_2.2.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "DRON_2.2.list"
+DRON\ 2.2.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "DRON 2.2.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) DRON_2.2.elf DRON_2.2.list DRON_2.2.map default.size.stdout
+	-$(RM) DRON\ 2.2.elf DRON\ 2.2.list DRON\ 2.2.map DRON\\ 2.2.elf default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
