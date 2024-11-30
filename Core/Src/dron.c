@@ -287,12 +287,12 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 			*PID_var = *PID_var + PID_FAC[3];
 
-				if(*PID_var > 400){//PID_var jest w o/s, jezeli bendzei chcailo sie obracac szybciej niz.. przekroczy zakres pomiarowy akcelerometru
-					*PID_var = 400;
-				}
-				if(*PID_var < -400){
-					*PID_var = -400;
-				}
+//				if(*PID_var > 400){//PID_var jest w o/s, jezeli bendzei chcailo sie obracac szybciej niz.. przekroczy zakres pomiarowy akcelerometru
+//					*PID_var = 400;
+//				}
+//				if(*PID_var < -400){
+//					*PID_var = -400;
+//				}
 			break;
 
 		case 2://rool
@@ -309,12 +309,12 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 			*PID_var = *PID_var + PID_FAC[3];
 
-			if(*PID_var > 400){
-				*PID_var = 400;
-			}
-			if(*PID_var < -400){
-				*PID_var = -400;
-			}
+//			if(*PID_var > 400){
+//				*PID_var = 400;
+//			}
+//			if(*PID_var < -400){
+//				*PID_var = -400;
+//			}
 			break;
 
 		case 3:
@@ -331,12 +331,12 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 			*PID_var = *PID_var + PID_FAC[3];
 
-			if(*PID_var > 400){
-				*PID_var = 400;
-			}
-			if(*PID_var < -400){
-				*PID_var = -400;
-			}
+//			if(*PID_var > 400){
+//				*PID_var = 400;
+//			}
+//			if(*PID_var < -400){
+//				*PID_var = -400;
+//			}
 			break;
 
 		case 4:// angular rates pitch

@@ -360,9 +360,10 @@ int main(void)
   MX_FATFS_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  	  ESC_POWER_1;
 
-  	STARTUP = 1;
-  	ESC_POWER_1;
+  	  STARTUP = 1;
+
   	DRON_ON_GRUND = 1;
 
   	PID_FAC_Pitch[0] = p_pitchfactor;
@@ -498,6 +499,12 @@ int main(void)
 
   	nRF24_Rx_Mode = 0;
 
+  	now_pitch = 0;
+  	now_rool = 0;
+  	now_yaw = 0;
+  	wanted_pitch = 0;
+
+
   	uint8_t o[3] = "Odb";
   	uint8_t n[3] = "Nad";
 
@@ -632,7 +639,9 @@ int main(void)
 
 
 		MYDRON.THRUST = 0;
-
+		MYDRON.PITCH = 0;
+		MYDRON.ROOL = 0;
+		MYDRON.YAW = 0;
 
 
 
