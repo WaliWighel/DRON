@@ -380,7 +380,7 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] = PID_FAC[2]*((pid_yaw - gz) - old_error_angular_rate_yaw);
 
 			//FDP
-			//PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
+			//PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain_AR * looptime))));//todo
 			PID_FAC[4] = PID_FAC[3];//old d_fac
 
 			*PID_var = *PID_var + PID_FAC[3];

@@ -1131,9 +1131,9 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			old_error_angular_rate_yaw = wanted_yaw - gz;
 
 
-			MYDRON.ROOL = pid_angular_rate_rool;
-			MYDRON.PITCH = pid_angular_rate_pitch;
-			MYDRON.YAW = pid_angular_rate_yaw;
+			MYDRON.ROOL 	= (uint16_t)pid_angular_rate_rool;
+			MYDRON.PITCH 	= (uint16_t)pid_angular_rate_pitch;
+			MYDRON.YAW 		= (uint16_t)pid_angular_rate_yaw;
 
 
 //			wobble_strenght = Wobble_Detect();
@@ -1155,10 +1155,10 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			Stack_Push(now_rool);
 
 
-			SPEED1 = (MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//trust 7000 max
-			SPEED2 = (MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
-			SPEED3 = (MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
-			SPEED4 = (MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//
+			SPEED1 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : 20000;//trust 7000 max
+			SPEED2 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : 20000;//
+			SPEED3 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : 20000;//
+			SPEED4 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : 20000;//
 
 			if(SPEED1 != OLD_SPEED1){
 				ESC_1_SPEED(SPEED1);
