@@ -491,24 +491,24 @@ void nRF24_Init(SPI_HandleTypeDef *hspi)
 }
 void nRF24_Inittest(void)
 {
-	xz[0] = nRF24_ReadRegister(NRF24_RF_SETUP); // Radio power
-	//z = nRF24_ReadRegister(NRF24_RF_SETUP); // Data Rate
-	xz[1] = nRF24_ReadConfig(); // Enable CRC //
-	//z = nRF24_SetCRCLength(NRF24_CRC_WIDTH_1B); // CRC Length 1 byte
-	xz[2] = nRF24_ReadRegister(NRF24_SETUP_RETR); // 1000us, 7 times
-	xz[3] = nRF24_ReadRegister(NRF24_RF_CH);
-
-#if (NRF24_DYNAMIC_PAYLOAD == 1)
-	z = nRF24_ReadRegister(NRF24_FEATURE); // Enable dynamic payload feature
-	z = nRF24_ReadRegister(NRF24_DYNPD); // Enable dynamic payloads for all pipes
-#else
-	//nRF24_WriteRegister(NRF24_DYNPD, 0); // Disable dynamic payloads for all pipes
-	//nRF24_SetPayloadSize(0, NRF24_PAYLOAD_SIZE); // Set 32 bytes payload for pipe 0
-	xz[4] = nRF24_ReadRegister(NRF24_RX_PW_P0);
-#endif
-	xz[5] = nRF24_ReadRegister(NRF24_EN_RXADDR);
-	xz[6] = nRF24_ReadRegister(NRF24_EN_AA);
-	xz[7] = nRF24_ReadRegister(NRF24_SETUP_AW);
-	xz[8] = nRF24_ReadConfig();
+//	xz[0] = nRF24_ReadRegister(NRF24_RF_SETUP); // Radio power
+//	//z = nRF24_ReadRegister(NRF24_RF_SETUP); // Data Rate
+//	xz[1] = nRF24_ReadConfig(); // Enable CRC //
+//	//z = nRF24_SetCRCLength(NRF24_CRC_WIDTH_1B); // CRC Length 1 byte
+//	xz[2] = nRF24_ReadRegister(NRF24_SETUP_RETR); // 1000us, 7 times
+//	xz[3] = nRF24_ReadRegister(NRF24_RF_CH);
+//
+//#if (NRF24_DYNAMIC_PAYLOAD == 1)
+//	z = nRF24_ReadRegister(NRF24_FEATURE); // Enable dynamic payload feature
+//	z = nRF24_ReadRegister(NRF24_DYNPD); // Enable dynamic payloads for all pipes
+//#else
+//	//nRF24_WriteRegister(NRF24_DYNPD, 0); // Disable dynamic payloads for all pipes
+//	//nRF24_SetPayloadSize(0, NRF24_PAYLOAD_SIZE); // Set 32 bytes payload for pipe 0
+//	xz[4] = nRF24_ReadRegister(NRF24_RX_PW_P0);
+//#endif
+//	xz[5] = nRF24_ReadRegister(NRF24_EN_RXADDR);
+//	xz[6] = nRF24_ReadRegister(NRF24_EN_AA);
+//	xz[7] = nRF24_ReadRegister(NRF24_SETUP_AW);
+//	xz[8] = nRF24_ReadConfig();
 
 }

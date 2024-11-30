@@ -38,4 +38,4 @@
 ../Core/Src/NRF24.c:431:9:nRF24_IsBitSetInFifoStatus	24	static
 ../Core/Src/NRF24.c:445:9:nRF24_ReadFifoStatus	8	static
 ../Core/Src/NRF24.c:452:6:nRF24_Init	16	static
-../Core/Src/NRF24.c:492:6:nRF24_Inittest	8	static
+../Core/Src/NRF24.c:492:6:nRF24_Inittest	4	static

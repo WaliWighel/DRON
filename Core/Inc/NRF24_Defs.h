@@ -9,7 +9,7 @@
 #define INC_NRF24_NRF24_DEFS_H_
 
 
-extern uint8_t xz[9];
+//extern uint8_t xz[9];
 //
 // Registers
 //
