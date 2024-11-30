@@ -81,7 +81,7 @@ void ESC_INT(TIM_HandleTypeDef *htim)
 	htim_ESC = htim;
 
 
-	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_1);//450Hz
 	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(htim_ESC, TIM_CHANNEL_4);

@@ -237,7 +237,7 @@ extern uint16_t OLD_SPEED2;
 extern uint16_t OLD_SPEED3;
 extern uint16_t OLD_SPEED4;
 
-extern uint16_t DRON_SLOWFALING;//todo sprawdzic
+extern uint16_t DRON_SLOWFALING;
 extern uint8_t DRON_ON_GRUND;
 
 

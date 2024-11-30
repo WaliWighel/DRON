@@ -88,7 +88,7 @@
 IRAM float ax,ay,az, gx, gy, gz;
 IRAM float ax_ang,ay_ang,az_ang, gx_ang, gy_ang, gz_ang;
 IRAM float accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal;
-RAM1 uint8_t MPU6050_IT_DATA[14];
+IRAM uint8_t MPU6050_IT_DATA[14];
 
 
 const float Gyr_Scale = 65.5, Acc_Scale = 8192;//float Gyr_Scale = 65.5, Acc_Scale = 4096;
@@ -109,7 +109,7 @@ IRAM float Old_Mag_Z = 0;
 #define FDP_Mag_Z_FQ 2
 
 IRAM int16_t Mag_Offset_val;
-RAM1 uint8_t HMC5883L_Data_IT[6];
+IRAM uint8_t HMC5883L_Data_IT[6];
 
 ///////// main
 IRAM int TIM_inte_SD = 0, TIM_inte = 0;
@@ -124,7 +124,7 @@ IRAM int16_t  AC1, AC2, AC3, B1, B2, MB, MC, MD;
 IRAM uint32_t B4, B7, UP;
 IRAM int32_t temperature, pressure, UT, X1, X2, B5, B6, B3, X3;
 IRAM float temp = 0, pres = 0, startpres = 0, ampritude = 0;
-RAM1 uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
+IRAM uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
 
 /////////// nrf24
 IRAM uint8_t RxData[32];
@@ -258,7 +258,7 @@ IRAM uint16_t OLD_SPEED2 = min_speed;
 IRAM uint16_t OLD_SPEED3 = min_speed;
 IRAM uint16_t OLD_SPEED4 = min_speed;
 
-const uint16_t DRON_SLOWFALING = 3000;//todo sprawdzic
+const uint16_t DRON_SLOWFALING = 3000;
 IRAM uint8_t DRON_ON_GRUND;
 
 
@@ -326,11 +326,6 @@ int main(void)
 
   /* MPU Configuration--------------------------------------------------------*/
   MPU_Config();
-
-  /* Enable the CPU Cache */
-
-  /* Enable I-Cache---------------------------------------------------------*/
-  SCB_EnableICache();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -404,7 +399,7 @@ int main(void)
   	old_error_angular_rate_pitch = 0;// ruznica
   	old_error_angular_rate_rool = 0;
   	old_error_angular_rate_yaw = 0;
-  	error_sum_pitch = 0;//todo zmiezycz startowy error, by start nastepowal szybciej
+  	error_sum_pitch = 0;
   	error_sum_rool = 0;
   	error_sum_yaw = 0;
   	error_sum_angular_rate_pitch = 0;
@@ -426,6 +421,7 @@ int main(void)
   	MPU6050_IRQ = 0, HMC583L_IRQ = 0, BMP180_IRQ = 0;
   	i = 0, loopnum = 0;
 
+  	thrust_values = 0;
 
 	  p_angular_rate_pitchfactor = 14;
 	  p_angular_rate_roolfactor = 12;
@@ -470,6 +466,11 @@ int main(void)
   	  PID_FAC_Yaw[1] = i_yawfactor;
   	  PID_FAC_Yaw[2] = d_yawfactor;
 
+  	wanted_pitch_rx = 0;// chcainy stan
+  	wanted_rool_rx = 0;
+  	wanted_yaw_rx = 0;
+  	wanted_gz = 0 ;
+
 
   	data.ox = 0;
   	data.x = 0;
@@ -494,6 +495,8 @@ int main(void)
   	ax = 0,ay = 0,az = 0, gx = 0, gy = 0, gz = 0;
   	ax_ang = 0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
   	accelx_cal = 0, accely_cal = 0, accelz_cal = 0, gyrox_cal = 0, gyroy_cal = 0, gyroz_cal = 0;
+
+  	nRF24_Rx_Mode = 0;
 
   	uint8_t o[3] = "Odb";
   	uint8_t n[3] = "Nad";
@@ -528,7 +531,7 @@ int main(void)
 
 
   	HAL_TIM_Base_Start(&htim8);
-  	HAL_ADC_Start_DMA(&hadc2, &analogmess, 1);//todo psuje program
+  	HAL_ADC_Start_DMA(&hadc2, &analogmess, 1);
   	LED_R_1;
   	while(analogmess == 0){
 
@@ -772,7 +775,7 @@ int main(void)
 	  		if((TIM_inte_SD == 1) && (fresult == FR_OK) && (SD_enable_Flag == 1)){// 1ms, 1KHz
 	  			TIM_inte_SD = 0;
 
-	  			uSD_Card_SendData_To_Buffer(Mainloop_Number);//todo blokuje pentle główną po ponownym uruchomieniu gdzy napięcie zsotanie odlonczone
+	  			uSD_Card_SendData_To_Buffer(Mainloop_Number);
 
 	  			if(Mainloop_Number == 999){//zapisywanie karty raz na 1 sec
 	  				SD_In_Use = 1;
