@@ -22,44 +22,44 @@ void ESC_1_SPEED(uint16_t a)
 
 void ESC_2_SPEED(uint16_t a)
 {
-	  if(a < min_speed - Engine2_balance)
+	  if(a < min_speed)
 	  {
-		  a = min_speed - Engine2_balance;
+		  a = min_speed;
 	  }
-	  if(a >  max_speed - Engine2_balance)
+	  if(a >  max_speed)
 	  {
-		  a =  max_speed - Engine2_balance;
+		  a =  max_speed;
 	  }
 
-	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_2, a - Engine2_balance);
+	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_2, a);
 }
 
 void ESC_3_SPEED(uint16_t a)
 {
-	  if(a < min_speed - Engine3_balance)
+	  if(a < min_speed)
 	  {
-		  a = min_speed - Engine3_balance;
+		  a = min_speed;
 	  }
-	  if(a >  max_speed - Engine3_balance)
+	  if(a >  max_speed)
 	  {
-		  a =  max_speed - Engine3_balance;
+		  a =  max_speed;
 	  }
 
-	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_3, a - Engine3_balance);
+	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_3, a);
 }
 
 void ESC_4_SPEED(uint16_t a)
 {
-	  if(a < min_speed - Engine4_balance)
+	  if(a < min_speed)
 	  {
-		  a = min_speed - Engine4_balance;
+		  a = min_speed;
 	  }
-	  if(a > max_speed - Engine4_balance)
+	  if(a > max_speed)
 	  {
-		  a = max_speed - Engine4_balance;
+		  a = max_speed;
 	  }
 
-	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_4, a - Engine4_balance);
+	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_4, a);
 }
 
 void ESC_SETALL(uint16_t a)

@@ -6,11 +6,6 @@
 #define max_speed 19500//960todo
 #define min_speed 10500//12540//615
 
-#define Engine2_balance 0//100
-#define Engine3_balance 0//250
-#define Engine4_balance 0//140
-
-
 
 
 #define ESC_POWER_1 HAL_GPIO_WritePin(ESC_Power_GPIO_Port, ESC_Power_Pin, GPIO_PIN_SET)//1 = unucitve

@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00001c33  00000000  00000000  00083958  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0003c9c6  00000000  00000000  0008558b  2**0
+ 17 .debug_macro  0003c9b4  00000000  00000000  0008558b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00038667  00000000  00000000  000c1f51  2**0
+ 18 .debug_line   00038667  00000000  00000000  000c1f3f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    0016e1ab  00000000  00000000  000fa5b8  2**0
+ 19 .debug_str    0016e175  00000000  00000000  000fa5a6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00268763  2**0
+ 20 .comment      00000043  00000000  00000000  0026871b  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00009fc8  00000000  00000000  002687a8  2**2
+ 21 .debug_frame  00009fc8  00000000  00000000  00268760  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000004d  00000000  00000000  00272770  2**0
+ 22 .debug_line_str 0000004d  00000000  00000000  00272728  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1442,28 +1442,28 @@ void ESC_2_SPEED(uint16_t a)
  8000e7c:	af00      	add	r7, sp, #0
  8000e7e:	4603      	mov	r3, r0
  8000e80:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed - Engine2_balance)
+	  if(a < min_speed)
  8000e82:	88fb      	ldrh	r3, [r7, #6]
  8000e84:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000e88:	4293      	cmp	r3, r2
  8000e8a:	d802      	bhi.n	8000e92 <ESC_2_SPEED+0x1a>
 	  {
-		  a = min_speed - Engine2_balance;
+		  a = min_speed;
  8000e8c:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000e90:	80fb      	strh	r3, [r7, #6]
 	  }
-	  if(a >  max_speed - Engine2_balance)
+	  if(a >  max_speed)
  8000e92:	88fb      	ldrh	r3, [r7, #6]
  8000e94:	f644 422c 	movw	r2, #19500	@ 0x4c2c
  8000e98:	4293      	cmp	r3, r2
  8000e9a:	d902      	bls.n	8000ea2 <ESC_2_SPEED+0x2a>
 	  {
-		  a =  max_speed - Engine2_balance;
+		  a =  max_speed;
  8000e9c:	f644 432c 	movw	r3, #19500	@ 0x4c2c
  8000ea0:	80fb      	strh	r3, [r7, #6]
 	  }
 
-	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_2, a - Engine2_balance);
+	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_2, a);
  8000ea2:	4b05      	ldr	r3, [pc, #20]	@ (8000eb8 <ESC_2_SPEED+0x40>)
  8000ea4:	681b      	ldr	r3, [r3, #0]
  8000ea6:	681b      	ldr	r3, [r3, #0]
@@ -1486,28 +1486,28 @@ void ESC_3_SPEED(uint16_t a)
  8000ec0:	af00      	add	r7, sp, #0
  8000ec2:	4603      	mov	r3, r0
  8000ec4:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed - Engine3_balance)
+	  if(a < min_speed)
  8000ec6:	88fb      	ldrh	r3, [r7, #6]
  8000ec8:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000ecc:	4293      	cmp	r3, r2
  8000ece:	d802      	bhi.n	8000ed6 <ESC_3_SPEED+0x1a>
 	  {
-		  a = min_speed - Engine3_balance;
+		  a = min_speed;
  8000ed0:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000ed4:	80fb      	strh	r3, [r7, #6]
 	  }
-	  if(a >  max_speed - Engine3_balance)
+	  if(a >  max_speed)
  8000ed6:	88fb      	ldrh	r3, [r7, #6]
  8000ed8:	f644 422c 	movw	r2, #19500	@ 0x4c2c
  8000edc:	4293      	cmp	r3, r2
  8000ede:	d902      	bls.n	8000ee6 <ESC_3_SPEED+0x2a>
 	  {
-		  a =  max_speed - Engine3_balance;
+		  a =  max_speed;
  8000ee0:	f644 432c 	movw	r3, #19500	@ 0x4c2c
  8000ee4:	80fb      	strh	r3, [r7, #6]
 	  }
 
-	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_3, a - Engine3_balance);
+	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_3, a);
  8000ee6:	4b05      	ldr	r3, [pc, #20]	@ (8000efc <ESC_3_SPEED+0x40>)
  8000ee8:	681b      	ldr	r3, [r3, #0]
  8000eea:	681b      	ldr	r3, [r3, #0]
@@ -1530,28 +1530,28 @@ void ESC_4_SPEED(uint16_t a)
  8000f04:	af00      	add	r7, sp, #0
  8000f06:	4603      	mov	r3, r0
  8000f08:	80fb      	strh	r3, [r7, #6]
-	  if(a < min_speed - Engine4_balance)
+	  if(a < min_speed)
  8000f0a:	88fb      	ldrh	r3, [r7, #6]
  8000f0c:	f642 1203 	movw	r2, #10499	@ 0x2903
  8000f10:	4293      	cmp	r3, r2
  8000f12:	d802      	bhi.n	8000f1a <ESC_4_SPEED+0x1a>
 	  {
-		  a = min_speed - Engine4_balance;
+		  a = min_speed;
  8000f14:	f642 1304 	movw	r3, #10500	@ 0x2904
  8000f18:	80fb      	strh	r3, [r7, #6]
 	  }
-	  if(a > max_speed - Engine4_balance)
+	  if(a > max_speed)
  8000f1a:	88fb      	ldrh	r3, [r7, #6]
  8000f1c:	f644 422c 	movw	r2, #19500	@ 0x4c2c
  8000f20:	4293      	cmp	r3, r2
  8000f22:	d902      	bls.n	8000f2a <ESC_4_SPEED+0x2a>
 	  {
-		  a = max_speed - Engine4_balance;
+		  a = max_speed;
  8000f24:	f644 432c 	movw	r3, #19500	@ 0x4c2c
  8000f28:	80fb      	strh	r3, [r7, #6]
 	  }
 
-	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_4, a - Engine4_balance);
+	  __HAL_TIM_SET_COMPARE(htim_ESC, TIM_CHANNEL_4, a);
  8000f2a:	4b05      	ldr	r3, [pc, #20]	@ (8000f40 <ESC_4_SPEED+0x40>)
  8000f2c:	681b      	ldr	r3, [r3, #0]
  8000f2e:	681b      	ldr	r3, [r3, #0]
