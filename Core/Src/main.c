@@ -1131,10 +1131,16 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			old_error_angular_rate_yaw = wanted_yaw - gz;
 
 
-			MYDRON.ROOL 	= (uint16_t)pid_angular_rate_rool;
-			MYDRON.PITCH 	= (uint16_t)pid_angular_rate_pitch;
-			MYDRON.YAW 		= (uint16_t)pid_angular_rate_yaw;
+			//MYDRON.ROOL 	= ((pid_angular_rate_rool > -5000) && (pid_angular_rate_rool < 5000)) ? pid_angular_rate_rool: (pid_angular_rate_rool > 0) ? 5000: -5000;
+			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? 5000: (pid_angular_rate_rool < -5000) ? -5000: pid_angular_rate_rool;
+			MYDRON.PITCH 	= (pid_angular_rate_pitch > 5000) ? 5000: (pid_angular_rate_pitch < -5000) ? -5000: pid_angular_rate_pitch;
+			MYDRON.YAW 		= (pid_angular_rate_yaw > 5000) ? 5000: (pid_angular_rate_yaw < -5000) ? -5000: pid_angular_rate_yaw;
 
+
+		/*
+			MYDRON.PITCH 	= (pid_angular_rate_pitch);
+			MYDRON.YAW 		= (pid_angular_rate_yaw);
+		 */
 
 //			wobble_strenght = Wobble_Detect();
 //			if(wobble_strenght > 1){
