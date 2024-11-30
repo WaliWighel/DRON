@@ -111,6 +111,13 @@ void uSD_Card_SendData_To_Buffer(uint32_t a);
 void convert_value_to_array2(int16_t value, uint8_t *arraytoputin, uint8_t rangebegin, uint8_t rangeend);
 void convert_value_to_array3(float value, uint8_t *arraytoputin, uint8_t rangebegin, uint8_t rangeend);
 void Stack_Push(float data);
+
+int16_t ROOL_MAX_VAL(void);
+int16_t ROOL_MIN_VAL(void);
+int16_t PITCH_MAX_VAL(void);
+int16_t PITCH_MIN_VAL(void);
+int16_t YAW_MAX_VAL(void);
+int16_t YAW_MIN_VAL(void);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

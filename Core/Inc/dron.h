@@ -34,6 +34,9 @@ struct Dron{
 	struct Dronstatus dron_status;
 	int16_t dronheight;
 	uint8_t THRUST_flag;
+	uint8_t PITCH_STA;//0 - ok; 1 - min; 2 - max
+	uint8_t ROOL_STA;
+	uint8_t YAW_STA;
 };
 
 enum DRON_StateTypeDef{

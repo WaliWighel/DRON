@@ -1125,6 +1125,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 
 			old_error_pitch = wanted_pitch - now_pitch;
 			old_error_rool = wanted_rool - now_rool;
+			old_error_yaw = wanted_yaw - now_yaw;
 
 			old_error_angular_rate_pitch = pid_pitch - gx;
 			old_error_angular_rate_rool = pid_rool - gy;
@@ -1132,9 +1133,9 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 
 
 			//MYDRON.ROOL 	= ((pid_angular_rate_rool > -5000) && (pid_angular_rate_rool < 5000)) ? pid_angular_rate_rool: (pid_angular_rate_rool > 0) ? 5000: -5000;
-			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? 5000: (pid_angular_rate_rool < -5000) ? -5000: pid_angular_rate_rool;
-			MYDRON.PITCH 	= (pid_angular_rate_pitch > 5000) ? 5000: (pid_angular_rate_pitch < -5000) ? -5000: pid_angular_rate_pitch;
-			MYDRON.YAW 		= (pid_angular_rate_yaw > 5000) ? 5000: (pid_angular_rate_yaw < -5000) ? -5000: pid_angular_rate_yaw;
+			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? ROOL_MAX_VAL(): (pid_angular_rate_rool < -5000) ? ROOL_MIN_VAL(): pid_angular_rate_rool;
+			MYDRON.PITCH 	= (pid_angular_rate_pitch > 5000) ? PITCH_MAX_VAL(): (pid_angular_rate_pitch < -5000) ? PITCH_MIN_VAL(): pid_angular_rate_pitch;
+			MYDRON.YAW 		= (pid_angular_rate_yaw > 5000) ? YAW_MAX_VAL(): (pid_angular_rate_yaw < -5000) ? YAW_MIN_VAL(): pid_angular_rate_yaw;
 
 
 		/*
@@ -1495,6 +1496,30 @@ void Stack_Push(float data){
 	}
 }
 
+int16_t ROOL_MAX_VAL(void){
+	MYDRON.ROOL_STA = 2;
+	return 5000;
+}
+int16_t ROOL_MIN_VAL(void){
+	MYDRON.ROOL_STA = 1;
+	return -5000;
+}
+int16_t PITCH_MAX_VAL(void){
+	MYDRON.PITCH_STA = 2;
+	return 5000;
+}
+int16_t PITCH_MIN_VAL(void){
+	MYDRON.PITCH_STA = 1;
+	return -5000;
+}
+int16_t YAW_MAX_VAL(void){
+	MYDRON.YAW_STA = 2;
+	return 5000;
+}
+int16_t YAW_MIN_VAL(void){
+	MYDRON.YAW_STA = 1;
+	return -5000;
+}
 /* USER CODE END 4 */
 
  /* MPU Configuration */
