@@ -41,8 +41,8 @@ extern int32_t error_sum_yaw;
 extern int32_t error_sum_angular_rate_yaw;
 
 
-extern int16_t FDP_D_Gain_AR;
-extern int16_t FDP_D_Gain;
+extern uint16_t FDP_D_Gain_AR;
+extern uint16_t FDP_D_Gain;
 
 void interpretcommand(void);
 void executecommand(char command[], uint8_t value1[]);

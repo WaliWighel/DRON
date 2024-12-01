@@ -175,8 +175,8 @@ IRAM float wanted_yaw = 0;
 ////////Filtry
 
 
-IRAM int16_t FDP_D_Gain_AR = 0;
-IRAM int16_t FDP_D_Gain = 0;
+IRAM uint16_t FDP_D_Gain_AR = 0;
+IRAM uint16_t FDP_D_Gain = 0;
 
 //////// PID
 
@@ -392,8 +392,12 @@ int main(void)
   	last_wanted_yaw_rx = 0;
   	wanted_thrust = 0;
   	thrust_limit = 10000;
-  	FDP_D_Gain_AR = 100;
-  	FDP_D_Gain = 100;
+
+
+  	FDP_D_Gain_AR = 10000;
+  	FDP_D_Gain = 10000;
+
+
   	old_error_pitch = 0;// ruznica
   	old_error_rool = 0;
   	old_error_yaw = 0;
@@ -424,29 +428,29 @@ int main(void)
 
   	thrust_values = 0;
 
-	  p_angular_rate_pitchfactor = 14;
-	  p_angular_rate_roolfactor = 12;
-	  p_angular_rate_yawfactor = 5;// -> 10
-	///////////////////////////////////////////////////////////////////////////
-	  i_angular_rate_pitchfactor = 10;
-	  i_angular_rate_roolfactor = 10;
-	  i_angular_rate_yawfactor = 0;
-	///////////////////////////////////////////////////////////////////////////
-	  d_angular_rate_pitchfactor = 30;
-	  d_angular_rate_roolfactor = 20;
-	  d_angular_rate_yawfactor = 5;
+	  	p_angular_rate_pitchfactor = 14;
+		p_angular_rate_roolfactor = 12;
+		p_angular_rate_yawfactor = 5;// -> 10
+		///////////////////////////////////////////////////////////////////////////
+		i_angular_rate_pitchfactor = 10;
+		i_angular_rate_roolfactor = 10;
+		i_angular_rate_yawfactor = 0;
+		///////////////////////////////////////////////////////////////////////////
+		d_angular_rate_pitchfactor = 30;
+		d_angular_rate_roolfactor = 20;
+		d_angular_rate_yawfactor = 5;
 
-	  p_pitchfactor = 5.5;
-	  p_roolfactor = 6;//5
-	  p_yawfactor = 5;
-	///////////////////////////////////////////////////////////////////////////
-	  i_pitchfactor = 9;//8
-	  i_roolfactor = 8;//10
-	  i_yawfactor = 0;
-	///////////////////////////////////////////////////////////////////////////
-	  d_pitchfactor = 30;//25
-	  d_roolfactor = 20;
-	  d_yawfactor = 0;
+		p_pitchfactor = 5.5;
+		p_roolfactor = 6;//5
+		p_yawfactor = 5;
+		///////////////////////////////////////////////////////////////////////////
+		i_pitchfactor = 9;//8
+		i_roolfactor = 8;//10
+		i_yawfactor = 0;
+		///////////////////////////////////////////////////////////////////////////
+		d_pitchfactor = 30;//25
+		d_roolfactor = 20;
+		d_yawfactor = 0;
 
   	  PID_FAC_Angular_Rate_Pitch[0] = p_angular_rate_pitchfactor;
   	  PID_FAC_Angular_Rate_Pitch[1] = i_angular_rate_pitchfactor;

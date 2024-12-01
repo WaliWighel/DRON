@@ -154,8 +154,8 @@ extern float wanted_yaw ;
 ////////Filtry
 
 
-extern int16_t FDP_Out ;
-extern int16_t FDP_D_Gain ;
+extern uint16_t FDP_Out ;
+extern uint16_t FDP_D_Gain ;
 
 //////// PID
 
