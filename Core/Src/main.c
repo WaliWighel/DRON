@@ -805,7 +805,6 @@ int main(void)
 
 	  		if(TIM_inte == 1){
 	  			LED_R_0;
-	  			RGB_LED_For_BAT(MYDRON.batterysize);
 	  			TIM_inte = 0;
 	  		}
     /* USER CODE END WHILE */
@@ -912,10 +911,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		NRF_TIM_Inte++;
 
 
-		if(i == 0){// na calosc 50ms
+		if(i == 0){// na calosc 100ms
 			LED_5_1;
 			BMP180_start_measurment_temp_IT();
 			LED_5_0;
+
+
+			RGB_LED_For_BAT(MYDRON.batterysize);
 		}
 
 		if(i == 10){//2
@@ -1190,10 +1192,10 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			Stack_Push(now_rool);
 
 
-			SPEED1 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : 20000;//trust 7000 max
-			SPEED2 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : 20000;//
-			SPEED3 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : 20000;//
-			SPEED4 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < 20000) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : 20000;//
+			SPEED1 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : max_speed;//trust 7000 max
+			SPEED2 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : max_speed;//
+			SPEED3 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : max_speed;//
+			SPEED4 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : max_speed;//
 
 			if(SPEED1 != OLD_SPEED1){
 				ESC_1_SPEED(SPEED1);
