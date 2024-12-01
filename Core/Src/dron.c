@@ -264,7 +264,7 @@ float ADV(float D_factor, float factor, uint8_t mov){
 	return new_factor;
 }
 
-void acceleration_stabilizer(float *g_ax, float *PID_FAC){
+void acceleration_stabilizer(float *g_ax, float *PID_FAC){//todo
 
 	*g_ax = PID_FAC[0]*(wanted_pitch - *g_ax);
 
@@ -433,7 +433,7 @@ void IS_DRON_ON_GROUND(void){//todo
 	}
 }
 
-void PID_Self_Regulation(uint8_t freedom, float *PID_FAC){
+void PID_Self_Regulation(uint8_t freedom, float *PID_FAC){//todo
 	uint8_t best = 0;
 	float overshoot[2];//[0] - teraz [1] poprzedni
 	overshoot[0] = 0;
