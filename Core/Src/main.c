@@ -142,9 +142,6 @@ IRAM uint8_t nRF24_Rx_Mode = 0;
 IRAM struct Dron MYDRON;
 
 
-
-
-
 IRAM struct Stack Old_Data_stack;
 
 IRAM int16_t wanted_pitch_rx;// chcainy stan
@@ -530,8 +527,6 @@ int main(void)
   	LED_uSD_0;
 
 
-
-
   	for(int i = 0; i < 4000; i++){
   		Old_Data_stack.olddata[i] = 0;
   	}
@@ -688,7 +683,7 @@ int main(void)
 			LED_Y_0;
 
 			cunter++;
-			if(cunter == 100){
+			if(cunter == 1000){
 				NVIC_SystemReset();
 			}
 		}
@@ -799,12 +794,14 @@ int main(void)
 	  				LED_uSD_0;
 	  				SD_In_Use = 0;
 	  				}
-	  			if(Mainloop_Number < 1000){
-	  				Mainloop_Number++;
-	  			}
-	  			else{
-	  				Mainloop_Number = 0;
-	  			}
+
+	  			Mainloop_Number = Mainloop_Number < 1000 ? Mainloop_Number+1 : 0;
+//	  			if(Mainloop_Number < 1000){
+//	  				Mainloop_Number++;
+//	  			}
+//	  			else{
+//	  				Mainloop_Number = 0;
+//	  			}
 	  		}
 
 	  		if(TIM_inte == 1){
@@ -976,12 +973,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		MPU6050_GET_ACCANDGYR_CALANDSCL_IT();
 		LED_5_0;
 
-		if(i == 100){
-			i = 0;
-		}
-		else{
-			i++;
-		}
+		i = (i == 100) ? 0 : i+1;
+
+//		if(i == 100){
+//			i = 0;
+//		}
+//		else{
+//			i++;
+//		}
 		if(NRF_TIM_Inte >= 1000){
 			LED_R_1;
 			MYDRON.dron_status.Connection = DRON_DISCONNECTED;
@@ -1077,8 +1076,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	  			if(loopnum > 0 && loopnum < 10){
 	  				MYDRON.dron_status.Connection = DRON_CONNECTION_ERROR;
 	  			}
-
-
 	  			LED_Y_0;
 		}
 	}
@@ -1290,18 +1287,15 @@ uint32_t potenga(int a, int b){
 	}
 	return a;
 }
-void valswitch(uint8_t x){
-	if(x == 2){
-		x = 0;
-	}
-}
 float WartoscBezwgledna(float a){
-	if(a < 0){
-		return a*(-1);
-	}
-	else{
-		return a;
-	}
+	a = (a < 0) ? a*(-1) : a;
+	return a;
+//	if(a < 0){
+//		return a*(-1);
+//	}
+//	else{
+//		return a;
+//	}
 }
 
 

@@ -102,7 +102,6 @@ void convert_value_to_array(int16_t value, uint8_t *arraytoputin, uint8_t rangeb
 void convert_array_to_value(uint8_t arrayfrom[], int16_t *value , uint8_t rangebegin, uint8_t rangeend);
 uint32_t potenga(int a, int b);
 
-void valswitch(uint8_t);
 float WartoscBezwgledna(float a);
 
 void RGB_LED_Set_color(uint8_t R, uint8_t G, uint8_t B);
