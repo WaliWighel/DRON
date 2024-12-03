@@ -316,9 +316,6 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
-//	for(int i = 0; i < 1000000; i++){
-//		//oczekiwanie az napiecia na zasilaczu narosnie
-//	}
   /* USER CODE END 1 */
 
   /* MPU Configuration--------------------------------------------------------*/
@@ -796,12 +793,6 @@ int main(void)
 	  				}
 
 	  			Mainloop_Number = Mainloop_Number < 1000 ? Mainloop_Number+1 : 0;
-//	  			if(Mainloop_Number < 1000){
-//	  				Mainloop_Number++;
-//	  			}
-//	  			else{
-//	  				Mainloop_Number = 0;
-//	  			}
 	  		}
 
 	  		if(TIM_inte == 1){
@@ -975,12 +966,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		i = (i == 100) ? 0 : i+1;
 
-//		if(i == 100){
-//			i = 0;
-//		}
-//		else{
-//			i++;
-//		}
 		if(NRF_TIM_Inte >= 1000){
 			LED_R_1;
 			MYDRON.dron_status.Connection = DRON_DISCONNECTED;
@@ -1050,24 +1035,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				wanted_rool_rx = (wanted_rool_rx >= 30) ? 30 : (wanted_rool_rx <= -30) ? -30 : wanted_rool_rx;
 				wanted_pitch_rx = (wanted_pitch_rx >= 30) ? 30 : (wanted_pitch_rx <= -30) ? -30 : wanted_pitch_rx;
 				wanted_yaw_rx = (wanted_yaw_rx >= 30) ? 30 : (wanted_yaw_rx <= -30) ? -30 : wanted_yaw_rx;
-//				if(wanted_rool_rx >= 30){
-//					wanted_rool_rx = 30;
-//				}
-//				if(wanted_rool_rx <= -30){
-//					wanted_rool_rx = -30;
-//				}
-//				if(wanted_pitch_rx >= 30){
-//					wanted_pitch_rx = 30;
-//				}
-//				if(wanted_pitch_rx <= -30){
-//					wanted_pitch_rx = -30;
-//				}
-//				if(wanted_yaw_rx >= 30){
-//					wanted_yaw_rx = 30;
-//				}
-//				if(wanted_yaw_rx <= -30){
-//					wanted_yaw_rx = -30;
-//				}
 
 
 				NRF_TIM_Inte = 0;
@@ -1163,7 +1130,6 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			old_error_angular_rate_yaw = wanted_yaw - gz;
 
 
-			//MYDRON.ROOL 	= ((pid_angular_rate_rool > -5000) && (pid_angular_rate_rool < 5000)) ? pid_angular_rate_rool: (pid_angular_rate_rool > 0) ? 5000: -5000;
 			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? ROOL_MAX_VAL(): (pid_angular_rate_rool < -5000) ? ROOL_MIN_VAL(): ROOL_GOOD_VAL();
 			MYDRON.PITCH 	= (pid_angular_rate_pitch > 5000) ? PITCH_MAX_VAL(): (pid_angular_rate_pitch < -5000) ? PITCH_MIN_VAL(): PITCH_GOOD_VAL();
 			MYDRON.YAW 		= (pid_angular_rate_yaw > 5000) ? YAW_MAX_VAL(): (pid_angular_rate_yaw < -5000) ? YAW_MIN_VAL(): YAW_GOOD_VAL();
@@ -1290,12 +1256,6 @@ uint32_t potenga(int a, int b){
 float WartoscBezwgledna(float a){
 	a = (a < 0) ? a*(-1) : a;
 	return a;
-//	if(a < 0){
-//		return a*(-1);
-//	}
-//	else{
-//		return a;
-//	}
 }
 
 

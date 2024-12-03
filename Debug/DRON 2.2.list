@@ -39,15 +39,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  0003c9b4  00000000  00000000  0008518f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000387c7  00000000  00000000  000c1b43  2**0
+ 18 .debug_line   000387c1  00000000  00000000  000c1b43  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    0016e16b  00000000  00000000  000fa30a  2**0
+ 19 .debug_str    0016e16b  00000000  00000000  000fa304  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00268475  2**0
+ 20 .comment      00000043  00000000  00000000  0026846f  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00009f88  00000000  00000000  002684b8  2**2
+ 21 .debug_frame  00009f88  00000000  00000000  002684b4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000004d  00000000  00000000  00272440  2**0
+ 22 .debug_line_str 0000004d  00000000  00000000  0027243c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -9828,8 +9828,8 @@ int main(void)
  8004f5c:	b580      	push	{r7, lr}
  8004f5e:	b08a      	sub	sp, #40	@ 0x28
  8004f60:	af02      	add	r7, sp, #8
-//		//oczekiwanie az napiecia na zasilaczu narosnie
-//	}
+  /* USER CODE BEGIN 1 */
+
   /* USER CODE END 1 */
 
   /* MPU Configuration--------------------------------------------------------*/
@@ -11710,9 +11710,6 @@ int main(void)
  8005dd4:	2300      	movs	r3, #0
  8005dd6:	4a28      	ldr	r2, [pc, #160]	@ (8005e78 <main+0xf1c>)
  8005dd8:	6013      	str	r3, [r2, #0]
-//	  			else{
-//	  				Mainloop_Number = 0;
-//	  			}
 	  		}
 
 	  		if(TIM_inte == 1){
@@ -12270,11 +12267,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80061c4:	2300      	movs	r3, #0
  80061c6:	4a18      	ldr	r2, [pc, #96]	@ (8006228 <HAL_TIM_PeriodElapsedCallback+0x240>)
  80061c8:	6013      	str	r3, [r2, #0]
-//			i = 0;
-//		}
-//		else{
-//			i++;
-//		}
+
 		if(NRF_TIM_Inte >= 1000){
  80061ca:	4b16      	ldr	r3, [pc, #88]	@ (8006224 <HAL_TIM_PeriodElapsedCallback+0x23c>)
  80061cc:	681b      	ldr	r3, [r3, #0]
@@ -12626,9 +12619,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  80064a2:	231e      	movs	r3, #30
  80064a4:	4a23      	ldr	r2, [pc, #140]	@ (8006534 <HAL_GPIO_EXTI_Callback+0x2d0>)
  80064a6:	8013      	strh	r3, [r2, #0]
-//				if(wanted_yaw_rx <= -30){
-//					wanted_yaw_rx = -30;
-//				}
 
 
 				NRF_TIM_Inte = 0;
@@ -13281,7 +13271,6 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
  8006b34:	edc3 7a00 	vstr	s15, [r3]
 
 
-			//MYDRON.ROOL 	= ((pid_angular_rate_rool > -5000) && (pid_angular_rate_rool < 5000)) ? pid_angular_rate_rool: (pid_angular_rate_rool > 0) ? 5000: -5000;
 			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? ROOL_MAX_VAL(): (pid_angular_rate_rool < -5000) ? ROOL_MIN_VAL(): ROOL_GOOD_VAL();
  8006b38:	4b45      	ldr	r3, [pc, #276]	@ (8006c50 <HAL_I2C_MemRxCpltCallback+0x660>)
  8006b3a:	edd3 7a00 	vldr	s15, [r3]
@@ -14219,11 +14208,6 @@ float WartoscBezwgledna(float a){
 	return a;
  800748e:	687b      	ldr	r3, [r7, #4]
  8007490:	ee07 3a90 	vmov	s15, r3
-//		return a*(-1);
-//	}
-//	else{
-//		return a;
-//	}
 }
  8007494:	eeb0 0a67 	vmov.f32	s0, s15
  8007498:	370c      	adds	r7, #12
