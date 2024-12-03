@@ -363,7 +363,7 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 				PID_FAC[4] = PID_FAC[3];//old d_fac
 			}
 
-			*PID_var = *PID_var + PID_FAC[3];//
+			*PID_var = *PID_var + PID_FAC[3];
 
 			break;
 
