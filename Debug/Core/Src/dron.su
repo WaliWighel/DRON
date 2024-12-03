@@ -6,6 +6,6 @@
 ../Core/Src/dron.c:242:7:ADV	32	static
 ../Core/Src/dron.c:267:6:acceleration_stabilizer	16	static
 ../Core/Src/dron.c:277:6:PID_cal	24	static
-../Core/Src/dron.c:396:6:Get_batteryvalue	4	static
-../Core/Src/dron.c:424:6:IS_DRON_ON_GROUND	16	static
-../Core/Src/dron.c:436:6:PID_Self_Regulation	32	static
+../Core/Src/dron.c:408:6:Get_batteryvalue	4	static
+../Core/Src/dron.c:436:6:IS_DRON_ON_GROUND	16	static
+../Core/Src/dron.c:448:6:PID_Self_Regulation	32	static

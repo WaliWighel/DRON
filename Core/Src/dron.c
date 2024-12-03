@@ -285,8 +285,10 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] = PID_FAC[2]*((wanted_pitch - now_pitch) - old_error_pitch);//policzenie częsci D
 
 			//FDP
-			PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain * looptime))));
-			PID_FAC[4] = PID_FAC[3];//old d_fac
+			if(FDP_D_Gain > 0){
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
+				PID_FAC[4] = PID_FAC[3];//old d_fac
+			}
 
 			*PID_var = *PID_var + PID_FAC[3];
 
@@ -307,8 +309,10 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] =  PID_FAC[2]*((wanted_rool - now_rool) - old_error_rool);
 
 			//FDP
-			PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain * looptime))));
-			PID_FAC[4] = PID_FAC[3];//old d_fac
+			if(FDP_D_Gain > 0){
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
+				PID_FAC[4] = PID_FAC[3];//old d_fac
+			}
 
 			*PID_var = *PID_var + PID_FAC[3];
 
@@ -329,8 +333,10 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] = PID_FAC[2]*((wanted_yaw - now_yaw) - old_error_yaw);
 
 			//FDP
-			PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain * looptime))));
-			PID_FAC[4] = PID_FAC[3];//old d_fac
+			if(FDP_D_Gain > 0){
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
+				PID_FAC[4] = PID_FAC[3];//old d_fac
+			}
 
 			*PID_var = *PID_var + PID_FAC[3];
 
@@ -352,8 +358,10 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] = PID_FAC[2]*((pid_pitch - gx) - old_error_angular_rate_pitch);//policzenie częsci D
 
 			//FDP
-			PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
-			PID_FAC[4] = PID_FAC[3];//old d_fac
+			if(FDP_D_Gain_AR > 0){
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
+				PID_FAC[4] = PID_FAC[3];//old d_fac
+			}
 
 			*PID_var = *PID_var + PID_FAC[3];
 
@@ -368,8 +376,10 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] =  PID_FAC[2]*((pid_rool - gy) - old_error_angular_rate_rool);
 
 			//FDP
-			PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
-			PID_FAC[4] = PID_FAC[3];//old d_fac
+			if(FDP_D_Gain_AR > 0){
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
+				PID_FAC[4] = PID_FAC[3];//old d_fac
+			}
 
 			*PID_var = *PID_var + PID_FAC[3];
 			break;
@@ -383,8 +393,10 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 			PID_FAC[3] = PID_FAC[2]*((pid_yaw - gz) - old_error_angular_rate_yaw);
 
 			//FDP
-			PID_FAC[4] = (PID_FAC[4] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[5] * (1 / (1 + (FDP_D_Gain_AR * looptime))));//todo
-			PID_FAC[4] = PID_FAC[3];//old d_fac
+			if(FDP_D_Gain_AR > 0){
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));//todo
+				PID_FAC[4] = PID_FAC[3];//old d_fac
+			}
 
 			*PID_var = *PID_var + PID_FAC[3];
 			break;
