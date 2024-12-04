@@ -209,7 +209,7 @@ IRAM float pid_angular_rate_rool;
 ///////////////////////////////////////////////////////////////////////////
 IRAM float p_pitchfactor = 6;
 IRAM float p_roolfactor = 5;
-IRAM float p_yawfactor = 0;
+IRAM float p_yawfactor = 10;
 ///////////////////////////////////////////////////////////////////////////
 IRAM float i_pitchfactor = 8;
 IRAM float i_roolfactor = 10;
@@ -285,7 +285,7 @@ IRAM uint8_t MPU6050_IRQ = 0, HMC583L_IRQ = 0, BMP180_IRQ = 0;
 
 
 
-IRAM int i = 0, loopnum = 0;
+IRAM uint32_t i = 0, loopnum = 0;
 IRAM int16_t wanted_roll_v = 0;
 IRAM int16_t wanted_pitch_v = 0;
 IRAM int16_t wanted_yaw_v = 0;
@@ -388,8 +388,8 @@ int main(void)
   	thrust_limit = 10000;
 
 
-  	FDP_D_Gain_AR = 10000;
-  	FDP_D_Gain = 10000;
+  	FDP_D_Gain_AR = 0;
+  	FDP_D_Gain = 0;
 
 
   	old_error_pitch = 0;// ruznica
@@ -424,14 +424,14 @@ int main(void)
 
 	  	p_angular_rate_pitchfactor = 14;
 		p_angular_rate_roolfactor = 12;
-		p_angular_rate_yawfactor = 5;// -> 10
+		p_angular_rate_yawfactor = 10;// -> 10
 		///////////////////////////////////////////////////////////////////////////
 		i_angular_rate_pitchfactor = 10;
 		i_angular_rate_roolfactor = 10;
 		i_angular_rate_yawfactor = 0;
 		///////////////////////////////////////////////////////////////////////////
-		d_angular_rate_pitchfactor = 30;
-		d_angular_rate_roolfactor = 20;
+		d_angular_rate_pitchfactor = 34;
+		d_angular_rate_roolfactor = 24;
 		d_angular_rate_yawfactor = 5;
 
 		p_pitchfactor = 5.5;
@@ -442,8 +442,8 @@ int main(void)
 		i_roolfactor = 8;//10
 		i_yawfactor = 0;
 		///////////////////////////////////////////////////////////////////////////
-		d_pitchfactor = 30;//25
-		d_roolfactor = 20;
+		d_pitchfactor = 38;//25
+		d_roolfactor = 29;
 		d_yawfactor = 0;
 
   	  PID_FAC_Angular_Rate_Pitch[0] = p_angular_rate_pitchfactor;
@@ -680,7 +680,7 @@ int main(void)
 			LED_Y_0;
 
 			cunter++;
-			if(cunter == 1000){
+			if(cunter == 200){
 				NVIC_SystemReset();
 			}
 		}

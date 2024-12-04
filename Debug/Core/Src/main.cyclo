@@ -1,3 +1,4 @@
+../Drivers/CMSIS/Include/core_cm7.h:2156:34:__NVIC_SystemReset	1
 ../Drivers/CMSIS/Include/core_cm7.h:2660:26:ITM_SendChar	4
 ../Core/Src/main.c:314:5:main	28
 ../Core/Src/main.c:813:6:SystemClock_Config	4
