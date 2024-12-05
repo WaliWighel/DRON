@@ -438,8 +438,8 @@ int main(void)
 		i_angular_rate_roolfactor = 10;
 		i_angular_rate_yawfactor = 0;
 		///////////////////////////////////////////////////////////////////////////
-		d_angular_rate_pitchfactor = 34;
-		d_angular_rate_roolfactor = 24;
+		d_angular_rate_pitchfactor = 30;
+		d_angular_rate_roolfactor = 20;
 		d_angular_rate_yawfactor = 5;
 
 		p_pitchfactor = 5.5;
@@ -450,9 +450,34 @@ int main(void)
 		i_roolfactor = 8;//10
 		i_yawfactor = 0;
 		///////////////////////////////////////////////////////////////////////////
-		d_pitchfactor = 38;//25
-		d_roolfactor = 29;
+		d_pitchfactor = 30;//25
+		d_roolfactor = 20;
 		d_yawfactor = 0;
+
+
+
+		p_angular_rate_pitchfactor = 14;
+		p_angular_rate_roolfactor = 12;
+		p_angular_rate_yawfactor = 5;
+		i_angular_rate_pitchfactor = 5;
+		i_angular_rate_roolfactor = 5;
+		i_angular_rate_yawfactor = 0;
+		d_angular_rate_pitchfactor = 25;
+		d_angular_rate_roolfactor = 15;
+		d_angular_rate_yawfactor = 5;
+
+		p_pitchfactor = 4.5;
+		p_roolfactor = 5;
+		p_yawfactor = 5;
+		i_pitchfactor = 4;
+		i_roolfactor = 4;
+		i_yawfactor = 0;
+		d_pitchfactor = 15;
+		d_roolfactor = 10;
+		d_yawfactor = 0;
+
+
+
 
   	  PID_FAC_Angular_Rate_Pitch[0] = p_angular_rate_pitchfactor;
   	  PID_FAC_Angular_Rate_Pitch[1] = i_angular_rate_pitchfactor;
