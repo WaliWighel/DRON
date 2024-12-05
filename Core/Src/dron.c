@@ -40,6 +40,13 @@ extern uint16_t FDP_D_Gain_AR;
 extern uint16_t FDP_D_Gain;
 
 
+extern float pitch_error;
+extern float rool_error;
+extern float yaw_error;
+extern float pitch_ar_error;
+extern float rool_ar_error;
+extern float yaw_ar_error;
+
 /*
  * Thrust_filter
  *
@@ -52,8 +59,8 @@ void Thrust_filter(double factor){
 	int16_t thrust_error;
 	double thrust_function;
 	uint8_t negflag = 0;
-	error_pitch = (float)(wanted_pitch - now_pitch);
-	error_rool 	= (float)(wanted_rool - now_rool);
+	error_pitch = (float)(pitch_error);
+	error_rool 	= (float)(rool_error);
 
 	error_pitch = WartoscBezwgledna(error_pitch);
 	error_rool 	= WartoscBezwgledna(error_rool);
@@ -278,11 +285,11 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 	switch(pry){
 		case 1://pitch
 
-			*PID_var = PID_FAC[0]*(wanted_pitch - now_pitch);
+			*PID_var = PID_FAC[0]*(pitch_error);
 
 			*PID_var = *PID_var + PID_FAC[1]*error_sum_pitch*looptime;
 
-			PID_FAC[3] = PID_FAC[2]*((wanted_pitch - now_pitch) - old_error_pitch);//policzenie częsci D
+			PID_FAC[3] = PID_FAC[2]*((pitch_error) - old_error_pitch);//policzenie częsci D
 
 			//FDP
 			if(FDP_D_Gain > 0){
@@ -302,11 +309,11 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 		case 2://rool
 
-			*PID_var = PID_FAC[0]*(wanted_rool - now_rool);
+			*PID_var = PID_FAC[0]*(rool_error);
 
 			*PID_var = *PID_var + PID_FAC[1]*error_sum_rool*looptime;
 
-			PID_FAC[3] =  PID_FAC[2]*((wanted_rool - now_rool) - old_error_rool);
+			PID_FAC[3] =  PID_FAC[2]*((rool_error) - old_error_rool);
 
 			//FDP
 			if(FDP_D_Gain > 0){
@@ -326,11 +333,11 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 		case 3:
 
-			*PID_var = PID_FAC[0]*(wanted_yaw - now_yaw);
+			*PID_var = PID_FAC[0]*(yaw_error);
 
 			*PID_var = *PID_var + PID_FAC[1]*error_sum_yaw*looptime;
 
-			PID_FAC[3] = PID_FAC[2]*((wanted_yaw - now_yaw) - old_error_yaw);
+			PID_FAC[3] = PID_FAC[2]*((yaw_error) - old_error_yaw);
 
 			//FDP
 			if(FDP_D_Gain > 0){
@@ -350,12 +357,12 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 		case 4:// angular rates pitch
 
-			*PID_var = PID_FAC[0]*(pid_pitch - gx);
+			*PID_var = PID_FAC[0]*(pitch_ar_error);
 
 			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_pitch*looptime;
 
 
-			PID_FAC[3] = PID_FAC[2]*((pid_pitch - gx) - old_error_angular_rate_pitch);//policzenie częsci D
+			PID_FAC[3] = PID_FAC[2]*((pitch_ar_error) - old_error_angular_rate_pitch);//policzenie częsci D
 
 			//FDP
 			if(FDP_D_Gain_AR > 0){
@@ -369,11 +376,11 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 		case 5:// angular rates rool
 
-			*PID_var = PID_FAC[0]*(pid_rool - gy);
+			*PID_var = PID_FAC[0]*(rool_ar_error);
 
 			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_rool*looptime;
 
-			PID_FAC[3] =  PID_FAC[2]*((pid_rool - gy) - old_error_angular_rate_rool);
+			PID_FAC[3] =  PID_FAC[2]*((rool_ar_error) - old_error_angular_rate_rool);
 
 			//FDP
 			if(FDP_D_Gain_AR > 0){
@@ -386,11 +393,11 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 		case 6:// angular rates yaw
 
-			*PID_var = PID_FAC[0]*(pid_yaw - gz);
+			*PID_var = PID_FAC[0]*(yaw_ar_error);
 
 			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_yaw*looptime;
 
-			PID_FAC[3] = PID_FAC[2]*((pid_yaw - gz) - old_error_angular_rate_yaw);
+			PID_FAC[3] = PID_FAC[2]*((yaw_ar_error) - old_error_angular_rate_yaw);
 
 			//FDP
 			if(FDP_D_Gain_AR > 0){

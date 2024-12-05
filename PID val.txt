@@ -76,3 +76,45 @@
 	  d_pitchfactor = 30;//25
 	  d_roolfactor = 20;
 	  d_yawfactor = 0;
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+p_angular_rate_pitchfactor = 14;
+p_angular_rate_roolfactor = 14;
+p_angular_rate_yawfactor = 5;
+
+i_angular_rate_pitchfactor = 5;
+i_angular_rate_roolfactor = 5;
+i_angular_rate_yawfactor = 0;
+
+d_angular_rate_pitchfactor = 25;
+d_angular_rate_roolfactor = 15;
+d_angular_rate_yawfactor = 5;
+	  
+	  
+	  
+	  
+p_pitchfactor = 4.5;
+p_roolfactor = 5;
+p_yawfactor = 5;
+
+i_pitchfactor = 4;
+i_roolfactor = 4;
+i_yawfactor = 0;
+
+d_pitchfactor = 15;
+d_roolfactor = 10;
+d_yawfactor = 0;

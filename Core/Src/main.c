@@ -181,6 +181,13 @@ IRAM float now_pitch = 0;// oktualny stan
 IRAM float now_rool = 0;
 IRAM float now_yaw = 0;
 
+IRAM float pitch_error;
+IRAM float rool_error;
+IRAM float yaw_error;
+IRAM float pitch_ar_error;
+IRAM float rool_ar_error;
+IRAM float yaw_ar_error;
+
 IRAM float old_error_pitch = 0;// ruznica
 IRAM float old_error_rool = 0;
 IRAM float old_error_yaw = 0;
@@ -319,7 +326,8 @@ int main(void)
   /* USER CODE END 1 */
 
   /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
+
+	MPU_Config();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -501,6 +509,13 @@ int main(void)
   	now_rool = 0;
   	now_yaw = 0;
   	wanted_pitch = 0;
+
+  	pitch_error = 0;
+  	rool_error = 0;
+  	yaw_error = 0;
+  	pitch_ar_error = 0;
+  	rool_ar_error = 0;
+  	yaw_ar_error = 0;
 
 
   	uint8_t o[3] = "Odb";
@@ -1103,13 +1118,21 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			last_wanted_yaw_rx = wanted_yaw;
 
 
-			error_sum_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_pitch : error_sum_pitch + (wanted_pitch - now_pitch);
-			error_sum_rool = (MYDRON.ROOL_STA != 0) ? error_sum_rool : error_sum_rool + (wanted_rool - now_rool);
-			error_sum_yaw = (MYDRON.YAW_STA != 0) ? error_sum_yaw : error_sum_yaw + (wanted_yaw - now_yaw);
+		  	pitch_error = wanted_pitch - now_pitch;
+		  	rool_error = wanted_rool - now_rool;
+		  	yaw_error = wanted_yaw - now_yaw;
+		  	pitch_ar_error = pid_pitch - gx;
+		  	rool_ar_error = pid_rool - gy;
+		  	yaw_ar_error = pid_yaw - gz;
 
-			error_sum_angular_rate_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_angular_rate_pitch : error_sum_angular_rate_pitch + (pid_pitch - gx);
-			error_sum_angular_rate_rool = (MYDRON.ROOL_STA != 0) ? error_sum_angular_rate_rool : error_sum_angular_rate_rool + (pid_rool - gy);
-			error_sum_angular_rate_yaw = (MYDRON.YAW_STA != 0) ? error_sum_angular_rate_yaw : error_sum_angular_rate_yaw + (pid_yaw - gz);
+
+			error_sum_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_pitch : error_sum_pitch + (pitch_error);//pitch_error -> pitch_error
+			error_sum_rool = (MYDRON.ROOL_STA != 0) ? error_sum_rool : error_sum_rool + (rool_error);//rool_error
+			error_sum_yaw = (MYDRON.YAW_STA != 0) ? error_sum_yaw : error_sum_yaw + (yaw_error);//yaw_error
+
+			error_sum_angular_rate_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_angular_rate_pitch : error_sum_angular_rate_pitch + (pitch_ar_error);//pitch_ar_error
+			error_sum_angular_rate_rool = (MYDRON.ROOL_STA != 0) ? error_sum_angular_rate_rool : error_sum_angular_rate_rool + (rool_ar_error);
+			error_sum_angular_rate_yaw = (MYDRON.YAW_STA != 0) ? error_sum_angular_rate_yaw : error_sum_angular_rate_yaw + (yaw_ar_error);
 
 
 			PID_cal(&pid_pitch, PID_FAC_Pitch, 1);// angle control
@@ -1121,12 +1144,12 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			PID_cal(&pid_angular_rate_yaw, PID_FAC_Angular_Rate_Yaw, 6);
 
 
-			old_error_pitch = wanted_pitch - now_pitch;
-			old_error_rool = wanted_rool - now_rool;
-			old_error_yaw = wanted_yaw - now_yaw;
+			old_error_pitch = pitch_error;
+			old_error_rool = rool_error;
+			old_error_yaw = yaw_error;
 
-			old_error_angular_rate_pitch = pid_pitch - gx;
-			old_error_angular_rate_rool = pid_rool - gy;
+			old_error_angular_rate_pitch = pitch_ar_error;
+			old_error_angular_rate_rool = rool_ar_error;
 			old_error_angular_rate_yaw = wanted_yaw - gz;
 
 

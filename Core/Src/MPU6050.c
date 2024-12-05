@@ -143,14 +143,17 @@ void MPU6050_CALIBRATION(float *accelx_cal,float *accely_cal,float*accelz_cal,fl
 }
 
 void MPU6050_GET_ACCEL_TO_ANGLE(float ax, float ay, float az, float *ax_ang, float *ay_ang/*, float *az_ang*/){
-	double i = 0-1,axan,ayan;
-	double ang1 = sqrt((ax*ax)+(az*az));
-	double ang2 = sqrt((ay*ay)+(az*az));
-	axan = atan2((ay*i), ang1);
-	ayan= atan2(ax, ang2);
+	float axan,ayan;
+	float ang1 = sqrt((ax*ax)+(az*az));
+	float ang2 = sqrt((ay*ay)+(az*az));
+	axan = -1*(atan(ax/ang2));
+	ayan= atan(ay/ang1);
 
-	*ax_ang = (axan*180)/M_PI;
-	*ay_ang = (ayan*180)/M_PI;
+//	*ax_ang = (axan*180)/M_PI;
+//	*ay_ang = (ayan*180)/M_PI;
+
+	*ay_ang = (axan*180)/M_PI;//zamienine, dlaczego?
+	*ax_ang = (ayan*180)/M_PI;
 }
 
 void MPU6050_GET_GYRO_TO_ANGLE(float gx, float gy, float gz, float *gx_ang, float *gy_ang, float *gz_ang){
@@ -404,8 +407,8 @@ double Kalman_getAngle(Kalman_t *Kalman, double newAngle, double newRate, double
 
 void Complementary_getFilter(Complementary_Filter *Complementary_Filter_st,float ax_ang, float ay_ang, float magz_ang, float gx_ang, float gy_ang, float gz_ang){
 
-		Complementary_Filter_st->x = (0.02*ax_ang*(-1))+(0.98*((gx_ang*looptime)+Complementary_Filter_st->ox));// mnozenie X-1 poniewaz akcelerometr miezy w drugą strone niz zyroskop
-		Complementary_Filter_st->y = (0.02*ay_ang*(-1))+(0.98*((gy_ang*looptime)+Complementary_Filter_st->oy));
+		Complementary_Filter_st->x = (0.02*ax_ang)+(0.98*((gx_ang*looptime)+Complementary_Filter_st->ox));// mnozenie X-1 poniewaz akcelerometr miezy w drugą strone niz zyroskop NIE
+		Complementary_Filter_st->y = (0.02*ay_ang)+(0.98*((gy_ang*looptime)+Complementary_Filter_st->oy));
 		Complementary_Filter_st->z = (1*((gz_ang*looptime)+Complementary_Filter_st->oz));
 
 		Complementary_Filter_st->ox = Complementary_Filter_st->x;
