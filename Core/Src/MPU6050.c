@@ -143,17 +143,16 @@ void MPU6050_CALIBRATION(float *accelx_cal,float *accely_cal,float*accelz_cal,fl
 }
 
 void MPU6050_GET_ACCEL_TO_ANGLE(float ax, float ay, float az, float *ax_ang, float *ay_ang/*, float *az_ang*/){
-	float axan,ayan;
 	float ang1 = sqrt((ax*ax)+(az*az));
 	float ang2 = sqrt((ay*ay)+(az*az));
-	axan = -1*(atan(ax/ang2));
-	ayan= atan(ay/ang1);
 
-//	*ax_ang = (axan*180)/M_PI;
-//	*ay_ang = (ayan*180)/M_PI;
-
-	*ay_ang = (axan*180)/M_PI;//x = y poniewaz x gyro to y acc
-	*ax_ang = (ayan*180)/M_PI;
+	*ay_ang = ((-1*(atan(ax/ang2)))*180)/M_PI;
+	*ax_ang = ((atan(ay/ang1))*180)/M_PI;
+//	axan = -1*(atan(ax/ang2));
+//	ayan= atan(ay/ang1);
+//
+//	*ay_ang = (axan*180)/M_PI;
+//	*ax_ang = (ayan*180)/M_PI;
 }
 
 void MPU6050_GET_GYRO_TO_ANGLE(float gx, float gy, float gz, float *gx_ang, float *gy_ang, float *gz_ang){
