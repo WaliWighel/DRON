@@ -13,8 +13,8 @@ static I2C_HandleTypeDef *hi2c_HMC5883L;
 
 extern uint8_t HMC5883L_Data_IT[6];
 extern uint8_t HMC583L_IRQ;
-extern float Mag_Y, Mag_X;
-float HMC5883L_Scale = 0.92;
+extern float Mag_Y, Mag_X, Mag_Z, heading;
+//float HMC5883L_Scale = 0.92;
 
 uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c){
 
@@ -27,12 +27,12 @@ uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c){
 	 * bit6 = 1		( 8 samples
 	 * bit5 = 1		)
 	 * bit4 = 1 	{
-	 * bit3 = 0			30 HzOutput rate
+	 * bit3 = 0			15 HzOutput rate
 	 * bit2 = 0		}
 	 * bit1 = 0
 	 * bit0 = 0
 	 */
-	data = 0xF0;
+	data = 0x70;
 
 	HAL_I2C_Mem_Write(hi2c_HMC5883L, HMC5883L_I2C_Address<<1, HMC5883L_Configuration_Register_A, 1, &data, 1, 1);
 	/*
@@ -46,7 +46,7 @@ uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c){
 	 * bit1 = 0
 	 * bit0 = 0
 	 */
-	data = 0x32;
+	data = 0xA0;
 
 	HAL_I2C_Mem_Write(hi2c_HMC5883L, HMC5883L_I2C_Address<<1, HMC5883L_Configuration_Register_B, 1, &data, 1, 1);
 	/*
@@ -60,12 +60,13 @@ uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c){
 	 * bit1 = 0	{ Continuous-Measurement Mode
 	 * bit0 = 0 }
 	 */
-	data = 0x80;
+	data = 0x00;
 
 	HAL_I2C_Mem_Write(hi2c_HMC5883L, HMC5883L_I2C_Address<<1, HMC5883L_Mode_Register, 1, &data, 1, 1);
 
 
 	uint8_t status = 0;
+	HAL_Delay(10);
 
 	HAL_I2C_Mem_Read(hi2c_HMC5883L, HMC5883L_I2C_Address<<1, HMC5883L_Identifaction_Register_A, 1, &status, 1, 1);
 
@@ -97,14 +98,14 @@ void HMC5883L_Get_Z_Start_IT(void){
 	HMC583L_IRQ = 1;
 }
 
-int16_t HMC5883L_Get_Z_End_IT(void){
-	int16_t fulldata = 0;//todo
-
-	fulldata = (((int16_t)HMC5883L_Data_IT[2]<<8) | HMC5883L_Data_IT[3]) * HMC5883L_Scale;
-	Mag_X = (((int16_t)HMC5883L_Data_IT[0]<<8) | HMC5883L_Data_IT[1]) * HMC5883L_Scale;
-	Mag_Y = (((int16_t)HMC5883L_Data_IT[4]<<8) | HMC5883L_Data_IT[5]) * HMC5883L_Scale;
-
-	return fulldata;
+void HMC5883L_Get_Z_End_IT(void){
+//	Mag_Z = (((int16_t)HMC5883L_Data_IT[2]<<8) | HMC5883L_Data_IT[3]) * 2.56;// 2.56 - scale
+//	Mag_X = (((int16_t)HMC5883L_Data_IT[0]<<8) | HMC5883L_Data_IT[1]) * 2.56;
+//	Mag_Y = (((int16_t)HMC5883L_Data_IT[4]<<8) | HMC5883L_Data_IT[5]) * 2.56;
+		Mag_X = (((int16_t)HMC5883L_Data_IT[1]<<8) | HMC5883L_Data_IT[0]) * 2.56;//important fake HMC5883L, msb -> lsb
+		Mag_Z = (((int16_t)HMC5883L_Data_IT[3]<<8) | HMC5883L_Data_IT[2]) * 2.56;// 2.56 - scale
+		Mag_Y = (((int16_t)HMC5883L_Data_IT[5]<<8) | HMC5883L_Data_IT[4]) * 2.56;
+	heading = (atan2(Mag_X, Mag_Y))*180/M_PI;
 }
 
 

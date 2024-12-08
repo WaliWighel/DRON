@@ -401,7 +401,7 @@ void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2,
 
 			//FDP
 			if(FDP_D_Gain_AR > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));//todo
+				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
 				PID_FAC[4] = PID_FAC[3];//old d_fac
 			}
 

@@ -105,6 +105,7 @@ const float Gyr_Scale = 65.5, Acc_Scale = 8192;//float Gyr_Scale = 65.5, Acc_Sca
 
 IRAM float Mag_Z;
 IRAM float Mag_Y, Mag_X;
+IRAM float heading;
 IRAM float Old_Mag_Z = 0;
 
 #define FDP_Mag_Z_FQ 2
@@ -1213,7 +1214,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 	}
 	if(HMC583L_IRQ == 1){
 		HMC583L_IRQ = 0;
-		Mag_Z = (float)(HMC5883L_Get_Z_End_IT() - Mag_Offset_val);
+		HMC5883L_Get_Z_End_IT();
 		Mag_Z = (Mag_Z * (FDP_Mag_Z_FQ * 0.1) / (1 + (FDP_Mag_Z_FQ * 0.1))) + (Old_Mag_Z * (1 / (1 + (FDP_Mag_Z_FQ * 0.1)))); // 0.1 to looptime, co 100ms odczyt
 		Old_Mag_Z = Mag_Z;
 	}

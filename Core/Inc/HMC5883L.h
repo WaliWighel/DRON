@@ -38,7 +38,7 @@ uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c);
 
 int16_t HMC5883L_Get_Z_Start(void);
 void HMC5883L_Get_Z_Start_IT(void);
-int16_t HMC5883L_Get_Z_End_IT(void);
+void HMC5883L_Get_Z_End_IT(void);
 int16_t HMC5883L_Calibration(void);
 
 

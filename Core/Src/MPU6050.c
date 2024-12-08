@@ -409,7 +409,7 @@ void Complementary_getFilter(Complementary_Filter *Complementary_Filter_st,float
 
 		Complementary_Filter_st->x = (0.02*ax_ang)+(0.98*((gx_ang*looptime)+Complementary_Filter_st->ox));//
 		Complementary_Filter_st->y = (0.02*ay_ang)+(0.98*((gy_ang*looptime)+Complementary_Filter_st->oy));
-		Complementary_Filter_st->z = (1*((gz_ang*looptime)+Complementary_Filter_st->oz));
+		Complementary_Filter_st->z = (((gz_ang*looptime)+Complementary_Filter_st->oz));//todo add magnetomiter?
 
 		Complementary_Filter_st->ox = Complementary_Filter_st->x;
 		Complementary_Filter_st->oy = Complementary_Filter_st->y;
