@@ -104,6 +104,7 @@ const float Gyr_Scale = 65.5, Acc_Scale = 8192;//float Gyr_Scale = 65.5, Acc_Sca
 ///////// HMC5883L
 
 IRAM float Mag_Z;
+IRAM float Mag_Y, Mag_X;
 IRAM float Old_Mag_Z = 0;
 
 #define FDP_Mag_Z_FQ 2
@@ -1047,7 +1048,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 				wanted_rool_rx = (wanted_roll_v - 500)*wanted_rool_factro;//wanted_rool_rx (-90 <-> 90)
 				wanted_pitch_rx = (wanted_pitch_v - 500)*wanted_pitch_factro;// (-450 <-> 450)
-				wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;
+				wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;// wanted yaw is in deg/s
 
 
 				wanted_rool_rx = (wanted_rool_rx >= 30) ? 30 : (wanted_rool_rx <= -30) ? -30 : wanted_rool_rx;

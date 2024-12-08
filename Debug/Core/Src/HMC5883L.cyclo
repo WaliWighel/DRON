@@ -1,5 +1,5 @@
-../Core/Src/HMC5883L.c:17:9:HMC5883L_Init	2
-../Core/Src/HMC5883L.c:82:9:HMC5883L_Get_Z_Start	1
-../Core/Src/HMC5883L.c:93:6:HMC5883L_Get_Z_Start_IT	1
-../Core/Src/HMC5883L.c:98:9:HMC5883L_Get_Z_End_IT	1
-../Core/Src/HMC5883L.c:107:9:HMC5883L_Calibration	2
+../Core/Src/HMC5883L.c:19:9:HMC5883L_Init	2
+../Core/Src/HMC5883L.c:84:9:HMC5883L_Get_Z_Start	1
+../Core/Src/HMC5883L.c:95:6:HMC5883L_Get_Z_Start_IT	1
+../Core/Src/HMC5883L.c:100:9:HMC5883L_Get_Z_End_IT	1
+../Core/Src/HMC5883L.c:111:9:HMC5883L_Calibration	2
