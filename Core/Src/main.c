@@ -329,7 +329,7 @@ int main(void)
 
   /* MPU Configuration--------------------------------------------------------*/
 
-	MPU_Config();
+  MPU_Config();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -510,8 +510,8 @@ d_yawfactor = 0;
 
   	nRF24_Rx_Mode = 0;
 
-  	now_pitch = 0;
-  	now_rool = 0;
+  	now_pitch = 0;//pitch -> x
+  	now_rool = 0;//rool -> y
   	now_yaw = 0;
   	wanted_pitch = 0;
 
@@ -578,6 +578,7 @@ d_yawfactor = 0;
   	}
   	if(MYDRON.dron_status.Battery == DRON_BATTERY_CRIT_VAL){
   		LED_R_1;
+
   		while(1){
   		}
   	}
@@ -609,6 +610,7 @@ d_yawfactor = 0;
 		fresult = f_close(&fil);
 
 		if(fresult != FR_OK){
+			NVIC_SystemReset();
 			while(1){
 
 			}
@@ -620,6 +622,7 @@ d_yawfactor = 0;
 		LED_5_1;
 		if(MPU6050_INIT(&hi2c5) == 0){
 			LED_R_1;
+			NVIC_SystemReset();
 			while(1){
 			}
 		}
@@ -630,6 +633,7 @@ d_yawfactor = 0;
 	/////////////////////////////// BMP180
 		if(BMP180_init(&hi2c5) == 0){
 			LED_R_1;
+			NVIC_SystemReset();
 			while(1){
 			}
 		}
@@ -639,6 +643,7 @@ d_yawfactor = 0;
 	/////////////////////////////// HMC5883L
 		if(HMC5883L_Init(&hi2c5) == 0){
 			LED_R_1;
+			NVIC_SystemReset();
 			while(1){
 			}
 		}
@@ -666,7 +671,6 @@ d_yawfactor = 0;
 		nRF24_Init(&hspi6);
 		nRF24_SetRXAddress(0, o);
 		nRF24_SetTXAddress(n);
-		nRF24_Inittest();
 		nRF24_TX_Mode();
 
 
@@ -1052,9 +1056,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;// wanted yaw is in deg/s
 
 
-				wanted_rool_rx = (wanted_rool_rx >= 30) ? 30 : (wanted_rool_rx <= -30) ? -30 : wanted_rool_rx;
-				wanted_pitch_rx = (wanted_pitch_rx >= 30) ? 30 : (wanted_pitch_rx <= -30) ? -30 : wanted_pitch_rx;
-				wanted_yaw_rx = (wanted_yaw_rx >= 30) ? 30 : (wanted_yaw_rx <= -30) ? -30 : wanted_yaw_rx;
+				wanted_rool_rx = (wanted_rool_rx >= 300) ? 300 : (wanted_rool_rx <= -300) ? -300 : wanted_rool_rx;
+				wanted_pitch_rx = (wanted_pitch_rx >= 300) ? 300 : (wanted_pitch_rx <= -300) ? -300 : wanted_pitch_rx;
+				wanted_yaw_rx = (wanted_yaw_rx >= 300) ? 300 : (wanted_yaw_rx <= -300) ? -300 : wanted_yaw_rx;
 
 
 				NRF_TIM_Inte = 0;

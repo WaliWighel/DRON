@@ -161,6 +161,7 @@ void MPU6050_GET_ACCANDGYR_CALANDSCL(float *ax, float*ay, float*az, float*gx, fl
 		float accelx_cal,float accely_cal,float accelz_cal,float gyrox_cal,float gyroy_cal,float gyroz_cal, float Gyr_Scale, float Acc_Scale);
 void Complementary_getFilter(Complementary_Filter *Complementary_Filter_st,float ax_ang, float ay_ang, float az_ang, float gx_ang,
 		float gy_ang, float gz_ang);
+void MPU6050_VerVel_Cal(float VerAcc, float *VerVel);
 
 void MPU6050_GET_ACCANDGYR_CALANDSCL_IT(void);
 void MPU6050_GET_CALANDSCL_IT(float *ax, float*ay, float*az, float*gx, float*gy, float*gz, float accelx_cal,float accely_cal,float accelz_cal,float gyrox_cal,float gyroy_cal,float gyroz_cal, float Gyr_Scale, float Acc_Scale);
@@ -204,9 +205,8 @@ uint8_t MPU6050_READ_CONFIG_INTERRUPT_ENABLE(void);
 uint8_t MPU6050_READ_CONFIG_USER_CONTROL(void);
 int8_t MPU6050_READ_ID(void);
 
+void MPU6050_VerAcc_Cal(void);
 
-
-double Kalman_getAngle(Kalman_t *Kalman, double newAngle, double newRate, double dt);
 void Complementary_getFilter(Complementary_Filter *Complementary_Filter_st,float ax, float ay, float magz_ang, float gx, float gy, float gz);
 
 #endif /* INC_MPU6050_H_ */

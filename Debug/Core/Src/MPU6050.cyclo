@@ -43,5 +43,6 @@
 ../Core/Src/MPU6050.c:357:9:MPU6050_READ_CONFIG_INTERRUPT_ENABLE	1
 ../Core/Src/MPU6050.c:363:9:MPU6050_READ_CONFIG_USER_CONTROL	1
 ../Core/Src/MPU6050.c:370:6:MPU6050_Enable_I2C_Bypass	1
-../Core/Src/MPU6050.c:377:8:Kalman_getAngle	1
-../Core/Src/MPU6050.c:407:6:Complementary_getFilter	1
+../Core/Src/MPU6050.c:375:6:MPU6050_VerAcc_Cal	1
+../Core/Src/MPU6050.c:380:6:MPU6050_VerVel_Cal	1
+../Core/Src/MPU6050.c:386:6:Complementary_getFilter	1

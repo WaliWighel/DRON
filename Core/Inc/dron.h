@@ -8,7 +8,7 @@
 #ifndef INC_DRON_H_
 #define INC_DRON_H_
 
-#define thrust_increse_factor 	0.0003 // w procentach od 0-100% np. 10% = 0.1
+#define thrust_increse_factor 	0.0006 // w procentach od 0-100% np. 10% = 0.1
 #define thrust_stability_factor 1
 
 
