@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  0003c9b4  00000000  00000000  00085493  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00038749  00000000  00000000  000c1e47  2**0
+ 18 .debug_line   00038747  00000000  00000000  000c1e47  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    0016e19d  00000000  00000000  000fa590  2**0
+ 19 .debug_str    0016e19d  00000000  00000000  000fa58e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0026872d  2**0
+ 20 .comment      00000043  00000000  00000000  0026872b  2**0
                   CONTENTS, READONLY
  21 .debug_frame  00009fb4  00000000  00000000  00268770  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -9886,7 +9886,7 @@ int main(void)
 
   /* MPU Configuration--------------------------------------------------------*/
 
-	MPU_Config();
+  MPU_Config();
  8004fbe:	f002 ff4b 	bl	8007e58 <MPU_Config>
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -10620,11 +10620,11 @@ d_yawfactor = 0;
  8005572:	2200      	movs	r2, #0
  8005574:	701a      	strb	r2, [r3, #0]
 
-  	now_pitch = 0;
+  	now_pitch = 0;//pitch -> x
  8005576:	4b71      	ldr	r3, [pc, #452]	@ (800573c <main+0x784>)
  8005578:	f04f 0200 	mov.w	r2, #0
  800557c:	601a      	str	r2, [r3, #0]
-  	now_rool = 0;
+  	now_rool = 0;//rool -> y
  800557e:	4b70      	ldr	r3, [pc, #448]	@ (8005740 <main+0x788>)
  8005580:	f04f 0200 	mov.w	r2, #0
  8005584:	601a      	str	r2, [r3, #0]
