@@ -78,7 +78,7 @@ void nRF24_FlushTX(void);
 //
 //void nRF24_IRQ_Handler(void);
 
-
+void nRF24_ReadRXPaylaod_IT(uint8_t *data);
 
 //
 // POLLING METHOD

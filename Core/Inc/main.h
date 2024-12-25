@@ -120,6 +120,8 @@ int16_t YAW_MIN_VAL(void);
 int16_t YAW_GOOD_VAL(void);
 int16_t PITCH_GOOD_VAL(void);
 int16_t ROOL_GOOD_VAL(void);
+
+void nRF24_WriteTXPayload_IT(uint8_t * data);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

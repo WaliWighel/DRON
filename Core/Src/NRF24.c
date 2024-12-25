@@ -11,6 +11,7 @@ static SPI_HandleTypeDef *hspi_nrf;
 static uint8_t addr_p0_backup[NRF24_ADDR_SIZE];
 
 extern volatile uint8_t nrf24_rx_flag, nrf24_tx_flag, nrf24_mr_flag;
+extern uint8_t NRF24_Tx_Inte, NRF24_Rx_Inte;
 
 //
 // BASIC READ/WRITE FUNCTIONS
@@ -33,10 +34,19 @@ static void nRF24_SendSpi(uint8_t *Data, uint8_t Length)
 {
 	HAL_SPI_Transmit(hspi_nrf, Data, Length, 1000);
 }
+static void nRF24_SendSpi_IT(uint8_t *Data, uint8_t Length)
+{
+	HAL_SPI_Transmit_IT(hspi_nrf, Data, Length);
+}
+
 
 static void nRF24_ReadSpi(uint8_t *Data, uint8_t Length)
 {
 	HAL_SPI_Receive(hspi_nrf, Data, Length, 1000);
+}
+static void nRF24_ReadSpi_IT(uint8_t *Data, uint8_t Length)
+{
+	HAL_SPI_Receive_IT(hspi_nrf, Data, Length);
 }
 
 //
@@ -64,9 +74,19 @@ static void nRF24_ReadRegisters(uint8_t reg, uint8_t* ret, uint8_t len)
 	NRF24_CSN_LOW;
 
 	nRF24_SendSpi(&reg, 1);
-	nRF24_ReadSpi(ret, len);
+	nRF24_ReadSpi(ret, len);//todo
 
 	NRF24_CSN_HIGH;
+}
+
+static void nRF24_ReadRegisters_IT(uint8_t reg, uint8_t* ret, uint8_t len)
+{
+	reg = NRF24_CMD_R_REGISTER | reg;
+
+	NRF24_CSN_LOW;
+
+	nRF24_SendSpi(&reg, 1);
+	nRF24_ReadSpi_IT(ret, len);
 }
 
 static void nRF24_WriteRegister(uint8_t reg, uint8_t val)
@@ -94,6 +114,21 @@ static void nRF24_WriteRegisters(uint8_t reg, uint8_t* val, uint8_t len)
 
 	NRF24_CSN_HIGH;
 }
+
+static void nRF24_WriteRegisters_IT(uint8_t reg, uint8_t* val, uint8_t len)
+{
+	reg = NRF24_CMD_W_REGISTER | reg;
+
+	NRF24_CSN_LOW;
+
+	nRF24_SendSpi(&reg, 1);
+	nRF24_SendSpi_IT(val, len);
+
+	NRF24_Tx_Inte = 1;
+	//NRF24_CSN_HIGH;
+}
+
+
 
 void nRF24_RX_Mode(void)
 {
@@ -132,7 +167,7 @@ void nRF24_TX_Mode(void)
 	nRF24_FlushRX();
 	// Flush TX
 	nRF24_FlushTX();
-
+	//important wait 2ms for next interactionw with NRF24
 	//nRF24_Delay(1);
 }
 
@@ -352,6 +387,11 @@ void nRF24_WriteTXPayload(uint8_t * data/*, uint8_t size*/)
 	//nRF24_WaitTX();
 }
 
+void nRF24_WriteTXPayload_IT(uint8_t * data)
+{
+	nRF24_WriteRegisters_IT(NRF24_CMD_W_TX_PAYLOAD, data, NRF24_PAYLOAD_SIZE);
+}
+
 void nRF24_WaitTX()
 {
 	uint8_t status;
@@ -380,6 +420,15 @@ void nRF24_ReadRXPaylaod(uint8_t *data/*, uint8_t *size*/)
 //	nRF24_WriteRegister(NRF24_STATUS, (1<NRF24_RX_DR));
 //	if(nRF24_ReadStatus() & (1<<NRF24_TX_DS))
 //		nRF24_WriteRegister(NRF24_STATUS, (1<<NRF24_TX_DS));
+}
+
+void nRF24_ReadRXPaylaod_IT(uint8_t *data){
+	nRF24_ReadRegisters_IT(NRF24_CMD_R_RX_PAYLOAD, data, NRF24_PAYLOAD_SIZE);
+	nRF24_WriteRegister(NRF24_STATUS, (1<<NRF24_RX_DR));
+
+	if(nRF24_ReadStatus() & (1<<NRF24_TX_DS)){
+		nRF24_WriteRegister(NRF24_STATUS, (1<<NRF24_TX_DS));
+	}
 }
 
 uint8_t nRF24_GetDynamicPayloadSize(void)
