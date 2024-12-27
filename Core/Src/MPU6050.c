@@ -13,8 +13,9 @@
 static I2C_HandleTypeDef *hi2c_mpu6050;
 
 extern float looptime;
-extern uint8_t MPU6050_IRQ;
-extern uint8_t MPU6050_IT_DATA[14];
+//extern uint8_t MPU6050_IRQ;
+//extern uint8_t MPU6050_IT_DATA[14];
+extern struct MPU6050_Struct MPU6050;
 //extern float OldXs[4];
 //extern float OldYs[4];
 //extern float OldZs[4];
@@ -117,37 +118,35 @@ void MPU6050_CONFIG_USER_CONTROL(void){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void MPU6050_CALIBRATION(float *accelx_cal,float *accely_cal,float*accelz_cal,float *gyrox_cal,float *gyroy_cal,
-		float *gyroz_cal, float Gyr_Scale, float Acc_Scale){
-
+void MPU6050_CALIBRATION(void){
 	float accelx = 0, accely = 0, accelz = 0, gyrox = 0, gyroy = 0, gyroz = 0;
 	for(int i = 0; i < 1000; i++){ //5 sec
-		  accelx = accelx + MPU6050_GET_ACCEL_FULLVALUE_X()/Acc_Scale;
-		  accely = accely + MPU6050_GET_ACCEL_FULLVALUE_Y()/Acc_Scale;
-		  accelz = accelz + MPU6050_GET_ACCEL_FULLVALUE_Z()/Acc_Scale;
+		  accelx = accelx + MPU6050_GET_ACCEL_FULLVALUE_X()/MPU6050.Acc.Acc_Scale;
+		  accely = accely + MPU6050_GET_ACCEL_FULLVALUE_Y()/MPU6050.Acc.Acc_Scale;
+		  accelz = accelz + MPU6050_GET_ACCEL_FULLVALUE_Z()/MPU6050.Acc.Acc_Scale;
 
-		  gyrox = gyrox + MPU6050_GET_GYRO_FULLVALUE_X()/Gyr_Scale;
-		  gyroy = gyroy + MPU6050_GET_GYRO_FULLVALUE_Y()/Gyr_Scale;
-		  gyroz = gyroz + MPU6050_GET_GYRO_FULLVALUE_Z()/Gyr_Scale;
+		  gyrox = gyrox + MPU6050_GET_GYRO_FULLVALUE_X()/MPU6050.Gyr.Gyr_Scale;
+		  gyroy = gyroy + MPU6050_GET_GYRO_FULLVALUE_Y()/MPU6050.Gyr.Gyr_Scale;
+		  gyroz = gyroz + MPU6050_GET_GYRO_FULLVALUE_Z()/MPU6050.Gyr.Gyr_Scale;
 		  HAL_Delay(1);
 	}
-	*accelx_cal = accelx/1000;
-	*accely_cal = accely/1000;
-	*accelz_cal = accelz/1000;
+	MPU6050.Acc.acc_x_cal = accelx/1000;
+	MPU6050.Acc.acc_y_cal = accely/1000;
+	MPU6050.Acc.acc_z_cal = accelz/1000;
 
-	*accelz_cal = 1 - *accelz_cal;
+	MPU6050.Acc.acc_z_cal = 1 - MPU6050.Acc.acc_z_cal;
 
-	*gyrox_cal = gyrox/1000;
-	*gyroy_cal = gyroy/1000;
-	*gyroz_cal = gyroz/1000;
+	MPU6050.Gyr.gyr_x_cal = gyrox/1000;
+	MPU6050.Gyr.gyr_y_cal = gyroy/1000;
+	MPU6050.Gyr.gyr_z_cal = gyroz/1000;
 }
 
-void MPU6050_GET_ACCEL_TO_ANGLE(float ax, float ay, float az, float *ax_ang, float *ay_ang/*, float *az_ang*/){
-	float ang1 = sqrt((ax*ax)+(az*az));
-	float ang2 = sqrt((ay*ay)+(az*az));
+void MPU6050_GET_ACCEL_TO_ANGLE(void){
+	float ang1 = sqrt((MPU6050.Acc.ax*MPU6050.Acc.ax)+(MPU6050.Acc.az*MPU6050.Acc.az));
+	float ang2 = sqrt((MPU6050.Acc.ay*MPU6050.Acc.ay)+(MPU6050.Acc.az*MPU6050.Acc.az));
 
-	*ay_ang = ((-1*(atan(ax/ang2)))*180)/M_PI;
-	*ax_ang = ((atan(ay/ang1))*180)/M_PI;
+	MPU6050.Acc.ay_ang = ((-1*(atan(MPU6050.Acc.ax/ang2)))*180)/M_PI;
+	MPU6050.Acc.ax_ang = ((atan(MPU6050.Acc.ay/ang1))*180)/M_PI;
 //	axan = -1*(atan(ax/ang2));
 //	ayan= atan(ay/ang1);
 //
@@ -156,7 +155,7 @@ void MPU6050_GET_ACCEL_TO_ANGLE(float ax, float ay, float az, float *ax_ang, flo
 }
 
 void MPU6050_GET_GYRO_TO_ANGLE(float gx, float gy, float gz, float *gx_ang, float *gy_ang, float *gz_ang){
-	*gx_ang = (gx/1000) + *gx_ang;//pomnorzone prze czas pentli?
+	*gx_ang = (gx/1000) + *gx_ang;
 	*gy_ang = (gy/1000) + *gy_ang;
 	*gz_ang = (gz/1000) + *gz_ang;
 }
@@ -189,25 +188,24 @@ void MPU6050_GET_ACCANDGYR_CALANDSCL(float *ax, float*ay, float*az, float*gx, fl
 void MPU6050_GET_ACCANDGYR_CALANDSCL_IT(void){
 
 
-	HAL_I2C_Mem_Read_IT(hi2c_mpu6050, MPU6050_ADDRESS, MPU6050_RA_ACCEL_XOUT_H, 1, (uint8_t *)MPU6050_IT_DATA, 14);
-	MPU6050_IRQ = 1;
+	HAL_I2C_Mem_Read_IT(hi2c_mpu6050, MPU6050_ADDRESS, MPU6050_RA_ACCEL_XOUT_H, 1, MPU6050.I2C_Data, 14);
+	MPU6050.MPU6050_IRQ = 1;
 
 
 }
 
-void MPU6050_GET_CALANDSCL_IT(float *ax, float*ay, float*az, float*gx, float*gy, float*gz, float accelx_cal,float accely_cal,float accelz_cal,float gyrox_cal,float gyroy_cal,float gyroz_cal, float Gyr_Scale, float Acc_Scale){
-	*ax = (((int16_t)(MPU6050_IT_DATA[0]<<8) | MPU6050_IT_DATA[1])/Acc_Scale) - accelx_cal;
-	*ay = (((int16_t)(MPU6050_IT_DATA[2]<<8) | MPU6050_IT_DATA[3])/Acc_Scale) - accely_cal;
-	*az = (((int16_t)(MPU6050_IT_DATA[4]<<8) | MPU6050_IT_DATA[5])/Acc_Scale) + accelz_cal;
+void MPU6050_GET_CALANDSCL_IT(void){
+	MPU6050.Acc.ax = (((int16_t)(MPU6050.I2C_Data[0]<<8) | MPU6050.I2C_Data[1])/MPU6050.Acc.Acc_Scale) - MPU6050.Acc.acc_x_cal;
+	MPU6050.Acc.ay = (((int16_t)(MPU6050.I2C_Data[2]<<8) | MPU6050.I2C_Data[3])/MPU6050.Acc.Acc_Scale) - MPU6050.Acc.acc_y_cal;
+	MPU6050.Acc.az = (((int16_t)(MPU6050.I2C_Data[4]<<8) | MPU6050.I2C_Data[5])/MPU6050.Acc.Acc_Scale) + MPU6050.Acc.acc_z_cal;
 
-	*gx = (((int16_t)(MPU6050_IT_DATA[8]<<8) | MPU6050_IT_DATA[9])/Gyr_Scale) - gyrox_cal;
-	*gy = (((int16_t)(MPU6050_IT_DATA[10]<<8) | MPU6050_IT_DATA[11])/Gyr_Scale) - gyroy_cal;
-	*gz = (((int16_t)(MPU6050_IT_DATA[12]<<8) | MPU6050_IT_DATA[13])/Gyr_Scale) - gyroz_cal;
+	MPU6050.Gyr.gx = (((int16_t)(MPU6050.I2C_Data[8]<<8) | MPU6050.I2C_Data[9])/MPU6050.Gyr.Gyr_Scale) - MPU6050.Gyr.gyr_x_cal;
+	MPU6050.Gyr.gy = (((int16_t)(MPU6050.I2C_Data[10]<<8) | MPU6050.I2C_Data[11])/MPU6050.Gyr.Gyr_Scale) - MPU6050.Gyr.gyr_y_cal;
+	MPU6050.Gyr.gz = (((int16_t)(MPU6050.I2C_Data[12]<<8) | MPU6050.I2C_Data[13])/MPU6050.Gyr.Gyr_Scale) - MPU6050.Gyr.gyr_z_cal;
 }
 
-void MPU6050_GET_ACCANDGYR_FILTRED(Complementary_Filter *Complementary_Filter_st, float ax_ang, float ay_ang, float megz_ang, float gx_ang,
-		float gy_ang, float gz_ang){
-	Complementary_getFilter(Complementary_Filter_st, ax_ang, ay_ang, megz_ang, gx_ang, gy_ang, gz_ang);
+void MPU6050_GET_ACCANDGYR_FILTRED(Complementary_Filter *Complementary_Filter_st, float megz_ang){
+	Complementary_getFilter(Complementary_Filter_st, MPU6050.Acc.ax_ang, MPU6050.Acc.ay_ang, megz_ang, MPU6050.Gyr.gx, MPU6050.Gyr.gy, MPU6050.Gyr.gz);
 	//W_Filter(Complementary_Filter_st);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

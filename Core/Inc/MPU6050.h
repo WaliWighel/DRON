@@ -32,6 +32,36 @@ typedef struct{
 }Complementary_Filter;
 
 
+struct MPU6050_Acc_Struct{
+	float ax;
+	float ay;
+	float az;
+	float ax_ang;
+	float ay_ang;
+	float az_ang;
+	float Acc_Scale;
+	float acc_x_cal;
+	float acc_y_cal;
+	float acc_z_cal;
+};
+struct MPU6050_Gyr_Struct{
+	float gx;
+	float gy;
+	float gz;
+	float Gyr_Scale;
+	float gyr_x_cal;
+	float gyr_y_cal;
+	float gyr_z_cal;
+};
+
+struct MPU6050_Struct{
+	struct MPU6050_Acc_Struct Acc;
+	struct MPU6050_Gyr_Struct Gyr;
+	uint8_t I2C_Data[14];
+	uint8_t MPU6050_IRQ;
+};
+
+
 #define MPU6050_ADDRESS 0xD0
 
 //#define A0_0 HAL_GPIO_WritePin(A0_GPIO_Port, A0_Pin, GPIO_PIN_RESET)
@@ -154,8 +184,7 @@ void MPU6050_CONFIG_INT(void);
 void MPU6050_CONFIG_SAMPLE_RATE(void);
 void MPU6050_CONFIG_INTERRUPT_ENABLE(void);
 void MPU6050_CONFIG_USER_CONTROL(void);
-void MPU6050_CALIBRATION(float *accelx_cal,float *accely_cal,float*accelz_cal,float *gyrox_cal,float *gyroy_cal,float *gyroz_cal,
-		float Gyr_Scale, float Acc_Scale);
+void MPU6050_CALIBRATION(void);
 
 void MPU6050_GET_ACCANDGYR_CALANDSCL(float *ax, float*ay, float*az, float*gx, float*gy, float*gz,
 		float accelx_cal,float accely_cal,float accelz_cal,float gyrox_cal,float gyroy_cal,float gyroz_cal, float Gyr_Scale, float Acc_Scale);
@@ -164,11 +193,11 @@ void Complementary_getFilter(Complementary_Filter *Complementary_Filter_st,float
 void MPU6050_VerVel_Cal(float VerAcc, float *VerVel);
 
 void MPU6050_GET_ACCANDGYR_CALANDSCL_IT(void);
-void MPU6050_GET_CALANDSCL_IT(float *ax, float*ay, float*az, float*gx, float*gy, float*gz, float accelx_cal,float accely_cal,float accelz_cal,float gyrox_cal,float gyroy_cal,float gyroz_cal, float Gyr_Scale, float Acc_Scale);
+void MPU6050_GET_CALANDSCL_IT(void);
 
-void MPU6050_GET_ACCANDGYR_FILTRED(Complementary_Filter *Complementary_Filter_st, float ax, float ay, float magz_ang, float gx, float gy, float gz);
+void MPU6050_GET_ACCANDGYR_FILTRED(Complementary_Filter *Complementary_Filter_st, float megz_ang);
 void MPU6050_GET_GYRO_TO_ANGLE(float gx, float gy, float gz, float *gx_ang, float *gy_ang, float *gz_ang);
-void MPU6050_GET_ACCEL_TO_ANGLE(float ax, float ay, float az, float *ax_ang, float *ay_ang/*, float *az_ang*/);
+void MPU6050_GET_ACCEL_TO_ANGLE(void);
 void MPU6050_RESET(void);
 void W_Filter(Complementary_Filter *Complementary_Filter_st);
 void MPU6050_Enable_I2C_Bypass(void);

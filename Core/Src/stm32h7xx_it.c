@@ -64,11 +64,12 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-extern float ax,ay,az, gx, gy, gz;
-extern float ax_ang,ay_ang,az_ang, gx_ang, gy_ang, gz_ang;
-extern float accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal;
-extern uint8_t MPU6050_IT_DATA[14];
+//extern float ax,ay,az, gx, gy, gz;
+//extern float ax_ang,ay_ang,az_ang, gx_ang, gy_ang, gz_ang;
+//extern float accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal;
+//extern uint8_t MPU6050_IT_DATA[14];
 
+extern struct MPU6050_Struct MPU6050;
 
 extern float Gyr_Scale, Acc_Scale;//float Gyr_Scale = 65.5, Acc_Scale = 4096;
 //////// W_filter
@@ -106,14 +107,14 @@ extern float temp , pres , startpres , ampritude ;
 extern uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
 
 /////////// nrf24
-extern uint8_t RxData[32];
-extern uint8_t Txcode[32];
-extern uint8_t TxData[32];
-extern uint8_t Rxcode[32];
+//extern uint8_t RxData[32];
+//extern uint8_t Txcode[32];
+//extern uint8_t TxData[32];
+//extern uint8_t Rxcode[32];
 extern uint32_t analogmess;
-extern uint8_t xz[9];
-
-extern uint8_t nRF24_Rx_Mode ;
+//extern uint8_t xz[9];
+//
+//extern uint8_t nRF24_Rx_Mode ;
 
 
 /////// dron
@@ -298,8 +299,8 @@ extern DMA_HandleTypeDef hdma_adc2;
 extern ADC_HandleTypeDef hadc2;
 extern I2C_HandleTypeDef hi2c5;
 extern DMA_HandleTypeDef hdma_spi2_tx;
+extern SPI_HandleTypeDef hspi1;
 extern SPI_HandleTypeDef hspi2;
-extern SPI_HandleTypeDef hspi6;
 extern TIM_HandleTypeDef htim2;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
@@ -331,75 +332,9 @@ void NMI_Handler(void)
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
    while (1)
   {
-	   	HAL_Delay(1);
-		MPU6050_GET_ACCANDGYR_CALANDSCL(&ax, &ay, &az, &gx, &gy, &gz, accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal, Gyr_Scale, Acc_Scale);
-		MPU6050_GET_ACCEL_TO_ANGLE(ax, ay, az, &ax_ang, &ay_ang/*, &az_ang*/);
-		MPU6050_GET_ACCANDGYR_FILTRED(&data, ax_ang, ay_ang, Mag_Z, gx, gy, gz);
 
-
-		now_pitch = data.x;
-		now_rool = data.y;
-		now_yaw = data.z;
-
-
-		last_wanted_rool_rx = wanted_rool;
-		last_wanted_pitch_rx = wanted_pitch;
-		last_wanted_yaw_rx = wanted_yaw;
-
-
-		error_sum_pitch = error_sum_pitch + (wanted_pitch - now_pitch);
-		error_sum_rool = error_sum_rool + (wanted_rool - now_rool);
-		error_sum_yaw = error_sum_yaw + (wanted_yaw - now_yaw);
-
-		error_sum_angular_rate_pitch = error_sum_angular_rate_pitch + (pid_pitch - gx);
-		error_sum_angular_rate_rool = error_sum_angular_rate_rool + (pid_rool - gy);
-		error_sum_angular_rate_yaw = error_sum_angular_rate_yaw + (pid_yaw - gz);
-
-
-		PID_cal(&pid_pitch, PID_FAC_Pitch, 1);// angle control
-		PID_cal(&pid_rool, PID_FAC_Rool, 2);
-
-		PID_cal(&pid_angular_rate_pitch, PID_FAC_Angular_Rate_Pitch, 4);// angle rate control
-		PID_cal(&pid_angular_rate_rool, PID_FAC_Angular_Rate_Rool, 5);
-		PID_cal(&pid_angular_rate_yaw, PID_FAC_Angular_Rate_Yaw, 6);
-
-
-		old_error_pitch = wanted_pitch - now_pitch;
-		old_error_rool = wanted_rool - now_rool;
-
-		old_error_angular_rate_pitch = pid_pitch - gx;
-		old_error_angular_rate_rool = pid_rool - gy;
-		old_error_angular_rate_yaw = wanted_yaw - gz;
-
-
-		MYDRON.ROOL = pid_angular_rate_rool;
-		MYDRON.PITCH = pid_angular_rate_pitch;
-		MYDRON.YAW = pid_angular_rate_yaw;
-
-
-
-		Thrust_filter(1);
-		if(MYDRON.THRUST > thrust_limit){
-			MYDRON.THRUST = thrust_limit;
-		}
-
-
-		SPEED1 = (MYDRON.THRUST*0.7)+ MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//trust 7000 max
-		SPEED2 = (MYDRON.THRUST*0.7)- MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
-		SPEED3 = (MYDRON.THRUST*0.7)+ MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500;//
-		SPEED4 = (MYDRON.THRUST*0.7)- MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500;//
-
-		ESC_1_SPEED(SPEED1);
-		ESC_2_SPEED(SPEED2);
-		ESC_3_SPEED(SPEED3);
-		ESC_4_SPEED(SPEED4);
-
-
-		OLD_SPEED1 = SPEED1;
-		OLD_SPEED2 = SPEED2;
-		OLD_SPEED3 = SPEED3;
-		OLD_SPEED4 = SPEED4;
   }
+
   /* USER CODE END NonMaskableInt_IRQn 1 */
 }
 
@@ -607,6 +542,20 @@ void TIM2_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles SPI1 global interrupt.
+  */
+void SPI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI1_IRQn 0 */
+
+  /* USER CODE END SPI1_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi1);
+  /* USER CODE BEGIN SPI1_IRQn 1 */
+
+  /* USER CODE END SPI1_IRQn 1 */
+}
+
+/**
   * @brief This function handles SPI2 global interrupt.
   */
 void SPI2_IRQHandler(void)
@@ -660,20 +609,6 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
 
   /* USER CODE END DMA2_Stream0_IRQn 1 */
-}
-
-/**
-  * @brief This function handles SPI6 global interrupt.
-  */
-void SPI6_IRQHandler(void)
-{
-  /* USER CODE BEGIN SPI6_IRQn 0 */
-
-  /* USER CODE END SPI6_IRQn 0 */
-  HAL_SPI_IRQHandler(&hspi6);
-  /* USER CODE BEGIN SPI6_IRQn 1 */
-
-  /* USER CODE END SPI6_IRQn 1 */
 }
 
 /**

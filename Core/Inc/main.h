@@ -44,6 +44,7 @@ extern "C" {
 #include "Kalibracjia silnikow.h"
 #include "USART komendy.h"
 #include "HMC5883L.h"
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

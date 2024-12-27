@@ -13,7 +13,6 @@ extern float now_rool;
 extern float now_yaw;
 extern uint32_t analogmess;
 extern float looptime;
-extern float gx, gy, gz;
 extern double thrust_values;
 extern int32_t error_sum_pitch;
 extern int32_t error_sum_rool;

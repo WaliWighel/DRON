@@ -8,11 +8,13 @@
 #ifndef INC_NRF24_NRF24_DEFS_H_
 #define INC_NRF24_NRF24_DEFS_H_
 
-
+#include <stdbool.h>
 //extern uint8_t xz[9];
 //
 // Registers
 //
+
+
 #define NRF24_CONFIG		0x00
 #define NRF24_EN_AA		0x01
 #define NRF24_EN_RXADDR	0x02
@@ -117,5 +119,31 @@
 #define NRF24_PA_PWR_M12dBM 1
 #define NRF24_PA_PWR_M6dBM  2
 #define NRF24_PA_PWR_0dBM 3
+
+
+struct NRF24_Struct{
+	uint8_t RxData[32];
+	uint8_t TxData[32];
+	uint8_t Rxcode[32];
+	uint8_t Txcode[32];
+	uint8_t NRF24_MODE;
+	uint8_t Status;
+	uint8_t Message_Status;
+	uint16_t NRF24_Message_count;
+	uint8_t Timer_1;
+	uint8_t Timer_2;
+	uint8_t Step;
+	bool SPI_Tx_Inte;
+	bool SPI_Rx_Inte;
+};
+
+enum NRF24_StateTypeDef{
+	NRF24_Error = 0x00,
+	NRF24_Rx_Mode = 0x01,
+	NRF24_Tx_Mode = 0x02,
+	NRF24_Switching_Modes = 0x03,
+	NRF24_Ready = 0x04,
+	NRF24_InUse = 0x05
+};
 
 #endif /* INC_NRF24_NRF24_DEFS_H_ */

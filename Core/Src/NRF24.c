@@ -11,7 +11,7 @@ static SPI_HandleTypeDef *hspi_nrf;
 static uint8_t addr_p0_backup[NRF24_ADDR_SIZE];
 
 extern volatile uint8_t nrf24_rx_flag, nrf24_tx_flag, nrf24_mr_flag;
-extern uint8_t NRF24_Tx_Inte, NRF24_Rx_Inte;
+extern struct NRF24_Struct NRF24;
 
 //
 // BASIC READ/WRITE FUNCTIONS
@@ -74,7 +74,7 @@ static void nRF24_ReadRegisters(uint8_t reg, uint8_t* ret, uint8_t len)
 	NRF24_CSN_LOW;
 
 	nRF24_SendSpi(&reg, 1);
-	nRF24_ReadSpi(ret, len);//todo
+	nRF24_ReadSpi(ret, len);
 
 	NRF24_CSN_HIGH;
 }
@@ -87,6 +87,9 @@ static void nRF24_ReadRegisters_IT(uint8_t reg, uint8_t* ret, uint8_t len)
 
 	nRF24_SendSpi(&reg, 1);
 	nRF24_ReadSpi_IT(ret, len);
+
+	NRF24.SPI_Rx_Inte = 1;
+	//NRF24_CSN_HIGH;
 }
 
 static void nRF24_WriteRegister(uint8_t reg, uint8_t val)
@@ -124,7 +127,7 @@ static void nRF24_WriteRegisters_IT(uint8_t reg, uint8_t* val, uint8_t len)
 	nRF24_SendSpi(&reg, 1);
 	nRF24_SendSpi_IT(val, len);
 
-	NRF24_Tx_Inte = 1;
+	NRF24.SPI_Tx_Inte = 1;
 	//NRF24_CSN_HIGH;
 }
 
@@ -132,6 +135,7 @@ static void nRF24_WriteRegisters_IT(uint8_t reg, uint8_t* val, uint8_t len)
 
 void nRF24_RX_Mode(void)
 {
+	NRF24.Status = NRF24_InUse;
 	uint8_t config = nRF24_ReadConfig();
 	// Restore pipe 0 adress after comeback from TX mode
 	nRF24_SetRXAddress(0, addr_p0_backup);
@@ -149,10 +153,12 @@ void nRF24_RX_Mode(void)
 
 	NRF24_CE_HIGH;
 	//nRF24_Delay(1);
+	NRF24.NRF24_MODE = NRF24_Switching_Modes;
 }
 
 void nRF24_TX_Mode(void)
 {
+	NRF24.Status = NRF24_InUse;
 	NRF24_CE_LOW;
 
 	uint8_t config = nRF24_ReadConfig();
@@ -169,6 +175,7 @@ void nRF24_TX_Mode(void)
 	nRF24_FlushTX();
 	//important wait 2ms for next interactionw with NRF24
 	//nRF24_Delay(1);
+	NRF24.NRF24_MODE = NRF24_Switching_Modes;
 }
 
 
@@ -389,7 +396,9 @@ void nRF24_WriteTXPayload(uint8_t * data/*, uint8_t size*/)
 
 void nRF24_WriteTXPayload_IT(uint8_t * data)
 {
+	NRF24.Status = NRF24_InUse;
 	nRF24_WriteRegisters_IT(NRF24_CMD_W_TX_PAYLOAD, data, NRF24_PAYLOAD_SIZE);
+	//nRF24_WaitTX();
 }
 
 void nRF24_WaitTX()
@@ -423,12 +432,18 @@ void nRF24_ReadRXPaylaod(uint8_t *data/*, uint8_t *size*/)
 }
 
 void nRF24_ReadRXPaylaod_IT(uint8_t *data){
+	NRF24.Status = NRF24_InUse;
 	nRF24_ReadRegisters_IT(NRF24_CMD_R_RX_PAYLOAD, data, NRF24_PAYLOAD_SIZE);
+}
+
+void nRF24_ReadRXPaylaod_IT_End(void){
+	NRF24_CSN_HIGH;
 	nRF24_WriteRegister(NRF24_STATUS, (1<<NRF24_RX_DR));
 
 	if(nRF24_ReadStatus() & (1<<NRF24_TX_DS)){
 		nRF24_WriteRegister(NRF24_STATUS, (1<<NRF24_TX_DS));
 	}
+	NRF24.Status = NRF24_Ready;
 }
 
 uint8_t nRF24_GetDynamicPayloadSize(void)

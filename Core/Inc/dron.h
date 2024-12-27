@@ -64,7 +64,7 @@ enum DRON_StateTypeDef{
 	NO_WOBBLE = 0x0E,
 	WOBBLE_PITCH = 0x0F,
 	WOBBLE_ROOL = 0x11,
-	WOBBLE_PITCHandROOL = 0x012
+	WOBBLE_PITCHandROOL = 0x12
 };
 
 struct Stack{   // sapisanie danych z ostatniej sekundy

@@ -31,6 +31,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "fatfs_sd.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,21 +86,7 @@
 
 /* USER CODE BEGIN PV */
 ///////// MPU6050
-IRAM float ax,ay,az, gx, gy, gz;
-IRAM float ax_ang,ay_ang,az_ang, gx_ang, gy_ang, gz_ang;
-IRAM float accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal;
-IRAM uint8_t MPU6050_IT_DATA[14];
-
-
-const float Gyr_Scale = 65.5, Acc_Scale = 8192;//float Gyr_Scale = 65.5, Acc_Scale = 4096;
-//////// W_filter
-//float OldXs[16];
-//float OldYs[16];
-//float OldZs[16];
-//
-//float xval = 0;
-//float yval = 0;
-//float zval = 0;
+IRAM struct MPU6050_Struct MPU6050;
 
 ///////// HMC5883L
 
@@ -129,20 +116,22 @@ IRAM float temp = 0, pres = 0, startpres = 0, ampritude = 0;
 IRAM uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
 
 /////////// nrf24
-IRAM uint8_t RxData[32];
-IRAM uint8_t Txcode[32];
-IRAM uint8_t TxData[32];
-IRAM uint8_t Rxcode[32];
+//IRAM uint8_t RxData[32];
+//IRAM uint8_t Txcode[32];
+//IRAM uint8_t TxData[32];
+//IRAM uint8_t Rxcode[32];
 RAM1 uint32_t analogmess;
-IRAM uint8_t NRF24_Tx_Inte = 0;
-IRAM uint8_t NRF24_Rx_Inte = 0;
+//IRAM uint8_t NRF24_Tx_Inte = 0;
+//IRAM uint8_t NRF24_Rx_Inte = 0;
 //IRAM uint8_t xz[9];
 
-IRAM uint8_t NRF24_Timer_ms = 0;
-IRAM uint8_t NRF24_MODE = 0; // 1 -> RX 2 -> TX
-IRAM uint8_t NRF24_Message_sent = 0;
-IRAM uint16_t NRF24_Message_count = 0;
+//IRAM uint8_t NRF24_Timer_ms = 0;
+//IRAM uint8_t NRF24_Timer_2_ms = 0;
+//IRAM uint8_t NRF24_MODE = 0; // 1 -> RX 2 -> TX
+//IRAM uint8_t NRF24_Message_sent = 0;
+//IRAM uint16_t NRF24_Message_count = 0;
 
+IRAM struct NRF24_Struct NRF24;
 
 /////// dron
 
@@ -294,7 +283,7 @@ IRAM uint32_t SD_In_Use = 0;
 RAM1 uint8_t DataToSendBuffer[129000];//129
 IRAM uint8_t SD_enable_Flag = 0;
 IRAM float wobble_strenght = 1;
-IRAM uint8_t MPU6050_IRQ = 0, HMC583L_IRQ = 0, BMP180_IRQ = 0;
+IRAM uint8_t /*MPU6050_IRQ = 0,*/ HMC583L_IRQ = 0, BMP180_IRQ = 0;
 
 
 
@@ -305,6 +294,7 @@ IRAM int16_t wanted_pitch_v = 0;
 IRAM int16_t wanted_yaw_v = 0;
 
 IRAM uint8_t NRF24_Messages_SC = 0;
+IRAM uint8_t NRF24_inte = 0;
 
 /* USER CODE END PV */
 
@@ -358,7 +348,6 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_I2C5_Init();
-  MX_SPI6_Init();
   MX_ADC2_Init();
   MX_SPI2_Init();
   MX_USART1_UART_Init();
@@ -367,12 +356,48 @@ int main(void)
   MX_TIM3_Init();
   MX_FATFS_Init();
   MX_TIM2_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   	  ESC_POWER_1;
+
 
   	  STARTUP = 1;
 
   	DRON_ON_GRUND = 1;
+
+  	MPU6050.Acc.Acc_Scale = 8192;
+  	MPU6050.Acc.acc_x_cal = 0;
+  	MPU6050.Acc.acc_y_cal = 0;
+  	MPU6050.Acc.acc_z_cal = 0;
+  	MPU6050.Acc.ax_ang = 0;
+  	MPU6050.Acc.ay_ang = 0;
+  	MPU6050.Acc.az_ang = 0;
+  	MPU6050.Acc.ax = 0;
+  	MPU6050.Acc.ay = 0;
+  	MPU6050.Acc.az = 0;
+  	MPU6050.Gyr.Gyr_Scale = 65.5;
+  	MPU6050.Gyr.gyr_x_cal = 0;
+  	MPU6050.Gyr.gyr_y_cal = 0;
+  	MPU6050.Gyr.gyr_z_cal = 0;
+  	MPU6050.Gyr.gx = 0;
+  	MPU6050.Gyr.gy = 0;
+  	MPU6050.Gyr.gz = 0;
+  	MPU6050.MPU6050_IRQ = 0;
+
+
+
+	NRF24.NRF24_MODE = NRF24_Error;
+	NRF24.Status = NRF24_Ready;
+	NRF24.Message_Status = 0;
+	NRF24.NRF24_Message_count = 0;
+	NRF24.Timer_1 = 0;
+	NRF24.Timer_2 = 0;
+	NRF24.Step = 0;
+	NRF24.SPI_Rx_Inte = 0;
+	NRF24.SPI_Tx_Inte = 0;
+
+
+
 
   	PID_FAC_Pitch[0] = p_pitchfactor;
   	PID_FAC_Pitch[1] = i_pitchfactor;
@@ -390,7 +415,7 @@ int main(void)
   	PID_FAC_Yaw[4] = 0;
 
 
-  	ax_ang =0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
+  	//ax_ang =0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
   	Mag_Z = 0;
   	TIM_inte_SD = 0, TIM_inte = 0;
   	NRF_TIM_Inte = 0;
@@ -431,7 +456,7 @@ int main(void)
   	Mainloop_Number = 0;
   	SD_In_Use = 0;
   	wobble_strenght = 1;
-  	MPU6050_IRQ = 0, HMC583L_IRQ = 0, BMP180_IRQ = 0;
+  	//MPU6050_IRQ = 0, HMC583L_IRQ = 0, BMP180_IRQ = 0;
   	i = 0, loopnum = 0;
 
   	thrust_values = 0;
@@ -508,11 +533,11 @@ d_yawfactor = 0;
   	MYDRON.ROOL_STA = 0;
   	MYDRON.YAW_STA = 0;
 
-  	ax = 0,ay = 0,az = 0, gx = 0, gy = 0, gz = 0;
-  	ax_ang = 0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
-  	accelx_cal = 0, accely_cal = 0, accelz_cal = 0, gyrox_cal = 0, gyroy_cal = 0, gyroz_cal = 0;
+  	//ax = 0,ay = 0,az = 0, gx = 0, gy = 0, gz = 0;
+  //	ax_ang = 0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
+  	//accelx_cal = 0, accely_cal = 0, accelz_cal = 0, gyrox_cal = 0, gyroy_cal = 0, gyroz_cal = 0;
 
-  	NRF24_Timer_ms = 0;
+
 
   	now_pitch = 0;//pitch -> x
   	now_rool = 0;//rool -> y
@@ -526,9 +551,8 @@ d_yawfactor = 0;
   	rool_ar_error = 0;
   	yaw_ar_error = 0;
 
-  	NRF24_Tx_Inte = 0;
-  	NRF24_Rx_Inte = 0;
-  	NRF24_Message_count = 0;
+
+  	NRF24_inte = 0;
 
 
   	uint8_t o[3] = "Odb";
@@ -635,7 +659,7 @@ d_yawfactor = 0;
 			}
 		}
 		LED_Y_1;
-		MPU6050_CALIBRATION(&accelx_cal, &accely_cal, &accelz_cal, &gyrox_cal, &gyroy_cal, &gyroz_cal, Gyr_Scale, Acc_Scale);
+		MPU6050_CALIBRATION();
 		LED_Y_0;
 
 	/////////////////////////////// BMP180
@@ -676,33 +700,34 @@ d_yawfactor = 0;
 
 	/////////////////////////////// nRF24
 		LED_6_1;
-		nRF24_Init(&hspi6);
+		nRF24_Init(&hspi1);
 		nRF24_SetRXAddress(0, o);
 		nRF24_SetTXAddress(n);
 		nRF24_TX_Mode();
-		NRF24_MODE = 2;
+		NRF24.NRF24_MODE = NRF24_Tx_Mode;
+
 
 
 		for(int i = 0; i < 32; i++){
-			Txcode[i] = 0;
+			NRF24.Txcode[i] = 0;
 		}
-		Txcode[22] = 'd';
-		Txcode[23] = 'r';
-		Txcode[24] = 'o';
-		Txcode[25] = 'n';
-		Txcode[26] = '2';
-		Txcode[27] = 'c';
-		Txcode[28] = '1';
-		Txcode[29] = 'z';
-		Txcode[30] = 'a';
-		Txcode[31] = '7';
+		NRF24.Txcode[22] = 'd';
+		NRF24.Txcode[23] = 'r';
+		NRF24.Txcode[24] = 'o';
+		NRF24.Txcode[25] = 'n';
+		NRF24.Txcode[26] = '2';
+		NRF24.Txcode[27] = 'c';
+		NRF24.Txcode[28] = '1';
+		NRF24.Txcode[29] = 'z';
+		NRF24.Txcode[30] = 'a';
+		NRF24.Txcode[31] = '7';
 
 
 
-		nRF24_WriteTXPayload(Txcode);
+		nRF24_WriteTXPayload(NRF24.Txcode);
 		nRF24_WaitTX();
 		nRF24_RX_Mode();
-		NRF24_MODE = 1;
+		NRF24.NRF24_MODE = NRF24_Rx_Mode;
 
 		uint8_t cunter = 0;
 
@@ -719,24 +744,27 @@ d_yawfactor = 0;
 			}
 		}
 
-		nRF24_ReadRXPaylaod(RxData);
+		while(NRF24_inte != 1){
+
+		}
+		nRF24_ReadRXPaylaod(NRF24.RxData);
+		STARTUP = 0;
 		LED_6_0;
 		for(int i = 12; i < 22; i++){
-			Rxcode[i] = RxData[i];
+			NRF24.Rxcode[i] = NRF24.RxData[i];
 		}
 	///////////////////////////////////////////////////////////////////////
+		HAL_TIM_Base_Start_IT(&htim2); // przerwanie co 1 ms
+
 		ESC_INT(&htim3);
 
 		LED_7_1;
 		HAL_UART_Receive_IT(&huart1, &Received, 1);
 		LED_7_0;
 
-		HAL_TIM_Base_Start_IT(&htim2); // przerwanie co 1 ms
-
-
+//		HAL_TIM_Base_Start_IT(&htim2); // przerwanie co 1 ms
 
 	  	RGB_LED_For_BAT(MYDRON.batterysize);
-
 
 	  	if(MYDRON.dron_status.Battery == DRON_BATTERY_RUN_OUT)
 	  	{
@@ -746,17 +774,12 @@ d_yawfactor = 0;
 	  		}
 	  	}
 
-
-
 	  	if(MYDRON.dron_status.Battery == DRON_BATTERY_CRIT_VAL){
 	  		LED_R_1;
 	  		while(1){
 	  		}
 	  	}
 
-
-
-		STARTUP = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -829,10 +852,31 @@ d_yawfactor = 0;
 	  			Mainloop_Number = Mainloop_Number < 1000 ? Mainloop_Number+1 : 0;
 	  		}
 
+
+	  		if(MYDRON.dron_status.Connection == DRON_DISCONNECTED){
+//	  			nRF24_TX_Mode();
+//	  			NRF24.NRF24_MODE = NRF24_Tx_Mode;
+//	  			nRF24_WriteTXPayload(NRF24.Txcode);
+//	  			nRF24_WaitTX();
+//
+//	  			nRF24_RX_Mode();
+//	  			NRF24.Status = NRF24_Ready;
+//	  			NRF24.NRF24_MODE = NRF24_Rx_Mode;
+	  			if(NRF24.Step == 0){
+	  				NRF24.Step = 2;
+	  				NRF24.Status = NRF24_Ready;
+	  				HAL_Delay(10);
+	  			}
+	  			if(NRF24.Step == 9){
+	  				NRF24.Step = 0;
+
+	  			}
+	  		}
 	  		if(TIM_inte == 1){
 	  			LED_R_0;
 	  			TIM_inte = 0;
 	  		}
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -910,7 +954,8 @@ void PeriphCommonClock_Config(void)
 
   /** Initializes the peripherals clock
   */
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_SPI2;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_SPI2
+                              |RCC_PERIPHCLK_SPI1;
   PeriphClkInitStruct.PLL2.PLL2M = 22;
   PeriphClkInitStruct.PLL2.PLL2N = 192;
   PeriphClkInitStruct.PLL2.PLL2P = 3;
@@ -936,29 +981,52 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		TIM_inte = 1;
 		NRF_TIM_Inte++;
 
-		if(NRF24_Timer_ms == 0){
-			if(NRF24_MODE == 2){
-				if(NRF24_Message_sent == 2){
-					NRF24_CE_LOW;
-					NRF24_Message_sent = 0;
-				}
+		if(NRF24.Timer_1 == 0){
+			if(NRF24.Step == 2  && NRF24.Status == NRF24_Ready){
+				LED_6_1;
+				nRF24_TX_Mode();
+				LED_6_0;
+				NRF24.Step++;//Step 3
+				NRF24.Timer_1 = 1;
+			}
+			if(NRF24.Step == 3 && NRF24.Timer_1 == 0){//todo
+				NRF24.Status = NRF24_Ready;
+				NRF24.NRF24_MODE = NRF24_Tx_Mode;
+				NRF24.TxData[10] = (MYDRON.dron_status.Connection == DRON_DISCONNECTED) ? 1: 0;
 
-				if(NRF24_Message_sent == 1){
-					//RxData[1] == 0 ? NRF24_Message_count++ : 1;
-					TxData[10] = (MYDRON.dron_status.Connection == DRON_DISCONNECTED) ? 1: 0;
-					//TxData[11] =  NRF24_Message_count;
-
-					nRF24_WriteTXPayload_IT(TxData);
-					NRF24_Message_sent = 2;
-					NRF24_Timer_ms = 1;
+				LED_6_1;
+				nRF24_WriteTXPayload_IT(NRF24.TxData);
+				LED_6_0;
+				NRF24.Step++;//Step 4
+			}
+			if(NRF24.Step == 5){
+				NRF24_CE_LOW;
+				NRF24.Step++;//Step 6
+			}
+			if(NRF24.Step == 6){
+				LED_6_1;
+				uint8_t status = nRF24_ReadStatus();
+				if(((status & (1<<NRF24_MAX_RT)) || (status & (1<<NRF24_TX_DS)))){//nRF24_WaitTX()
+					NRF24.Timer_2 = 1;
+					NRF24.Status = NRF24_Ready;
+					NRF24.Step++;//Step 7
 				}
-
-				if(((nRF24_ReadStatus() & (1<<NRF24_MAX_RT)) || (nRF24_ReadStatus() & (1<<NRF24_TX_DS)))){
-					nRF24_RX_Mode();
-					NRF24_MODE = 1;
-				}
+				LED_6_0;
 			}
 		}
+		if(NRF24.Timer_2 == 0 && NRF24.Step == 7 && NRF24.Status == NRF24_Ready){
+			LED_6_1;
+			nRF24_RX_Mode();
+			LED_6_0;
+			NRF24.Timer_2 = 1;
+			NRF24.Step++;//Step 8
+		}
+		if(NRF24.Timer_2 == 0 && NRF24.Step == 8){
+			NRF24.Status = NRF24_Ready;
+			NRF24.NRF24_MODE = NRF24_Rx_Mode;
+			NRF24.Step = 0;
+		}
+
 
 		if(i == 0){// na calosc 100ms
 			LED_5_1;
@@ -985,14 +1053,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			ampritude = startpres - pres;
 
 			MYDRON.dronheight = (uint16_t)BMP180_GET_height();
-			convert_value_to_array(MYDRON.dronheight, TxData, 0, 3);
+			convert_value_to_array(MYDRON.dronheight, NRF24.TxData, 0, 3);
 
 			Get_batteryvalue();
 
-			convert_value_to_array(MYDRON.batterysize, TxData, 3, 6);
+			convert_value_to_array(MYDRON.batterysize, NRF24.TxData, 3, 6);
 
 			for(int i = 0; i < 10; i++){
-				TxData[22+i] = Txcode[22+i];
+				NRF24.TxData[22+i] = NRF24.Txcode[22+i];
 			}
 		}
 
@@ -1013,7 +1081,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			wanted_yaw = 0;
 			wanted_thrust = DRON_SLOWFALING;
 		}
-		(NRF24_Timer_ms != 0) ? NRF24_Timer_ms--: 0;
+		(NRF24.Timer_1 != 0) ? NRF24.Timer_1--: 0;
+		(NRF24.Timer_2 != 0) ? NRF24.Timer_2--: 0;
 	}
 }
 
@@ -1022,9 +1091,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 	if(GPIO_Pin == GPIO_PIN_15)
 	{
+		NRF24_inte = 1;
 		if(STARTUP == 0){
 			LED_6_1;
-			nRF24_ReadRXPaylaod_IT(RxData);
+			nRF24_ReadRXPaylaod_IT(NRF24.RxData);
+			NRF24.Step++;//step 1
 			LED_6_0;
 		}
 	}
@@ -1055,13 +1126,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)//pobieranie znakw z uart
 }
 
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
-	if(MPU6050_IRQ == 1){
-			MPU6050_IRQ = 0;
+	if(MPU6050.MPU6050_IRQ == 1){
+			MPU6050.MPU6050_IRQ = 0;
 			LED_G_1;
 
-			MPU6050_GET_CALANDSCL_IT(&ax, &ay, &az, &gx, &gy, &gz, accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal, Gyr_Scale, Acc_Scale);
-			MPU6050_GET_ACCEL_TO_ANGLE(ax, ay, az, &ax_ang, &ay_ang/*, &az_ang*/);
-			MPU6050_GET_ACCANDGYR_FILTRED(&data, ax_ang, ay_ang, Mag_Z, gx, gy, gz);
+			MPU6050_GET_CALANDSCL_IT();
+			MPU6050_GET_ACCEL_TO_ANGLE();
+			MPU6050_GET_ACCANDGYR_FILTRED(&data, Mag_Z);
 
 
 			now_pitch = data.x;
@@ -1088,9 +1159,9 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 		  	pitch_error = wanted_pitch - now_pitch;
 		  	rool_error = wanted_rool - now_rool;
 		  	yaw_error = wanted_yaw - now_yaw;
-		  	pitch_ar_error = pid_pitch - gx;
-		  	rool_ar_error = pid_rool - gy;
-		  	yaw_ar_error = pid_yaw - gz;
+		  	pitch_ar_error = pid_pitch - MPU6050.Gyr.gx;
+		  	rool_ar_error = pid_rool - MPU6050.Gyr.gy;
+		  	yaw_ar_error = pid_yaw - MPU6050.Gyr.gz;
 
 
 			error_sum_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_pitch : error_sum_pitch + (pitch_error);//pitch_error -> pitch_error
@@ -1117,7 +1188,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 
 			old_error_angular_rate_pitch = pitch_ar_error;
 			old_error_angular_rate_rool = rool_ar_error;
-			old_error_angular_rate_yaw = wanted_yaw - gz;
+			old_error_angular_rate_yaw = wanted_yaw - MPU6050.Gyr.gz;
 
 
 			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? ROOL_MAX_VAL(): (pid_angular_rate_rool < -5000) ? ROOL_MIN_VAL(): ROOL_GOOD_VAL();
@@ -1193,79 +1264,84 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 }
 
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef * hspi){
-	if(NRF24_Tx_Inte == 1){
+	if(NRF24.SPI_Tx_Inte == 1 && NRF24.Step == 4){
+		LED_6_1;
 		NRF24_CSN_HIGH;
-		NRF24_CE_HIGH;
-		NRF24_Tx_Inte = 0;
+		NRF24_CE_HIGH;//nRF24_WaitTX()
+		LED_6_0;
+		//
+		NRF24.Status = NRF24_Ready;
+		NRF24.Timer_1 = 1;
+		//NRF24.Message_Status = 2;
+		NRF24.SPI_Tx_Inte = 0;
+		NRF24.Step++;//Step 5
+
 	}
 }
 
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){//todo
+	if(STARTUP == 0 && NRF24.SPI_Rx_Inte == 1 && NRF24.Step == 1){
+		NRF24.SPI_Rx_Inte = 0;
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){
-				NRF24_CSN_HIGH;
-				LED_6_1;
-				nRF24_TX_Mode();
-				NRF24_MODE = 2;
-				NRF24_Message_sent = 1;
-				NRF24_Timer_ms = 2; // -> nRF24_WriteTXPayload_IT(TxData);
-				LED_6_0;
+		LED_6_1;
+		nRF24_ReadRXPaylaod_IT_End();
+		LED_6_0;
+		NRF24.Step++;//step 2
 
+		NRF24.Timer_1 = 2;
 
-				LED_Y_1;
+		LED_Y_1;
 
-				loopnum = 0;
-				for(int abc = 0; abc < 10; abc++){//sprawdzenia poprawnosci kodu nadanego
-					if(RxData[12+abc] == Rxcode[abc+12]){
-						loopnum++;
+		loopnum = 0;
+		for(int abc = 0; abc < 10; abc++){//sprawdzenia poprawnosci kodu nadanego
+			if(NRF24.RxData[12+abc] == NRF24.Rxcode[abc+12]){
+				loopnum++;
+			}
+		}
+
+		if(loopnum == 10){
+			convert_array_to_value(NRF24.RxData, &wanted_pitch_v, 0, 2);//pitch
+			convert_array_to_value(NRF24.RxData, &wanted_roll_v, 3, 5);// pid_angular_rate_rool wanted_roll_v
+			if(wobble_strenght == 1){
+				convert_array_to_value(NRF24.RxData, &wanted_thrust, 6, 8);//
+			}
+			convert_array_to_value(NRF24.RxData, &wanted_yaw_v, 9, 11);//
+			MYDRON.dron_status.Connection = DRON_CONNECTED;
+
+			if(NRF24.RxData[23] == 1){
+				ESC_POWER_1;
+				LED_R_1;
+				if(SD_enable_Flag == 1){
+					f_close(&fil);
+					fresult = f_mount(NULL, "/", 1);
 					}
-				}
+			}
 
-				if(loopnum == 10){
-					convert_array_to_value(RxData, &wanted_pitch_v, 0, 2);//pitch
-					convert_array_to_value(RxData, &wanted_roll_v, 3, 5);// pid_angular_rate_rool wanted_roll_v
-					if(wobble_strenght == 1){
-						convert_array_to_value(RxData, &wanted_thrust, 6, 8);//
-					}
-					convert_array_to_value(RxData, &wanted_yaw_v, 9, 11);//
-					MYDRON.dron_status.Connection = DRON_CONNECTED;
+			if(wanted_thrust == 9999){
+				MYDRON.THRUST_flag = THRUST_MAX;
+		  	}
+			wanted_thrust = wanted_thrust * 20;
+			wanted_thrust = wanted_thrust - 10000;
+			if(wanted_thrust < 0){
+				wanted_thrust = 0;
+			}
 
-					if(RxData[23] == 1){
-						ESC_POWER_1;
-						LED_R_1;
-						if(SD_enable_Flag == 1){
-							f_close(&fil);
-							fresult = f_mount(NULL, "/", 1);
-						}
+			wanted_rool_rx = (wanted_roll_v - 500)*wanted_rool_factro;//wanted_rool_rx (-90 <-> 90)
+			wanted_pitch_rx = (wanted_pitch_v - 500)*wanted_pitch_factro;// (-450 <-> 450)
+			wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;// wanted yaw is in deg/s
 
-					}
+			wanted_rool_rx = (wanted_rool_rx >= 300) ? 300 : (wanted_rool_rx <= -300) ? -300 : wanted_rool_rx;
+			wanted_pitch_rx = (wanted_pitch_rx >= 300) ? 300 : (wanted_pitch_rx <= -300) ? -300 : wanted_pitch_rx;
+			wanted_yaw_rx = (wanted_yaw_rx >= 300) ? 300 : (wanted_yaw_rx <= -300) ? -300 : wanted_yaw_rx;
 
+			NRF_TIM_Inte = 0;
+		}
 
-					if(wanted_thrust == 9999){
-						MYDRON.THRUST_flag = THRUST_MAX;
-		  			}
-					wanted_thrust = wanted_thrust * 20;
-					wanted_thrust = wanted_thrust - 10000;
-					if(wanted_thrust < 0){
-						wanted_thrust = 0;
-		  			}
-
-					wanted_rool_rx = (wanted_roll_v - 500)*wanted_rool_factro;//wanted_rool_rx (-90 <-> 90)
-					wanted_pitch_rx = (wanted_pitch_v - 500)*wanted_pitch_factro;// (-450 <-> 450)
-					wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;// wanted yaw is in deg/s
-
-
-					wanted_rool_rx = (wanted_rool_rx >= 300) ? 300 : (wanted_rool_rx <= -300) ? -300 : wanted_rool_rx;
-					wanted_pitch_rx = (wanted_pitch_rx >= 300) ? 300 : (wanted_pitch_rx <= -300) ? -300 : wanted_pitch_rx;
-					wanted_yaw_rx = (wanted_yaw_rx >= 300) ? 300 : (wanted_yaw_rx <= -300) ? -300 : wanted_yaw_rx;
-
-
-					NRF_TIM_Inte = 0;
-		  		}
-
-		  			if(loopnum > 0 && loopnum < 10){
-		  				MYDRON.dron_status.Connection = DRON_CONNECTION_ERROR;
-		  			}
-		  			LED_Y_0;
+		if(loopnum > 0 && loopnum < 10){
+			MYDRON.dron_status.Connection = DRON_CONNECTION_ERROR;
+		}
+		LED_Y_0;
+	}
 }
 
 void convert_array_to_value(uint8_t arrayfrom[], int16_t *value , uint8_t rangebegin, uint8_t rangeend){
