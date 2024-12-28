@@ -28,33 +28,33 @@ void executecommand(char command[], uint8_t value1[]){
 
 	if(command[0] == 'P')
 	{
-		p_pitchfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+		MYDRON.PID_Pitch.Angle_Factors[0] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
 	}
 
 	if(command[0] == 'I')
 	{
-		i_pitchfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
-		error_sum_pitch = 0;
+		MYDRON.PID_Pitch.Angle_Factors[1] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+		MYDRON.Pitch.Angle_Error_Sum = 0;
 	}
 
 	if(command[0] == 'D')
 	{
-		d_pitchfactor = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
+		MYDRON.PID_Pitch.Angle_Factors[2] = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
 	}
 	if(command[0] == 'p')
 	{
-		p_angular_rate_pitchfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+		MYDRON.PID_Pitch.Angular_Rate_Factors[0] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
 	}
 
 	if(command[0] == 'i')
 	{
-		i_angular_rate_pitchfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
-		error_sum_angular_rate_pitch = 0;
+		MYDRON.PID_Pitch.Angular_Rate_Factors[1] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+		MYDRON.Pitch.Angular_Rate_Error_Sum = 0;
 	}
 
 	if(command[0] == 'd')
 	{
-		d_angular_rate_pitchfactor = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
+		MYDRON.PID_Pitch.Angular_Rate_Factors[2] = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
 	}
 	if(command[0] == 'F')
 	{
@@ -72,33 +72,33 @@ void executecommand(char command[], uint8_t value1[]){
 //rool
 	if(command[0] == 'a')
 		{
-			p_roolfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+			MYDRON.PID_Rool.Angle_Factors[0] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
 		}
 
 		if(command[0] == 'b')
 		{
-			i_roolfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
-			error_sum_rool = 0;
+			MYDRON.PID_Rool.Angle_Factors[1] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+			MYDRON.Pitch.Angle_Error_Sum = 0;
 		}
 
 		if(command[0] == 'c')
 		{
-			d_roolfactor = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
+			MYDRON.PID_Rool.Angle_Factors[2] = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
 		}
 		if(command[0] == 'e')
 		{
-			p_angular_rate_roolfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+			MYDRON.PID_Rool.Angular_Rate_Factors[0] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
 		}
 
 		if(command[0] == 'g')
 		{
-			i_angular_rate_roolfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
-			error_sum_angular_rate_rool = 0;
+			MYDRON.PID_Rool.Angular_Rate_Factors[1] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+			MYDRON.Rool.Angular_Rate_Error_Sum = 0;
 		}
 
 		if(command[0] == 'h')
 		{
-			d_angular_rate_roolfactor = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
+			MYDRON.PID_Rool.Angular_Rate_Factors[2] = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
 		}
 
 
@@ -110,33 +110,33 @@ void executecommand(char command[], uint8_t value1[]){
 
 		if(command[0] == 'j')
 			{
-				p_yawfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+				MYDRON.PID_Yaw.Angle_Factors[0] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
 			}
 
 			if(command[0] == 'k')
 			{
-				i_yawfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
-				error_sum_yaw = 0;
+				MYDRON.PID_Yaw.Angle_Factors[1] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+				MYDRON.Yaw.Angle_Error_Sum = 0;
 			}
 
 			if(command[0] == 'l')
 			{
-				d_yawfactor = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
+				MYDRON.PID_Yaw.Angle_Factors[2] = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
 			}
 			if(command[0] == 'm')
 			{
-				p_angular_rate_yawfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+				MYDRON.PID_Yaw.Angular_Rate_Factors[0] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
 			}
 
 			if(command[0] == 'n')
 			{
-				i_angular_rate_yawfactor = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
-				error_sum_angular_rate_yaw = 0;
+				MYDRON.PID_Yaw.Angular_Rate_Factors[1] = ((((float)UASRT_PID_VAL[1])-48)*100) + ((((float)UASRT_PID_VAL[2])-48)*10) + ((((float)UASRT_PID_VAL[3])-48)) + ((((float)UASRT_PID_VAL[4])-48)/10) + ((((float)UASRT_PID_VAL[5])-48)/100);
+				MYDRON.Yaw.Angular_Rate_Error_Sum = 0;
 			}
 
 			if(command[0] == 'o')
 			{
-				d_angular_rate_yawfactor = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
+				MYDRON.PID_Yaw.Angular_Rate_Factors[2] = ((((float)UASRT_PID_VAL[1])-48)*1000) + ((((float)UASRT_PID_VAL[2])-48)*100) + ((((float)UASRT_PID_VAL[3])-48)*10) + ((((float)UASRT_PID_VAL[4])-48)) + ((((float)UASRT_PID_VAL[5])-48)/10);
 			}
 
 	if(command[0] == 'r'){

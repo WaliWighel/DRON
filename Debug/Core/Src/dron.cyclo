@@ -5,7 +5,8 @@
 ../Core/Src/dron.c:220:7:APV	6
 ../Core/Src/dron.c:248:7:ADV	6
 ../Core/Src/dron.c:273:6:acceleration_stabilizer	1
-../Core/Src/dron.c:283:6:PID_cal	13
-../Core/Src/dron.c:414:6:Get_batteryvalue	5
-../Core/Src/dron.c:442:6:IS_DRON_ON_GROUND	2
-../Core/Src/dron.c:454:6:PID_Self_Regulation	5
+../Core/Src/dron.c:283:6:PID_call	1
+../Core/Src/dron.c:293:6:PID_cal	1
+../Core/Src/dron.c:424:6:Get_batteryvalue	5
+../Core/Src/dron.c:452:6:IS_DRON_ON_GROUND	2
+../Core/Src/dron.c:464:6:PID_Self_Regulation	5

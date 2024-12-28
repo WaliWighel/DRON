@@ -104,32 +104,21 @@ IRAM uint8_t HMC5883L_Data_IT[6];
 IRAM int TIM_inte_SD = 0, TIM_inte = 0;
 IRAM uint8_t STARTUP = 1;
 IRAM uint32_t NRF_TIM_Inte = 0;
+RAM1 uint32_t analogmess;
 
 IRAM Complementary_Filter data;
 
 ///////// BMP180
-IRAM uint16_t AC4, AC5, AC6;
-IRAM int16_t  AC1, AC2, AC3, B1, B2, MB, MC, MD;
-IRAM uint32_t B4, B7, UP;
-IRAM int32_t temperature, pressure, UT, X1, X2, B5, B6, B3, X3;
-IRAM float temp = 0, pres = 0, startpres = 0, ampritude = 0;
-IRAM uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
-
+//IRAM uint16_t AC4, AC5, AC6;
+//IRAM int16_t  AC1, AC2, AC3, B1, B2, MB, MC, MD;
+//IRAM uint32_t B4, B7, UP;
+//IRAM int32_t temperature, pressure, UT, X1, X2, B5, B6, B3, X3;
+//IRAM float temp = 0, pres = 0, startpres = 0, ampritude = 0;
+//IRAM uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
+IRAM struct BMP180_Struct BMP180;
 /////////// nrf24
-//IRAM uint8_t RxData[32];
-//IRAM uint8_t Txcode[32];
-//IRAM uint8_t TxData[32];
-//IRAM uint8_t Rxcode[32];
-RAM1 uint32_t analogmess;
-//IRAM uint8_t NRF24_Tx_Inte = 0;
-//IRAM uint8_t NRF24_Rx_Inte = 0;
-//IRAM uint8_t xz[9];
 
-//IRAM uint8_t NRF24_Timer_ms = 0;
-//IRAM uint8_t NRF24_Timer_2_ms = 0;
-//IRAM uint8_t NRF24_MODE = 0; // 1 -> RX 2 -> TX
-//IRAM uint8_t NRF24_Message_sent = 0;
-//IRAM uint16_t NRF24_Message_count = 0;
+
 
 IRAM struct NRF24_Struct NRF24;
 
@@ -140,30 +129,30 @@ IRAM struct Dron MYDRON;
 
 IRAM struct Stack Old_Data_stack;
 
-IRAM int16_t wanted_pitch_rx;// chcainy stan
-IRAM int16_t wanted_rool_rx;
-IRAM int16_t wanted_yaw_rx;
-IRAM int16_t wanted_gz;
-
-IRAM float last_wanted_pitch_rx = 0;// chcainy stan
-IRAM float last_wanted_rool_rx = 0;
-IRAM float last_wanted_yaw_rx = 0;
+//IRAM int16_t wanted_pitch_rx;// chcainy stan
+//IRAM int16_t MYDRON.Rool.Wanted_rx;
+//IRAM int16_t MYDRON.Yaw.Wanted_rx;
+//IRAM int16_t wanted_gz;
+//
+//IRAM float last_wanted_pitch_rx = 0;// chcainy stan
+//IRAM float last_MYDRON.Rool.Wanted_rx = 0;
+//IRAM float last_MYDRON.Yaw.Wanted_rx = 0;
 
 		#define FDP_FQ 2
 
-IRAM int16_t wanted_thrust = 0;
-IRAM int16_t thrust_limit = 10000;
-
-
-IRAM double thrust_values;
-
-IRAM float wanted_pitch = 0;// chcainy stan
-IRAM float wanted_rool = 0;
-IRAM float wanted_yaw = 0;
-
-		const float wanted_rool_factro = 0.65;//95 //- 99
-		const float wanted_pitch_factro = 0.66;// ok              35 / -35
-		const float wanted_yaw_factro = 0.6;//95//-101
+//IRAM int16_t wanted_thrust = 0;
+//IRAM int16_t thrust_limit = 10000;
+//
+//
+//IRAM double thrust_values;
+//
+//IRAM float wanted_pitch = 0;// chcainy stan
+//IRAM float MYDRON.Rool.Wanted = 0;
+//IRAM float MYDRON.Yaw.Wanted = 0;
+//
+//		const float MYDRON.Rool.Wanted_factro = 0.65;//95 //- 99
+//		const float wanted_pitch_factro = 0.66;// ok              35 / -35
+//		const float MYDRON.Yaw.Wanted_factro = 0.6;//95//-101
 
 ////////Filtry
 
@@ -173,90 +162,90 @@ IRAM uint16_t FDP_D_Gain = 0;
 
 //////// PID
 
-IRAM float now_pitch = 0;// oktualny stan
-IRAM float now_rool = 0;
-IRAM float now_yaw = 0;
-
-IRAM float pitch_error;
-IRAM float rool_error;
-IRAM float yaw_error;
-IRAM float pitch_ar_error;
-IRAM float rool_ar_error;
-IRAM float yaw_ar_error;
-
-IRAM float old_error_pitch = 0;// ruznica
-IRAM float old_error_rool = 0;
-IRAM float old_error_yaw = 0;
-
-IRAM float old_error_angular_rate_pitch = 0;// ruznica
-IRAM float old_error_angular_rate_rool = 0;
-IRAM float old_error_angular_rate_yaw = 0;
-
-IRAM int32_t error_sum_pitch = 0;
-IRAM int32_t error_sum_rool = 0;
-IRAM int32_t error_sum_yaw = 0;
-
-IRAM int32_t error_sum_angular_rate_pitch = 0;
-IRAM int32_t error_sum_angular_rate_rool = 0;
-IRAM int32_t error_sum_angular_rate_yaw = 0;
-
-IRAM float pid_pitch;
-IRAM float pid_yaw;
-IRAM float pid_rool;
-
-IRAM float pid_angular_rate_pitch;
-IRAM float pid_angular_rate_yaw;
-IRAM float pid_angular_rate_rool;
-
-
-///////////////////////////////////////////////////////////////////////////
-IRAM float p_pitchfactor = 6;
-IRAM float p_roolfactor = 5;
-IRAM float p_yawfactor = 10;
-///////////////////////////////////////////////////////////////////////////
-IRAM float i_pitchfactor = 8;
-IRAM float i_roolfactor = 10;
-IRAM float i_yawfactor = 0;
-///////////////////////////////////////////////////////////////////////////
-IRAM float d_pitchfactor = 25;
-IRAM float d_roolfactor = 0;
-IRAM float d_yawfactor = 0;
-///////////////////////////////////////////////////////////////////////////
-IRAM float PID_FAC_Pitch[5];
-IRAM float PID_FAC_Rool[5];
-IRAM float PID_FAC_Yaw[5];
-
-
-///////////////////////////////////////////////////////////////////////////
-IRAM float p_angular_rate_pitchfactor = 10;
-IRAM float p_angular_rate_roolfactor = 10;
-IRAM float p_angular_rate_yawfactor = 15;
-///////////////////////////////////////////////////////////////////////////
-IRAM float i_angular_rate_pitchfactor = 0;
-IRAM float i_angular_rate_roolfactor = 0;
-IRAM float i_angular_rate_yawfactor = 0;
-///////////////////////////////////////////////////////////////////////////
-IRAM float d_angular_rate_pitchfactor = 30;
-IRAM float d_angular_rate_roolfactor = 20;
-IRAM float d_angular_rate_yawfactor = 5;
-///////////////////////////////////////////////////////////////////////////
-IRAM float PID_FAC_Angular_Rate_Pitch[5];
-IRAM float PID_FAC_Angular_Rate_Rool[5];
-IRAM float PID_FAC_Angular_Rate_Yaw[5];
+//IRAM float MYDRON.Pitch.Now = 0;// oktualny stan
+//IRAM float MYDRON.Rool.Now = 0;
+//IRAM float MYDRON.Yaw.Now = 0;
+//
+//IRAM float pitch_error;
+//IRAM float rool_error;
+//IRAM float yaw_error;
+//IRAM float pitch_ar_error;
+//IRAM float rool_ar_error;
+//IRAM float yaw_ar_error;
+//
+//IRAM float old_error_pitch = 0;// ruznica
+//IRAM float old_error_rool = 0;
+//IRAM float old_error_yaw = 0;
+//
+//IRAM float old_error_angular_rate_pitch = 0;// ruznica
+//IRAM float old_error_angular_rate_rool = 0;
+//IRAM float old_error_angular_rate_yaw = 0;
+//
+//IRAM int32_t MYDRON.Pitch.Angle_Error_pitch = 0;
+//IRAM int32_t MYDRON.Pitch.Angle_Error_rool = 0;
+//IRAM int32_t MYDRON.Pitch.Angle_Error_yaw = 0;
+//
+//IRAM int32_t MYDRON.Pitch.Angle_Error_angular_rate_pitch = 0;
+//IRAM int32_t MYDRON.Pitch.Angle_Error_angular_rate_rool = 0;
+//IRAM int32_t MYDRON.Pitch.Angle_Error_angular_rate_yaw = 0;
+//
+//IRAM float pid_pitch;
+//IRAM float pid_yaw;
+//IRAM float pid_rool;
+//
+//IRAM float pid_angular_rate_pitch;
+//IRAM float pid_angular_rate_yaw;
+//IRAM float pid_angular_rate_rool;
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float p_pitchfactor = 6;
+//IRAM float p_roolfactor = 5;
+//IRAM float p_yawfactor = 10;
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float i_pitchfactor = 8;
+//IRAM float i_roolfactor = 10;
+//IRAM float i_yawfactor = 0;
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float d_pitchfactor = 25;
+//IRAM float d_roolfactor = 0;
+//IRAM float d_yawfactor = 0;
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float PID_FAC_Pitch[5];
+//IRAM float PID_FAC_Rool[5];
+//IRAM float PID_FAC_Yaw[5];
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float p_angular_rate_pitchfactor = 10;
+//IRAM float p_angular_rate_roolfactor = 10;
+//IRAM float p_angular_rate_yawfactor = 15;
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float i_angular_rate_pitchfactor = 0;
+//IRAM float i_angular_rate_roolfactor = 0;
+//IRAM float i_angular_rate_yawfactor = 0;
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float d_angular_rate_pitchfactor = 30;
+//IRAM float d_angular_rate_roolfactor = 20;
+//IRAM float d_angular_rate_yawfactor = 5;
+/////////////////////////////////////////////////////////////////////////////
+//IRAM float PID_FAC_Angular_Rate_Pitch[5];
+//IRAM float PID_FAC_Angular_Rate_Rool[5];
+//IRAM float PID_FAC_Angular_Rate_Yaw[5];
 
 
 const float looptime = 0.001;
 // ESC
 
-IRAM uint16_t SPEED1 = min_speed;
-IRAM uint16_t SPEED2 = min_speed;
-IRAM uint16_t SPEED3 = min_speed;
-IRAM uint16_t SPEED4 = min_speed;
-
-IRAM uint16_t OLD_SPEED1 = min_speed;
-IRAM uint16_t OLD_SPEED2 = min_speed;
-IRAM uint16_t OLD_SPEED3 = min_speed;
-IRAM uint16_t OLD_SPEED4 = min_speed;
+//IRAM uint16_t SPEED1 = min_speed;
+//IRAM uint16_t SPEED2 = min_speed;
+//IRAM uint16_t SPEED3 = min_speed;
+//IRAM uint16_t SPEED4 = min_speed;
+//
+//IRAM uint16_t OLD_SPEED1 = min_speed;
+//IRAM uint16_t OLD_SPEED2 = min_speed;
+//IRAM uint16_t OLD_SPEED3 = min_speed;
+//IRAM uint16_t OLD_SPEED4 = min_speed;
 
 const uint16_t DRON_SLOWFALING = 3000;
 IRAM uint8_t DRON_ON_GRUND;
@@ -289,9 +278,9 @@ IRAM uint8_t /*MPU6050_IRQ = 0,*/ HMC583L_IRQ = 0, BMP180_IRQ = 0;
 
 
 IRAM uint32_t i = 0, loopnum = 0;
-IRAM int16_t wanted_roll_v = 0;
-IRAM int16_t wanted_pitch_v = 0;
-IRAM int16_t wanted_yaw_v = 0;
+//IRAM int16_t wanted_roll_v = 0;
+//IRAM int16_t wanted_pitch_v = 0;
+//IRAM int16_t MYDRON.Yaw.Wanted_v = 0;
 
 IRAM uint8_t NRF24_Messages_SC = 0;
 IRAM uint8_t NRF24_inte = 0;
@@ -398,59 +387,163 @@ int main(void)
 
 
 
+	BMP180.BMP180_IRQ = 0;
+	BMP180.ampritude = 0;
+	BMP180.pres = 0;
+	BMP180.startpres = 0;
+	BMP180.temp = 0;
+	BMP180.Raw_Data.pressure = 0;
+	BMP180.Raw_Data.temperature = 0;
 
-  	PID_FAC_Pitch[0] = p_pitchfactor;
-  	PID_FAC_Pitch[1] = i_pitchfactor;
-  	PID_FAC_Pitch[2] = d_pitchfactor;
-  	PID_FAC_Pitch[4] = 0;
 
-  	PID_FAC_Rool[0] = p_roolfactor;
-  	PID_FAC_Rool[1] = i_roolfactor;
-  	PID_FAC_Rool[2] = d_roolfactor;
-  	PID_FAC_Rool[4] = 0;
 
-  	PID_FAC_Yaw[0] = p_yawfactor;
-  	PID_FAC_Yaw[1] = i_yawfactor;
-  	PID_FAC_Yaw[2] = d_yawfactor;
-  	PID_FAC_Yaw[4] = 0;
+	MYDRON.dronheight = 0;
+	MYDRON.batterysize = 0;
+	MYDRON.Pitch.Angle_Error_Sum = 0;
+	MYDRON.Pitch.Angle_Error = 0;
+	MYDRON.Pitch.Angular_Rate_Error = 0;
+	MYDRON.Pitch.Angular_Rate_Error_Sum = 0;
+	MYDRON.Pitch.Last_Wanted_rx = 0;
+	MYDRON.Pitch.Now = 0;
+	MYDRON.Pitch.Old_Angle_Error = 0;
+	MYDRON.Pitch.Old_Angular_Rate_Error = 0;
+	MYDRON.Pitch.Value = 0;
+	MYDRON.Pitch.Wanted = 0;
+	MYDRON.Pitch.Wanted_Factor = 0;
+	MYDRON.Pitch.Wanted_rx = 0;
+	MYDRON.Pitch.Wanted_v = 0;
+	MYDRON.Rool.Angle_Error_Sum = 0;
+	MYDRON.Rool.Angle_Error = 0;
+	MYDRON.Rool.Angular_Rate_Error = 0;
+	MYDRON.Rool.Angular_Rate_Error_Sum = 0;
+	MYDRON.Rool.Last_Wanted_rx = 0;
+	MYDRON.Rool.Now = 0;
+	MYDRON.Rool.Old_Angle_Error = 0;
+	MYDRON.Rool.Old_Angular_Rate_Error = 0;
+	MYDRON.Rool.Value = 0;
+	MYDRON.Rool.Wanted = 0;
+	MYDRON.Rool.Wanted_Factor = 0;
+	MYDRON.Rool.Wanted_rx = 0;
+	MYDRON.Rool.Wanted_v = 0;
+	MYDRON.Yaw.Angle_Error_Sum = 0;
+	MYDRON.Yaw.Angle_Error = 0;
+	MYDRON.Yaw.Angular_Rate_Error = 0;
+	MYDRON.Yaw.Angular_Rate_Error_Sum = 0;
+	MYDRON.Yaw.Last_Wanted_rx = 0;
+	MYDRON.Yaw.Now = 0;
+	MYDRON.Yaw.Old_Angle_Error = 0;
+	MYDRON.Yaw.Old_Angular_Rate_Error = 0;
+	MYDRON.Yaw.Value = 0;
+	MYDRON.Yaw.Wanted = 0;
+	MYDRON.Yaw.Wanted_Factor = 0;
+	MYDRON.Yaw.Wanted_rx = 0;
+	MYDRON.Yaw.Wanted_v = 0;
+	MYDRON.PID_Pitch.Angle_Factors[0] = 0;
+	MYDRON.PID_Pitch.Angle_Factors[1] = 0;
+	MYDRON.PID_Pitch.Angle_Factors[2] = 0;
+	MYDRON.PID_Pitch.Angle_Factors[3] = 0;
+	MYDRON.PID_Pitch.Angle_Factors[4] = 0;
+	MYDRON.PID_Pitch.Angular_Rate_Factors[0] = 0;
+	MYDRON.PID_Pitch.Angular_Rate_Factors[1] = 0;
+	MYDRON.PID_Pitch.Angular_Rate_Factors[2] = 0;
+	MYDRON.PID_Pitch.Angular_Rate_Factors[3] = 0;
+	MYDRON.PID_Pitch.Angular_Rate_Factors[4] = 0;
+	MYDRON.PID_Pitch.Angle_Value = 0;
+	MYDRON.PID_Pitch.Angular_Rate_Value = 0;
+	MYDRON.PID_Rool.Angle_Factors[0] = 0;
+	MYDRON.PID_Rool.Angle_Factors[1] = 0;
+	MYDRON.PID_Rool.Angle_Factors[2] = 0;
+	MYDRON.PID_Rool.Angle_Factors[3] = 0;
+	MYDRON.PID_Rool.Angle_Factors[4] = 0;
+	MYDRON.PID_Rool.Angular_Rate_Factors[0] = 0;
+	MYDRON.PID_Rool.Angular_Rate_Factors[1] = 0;
+	MYDRON.PID_Rool.Angular_Rate_Factors[2] = 0;
+	MYDRON.PID_Rool.Angular_Rate_Factors[3] = 0;
+	MYDRON.PID_Rool.Angular_Rate_Factors[4] = 0;
+	MYDRON.PID_Rool.Angle_Value = 0;
+	MYDRON.PID_Rool.Angular_Rate_Value = 0;
+	MYDRON.PID_Yaw.Angle_Factors[0] = 0;
+	MYDRON.PID_Yaw.Angle_Factors[1] = 0;
+	MYDRON.PID_Yaw.Angle_Factors[2] = 0;
+	MYDRON.PID_Yaw.Angle_Factors[3] = 0;
+	MYDRON.PID_Yaw.Angle_Factors[4] = 0;
+	MYDRON.PID_Yaw.Angular_Rate_Factors[0] = 0;
+	MYDRON.PID_Yaw.Angular_Rate_Factors[1] = 0;
+	MYDRON.PID_Yaw.Angular_Rate_Factors[2] = 0;
+	MYDRON.PID_Yaw.Angular_Rate_Factors[3] = 0;
+	MYDRON.PID_Yaw.Angular_Rate_Factors[4] = 0;
+	MYDRON.PID_Yaw.Angle_Value = 0;
+	MYDRON.PID_Yaw.Angular_Rate_Value = 0;
+	MYDRON.Thrust.Now = 0;
+	MYDRON.Thrust.Old_Speed_1 = 0;
+	MYDRON.Thrust.Old_Speed_2 = 0;
+	MYDRON.Thrust.Old_Speed_3 = 0;
+	MYDRON.Thrust.Old_Speed_4 = 0;
+	MYDRON.Thrust.Speed_1 = 0;
+	MYDRON.Thrust.Speed_2 = 0;
+	MYDRON.Thrust.Speed_3 = 0;
+	MYDRON.Thrust.Speed_4 = 0;
+	MYDRON.Thrust.Thrust_Limit = 10000;
+	MYDRON.Thrust.Values = 0;
+	MYDRON.Thrust.Wanted = 0;
+	MYDRON.Status.Battery = DRON_BATTERY_OK;
+	MYDRON.Status.Code = DRON_CODE_OK;
+	MYDRON.Status.Connection = DRON_CONNECTED;
+	MYDRON.Status.Wobble = NO_WOBBLE;
+
+
+//  	PID_FAC_Pitch[0] = p_pitchfactor;
+//  	PID_FAC_Pitch[1] = i_pitchfactor;
+//  	PID_FAC_Pitch[2] = d_pitchfactor;
+//  	PID_FAC_Pitch[4] = 0;
+//
+//  	PID_FAC_Rool[0] = p_roolfactor;
+//  	PID_FAC_Rool[1] = i_roolfactor;
+//  	PID_FAC_Rool[2] = d_roolfactor;
+//  	PID_FAC_Rool[4] = 0;
+//
+//  	PID_FAC_Yaw[0] = p_yawfactor;
+//  	PID_FAC_Yaw[1] = i_yawfactor;
+//  	PID_FAC_Yaw[2] = d_yawfactor;
+//  	PID_FAC_Yaw[4] = 0;
 
 
   	//ax_ang =0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
   	Mag_Z = 0;
   	TIM_inte_SD = 0, TIM_inte = 0;
   	NRF_TIM_Inte = 0;
-  	temp = 0, pres = 0, startpres = 0, ampritude = 0;
-  	last_wanted_pitch_rx = 0;
-  	last_wanted_rool_rx = 0;
-  	last_wanted_yaw_rx = 0;
-  	wanted_thrust = 0;
-  	thrust_limit = 10000;
+//  	temp = 0, pres = 0, startpres = 0, ampritude = 0;
+//  	last_wanted_pitch_rx = 0;
+//  	last_MYDRON.Rool.Wanted_rx = 0;
+//  	last_MYDRON.Yaw.Wanted_rx = 0;
+//  	wanted_thrust = 0;
+//  	thrust_limit = 10000;
 
 
   	FDP_D_Gain_AR = 0;
   	FDP_D_Gain = 0;
 
 
-  	old_error_pitch = 0;// ruznica
-  	old_error_rool = 0;
-  	old_error_yaw = 0;
-  	old_error_angular_rate_pitch = 0;// ruznica
-  	old_error_angular_rate_rool = 0;
-  	old_error_angular_rate_yaw = 0;
-  	error_sum_pitch = 0;
-  	error_sum_rool = 0;
-  	error_sum_yaw = 0;
-  	error_sum_angular_rate_pitch = 0;
-  	error_sum_angular_rate_rool = 0;
-  	error_sum_angular_rate_yaw = 0;
-  	SPEED1 = min_speed;
-  	SPEED2 = min_speed;
-  	SPEED3 = min_speed;
-  	SPEED4 = min_speed;
-  	OLD_SPEED1 = min_speed;
-  	OLD_SPEED2 = min_speed;
-  	OLD_SPEED3 = min_speed;
-  	OLD_SPEED4 = min_speed;
+//  	old_error_pitch = 0;// ruznica
+//  	old_error_rool = 0;
+//  	old_error_yaw = 0;
+//  	old_error_angular_rate_pitch = 0;// ruznica
+//  	old_error_angular_rate_rool = 0;
+//  	old_error_angular_rate_yaw = 0;
+//  	MYDRON.Pitch.Angle_Error_pitch = 0;
+//  	MYDRON.Pitch.Angle_Error_rool = 0;
+//  	MYDRON.Pitch.Angle_Error_yaw = 0;
+//  	MYDRON.Pitch.Angle_Error_angular_rate_pitch = 0;
+//  	MYDRON.Pitch.Angle_Error_angular_rate_rool = 0;
+//  	MYDRON.Pitch.Angle_Error_angular_rate_yaw = 0;
+//  	SPEED1 = min_speed;
+//  	SPEED2 = min_speed;
+//  	SPEED3 = min_speed;
+//  	SPEED4 = min_speed;
+//  	OLD_SPEED1 = min_speed;
+//  	OLD_SPEED2 = min_speed;
+//  	OLD_SPEED3 = min_speed;
+//  	OLD_SPEED4 = min_speed;
   	commandready = 0;
   	command_ch_num = 0;
   	Mainloop_Number = 0;
@@ -459,58 +552,58 @@ int main(void)
   	//MPU6050_IRQ = 0, HMC583L_IRQ = 0, BMP180_IRQ = 0;
   	i = 0, loopnum = 0;
 
-  	thrust_values = 0;
+//  	thrust_values = 0;
 
-p_angular_rate_pitchfactor = 14;
-p_angular_rate_roolfactor = 12;
-p_angular_rate_yawfactor = 10;// -> 10
-///////////////////////////////////////////////////////////////////////////
-i_angular_rate_pitchfactor = 10;
-i_angular_rate_roolfactor = 10;
-i_angular_rate_yawfactor = 0;
-///////////////////////////////////////////////////////////////////////////
-d_angular_rate_pitchfactor = 30;
-d_angular_rate_roolfactor = 20;
-d_angular_rate_yawfactor = 5;
-
-p_pitchfactor = 5.5;
-p_roolfactor = 6;//5
-p_yawfactor = 5;
-///////////////////////////////////////////////////////////////////////////
-i_pitchfactor = 9;//8
-i_roolfactor = 8;//10
-i_yawfactor = 0;
-///////////////////////////////////////////////////////////////////////////
-d_pitchfactor = 30;//25
-d_roolfactor = 20;
-d_yawfactor = 0;
-
-
-
-
-  	  PID_FAC_Angular_Rate_Pitch[0] = p_angular_rate_pitchfactor;
-  	  PID_FAC_Angular_Rate_Pitch[1] = i_angular_rate_pitchfactor;
-  	  PID_FAC_Angular_Rate_Pitch[2] = d_angular_rate_pitchfactor;
-  	  PID_FAC_Angular_Rate_Rool[0] = p_angular_rate_roolfactor;//
-  	  PID_FAC_Angular_Rate_Rool[1] = i_angular_rate_roolfactor;
-  	  PID_FAC_Angular_Rate_Rool[2] = d_angular_rate_roolfactor;
-  	  PID_FAC_Angular_Rate_Yaw[0] = p_angular_rate_yawfactor;//
-  	  PID_FAC_Angular_Rate_Yaw[1] = i_angular_rate_yawfactor;
-  	  PID_FAC_Angular_Rate_Yaw[2] = d_angular_rate_yawfactor;
-  	  PID_FAC_Pitch[0] = p_pitchfactor;
-  	  PID_FAC_Pitch[1] = i_pitchfactor;
-  	  PID_FAC_Pitch[2] = d_pitchfactor;
-  	  PID_FAC_Rool[0] = p_roolfactor;//
-  	  PID_FAC_Rool[1] = i_roolfactor;
-  	  PID_FAC_Rool[2] = d_roolfactor;
-  	  PID_FAC_Yaw[0] = p_yawfactor;//
-  	  PID_FAC_Yaw[1] = i_yawfactor;
-  	  PID_FAC_Yaw[2] = d_yawfactor;
-
-  	wanted_pitch_rx = 0;// chcainy stan
-  	wanted_rool_rx = 0;
-  	wanted_yaw_rx = 0;
-  	wanted_gz = 0 ;
+//p_angular_rate_pitchfactor = 14;
+//p_angular_rate_roolfactor = 12;
+//p_angular_rate_yawfactor = 10;// -> 10
+/////////////////////////////////////////////////////////////////////////////
+//i_angular_rate_pitchfactor = 10;
+//i_angular_rate_roolfactor = 10;
+//i_angular_rate_yawfactor = 0;
+/////////////////////////////////////////////////////////////////////////////
+//d_angular_rate_pitchfactor = 30;
+//d_angular_rate_roolfactor = 20;
+//d_angular_rate_yawfactor = 5;
+//
+//p_pitchfactor = 5.5;
+//p_roolfactor = 6;//5
+//p_yawfactor = 5;
+/////////////////////////////////////////////////////////////////////////////
+//i_pitchfactor = 9;//8
+//i_roolfactor = 8;//10
+//i_yawfactor = 0;
+/////////////////////////////////////////////////////////////////////////////
+//d_pitchfactor = 30;//25
+//d_roolfactor = 20;
+//d_yawfactor = 0;
+//
+//
+//
+//
+//  	  PID_FAC_Angular_Rate_Pitch[0] = p_angular_rate_pitchfactor;
+//  	  PID_FAC_Angular_Rate_Pitch[1] = i_angular_rate_pitchfactor;
+//  	  PID_FAC_Angular_Rate_Pitch[2] = d_angular_rate_pitchfactor;
+//  	  PID_FAC_Angular_Rate_Rool[0] = p_angular_rate_roolfactor;//
+//  	  PID_FAC_Angular_Rate_Rool[1] = i_angular_rate_roolfactor;
+//  	  PID_FAC_Angular_Rate_Rool[2] = d_angular_rate_roolfactor;
+//  	  PID_FAC_Angular_Rate_Yaw[0] = p_angular_rate_yawfactor;//
+//  	  PID_FAC_Angular_Rate_Yaw[1] = i_angular_rate_yawfactor;
+//  	  PID_FAC_Angular_Rate_Yaw[2] = d_angular_rate_yawfactor;
+//  	  PID_FAC_Pitch[0] = p_pitchfactor;
+//  	  PID_FAC_Pitch[1] = i_pitchfactor;
+//  	  PID_FAC_Pitch[2] = d_pitchfactor;
+//  	  PID_FAC_Rool[0] = p_roolfactor;//
+//  	  PID_FAC_Rool[1] = i_roolfactor;
+//  	  PID_FAC_Rool[2] = d_roolfactor;
+//  	  PID_FAC_Yaw[0] = p_yawfactor;//
+//  	  PID_FAC_Yaw[1] = i_yawfactor;
+//  	  PID_FAC_Yaw[2] = d_yawfactor;
+//
+//  	wanted_pitch_rx = 0;// chcainy stan
+//  	MYDRON.Rool.Wanted_rx = 0;
+//  	MYDRON.Yaw.Wanted_rx = 0;
+//  	wanted_gz = 0 ;
 
 
   	data.ox = 0;
@@ -521,35 +614,35 @@ d_yawfactor = 0;
   	data.z = 0;
 
 
-  	pid_pitch = 0;
-  	pid_yaw = 0;
-  	pid_rool = 0;
-
-  	pid_angular_rate_pitch = 0;
-  	pid_angular_rate_yaw = 0;
-  	pid_angular_rate_rool = 0;
-
-  	MYDRON.PITCH_STA = 0;
-  	MYDRON.ROOL_STA = 0;
-  	MYDRON.YAW_STA = 0;
+//  	MYDRON.PID_Pitch.Angle_Value= 0;
+//  	MYDRON.PID_Yaw.Angle_Value= 0;
+//  	MYDRON.PID_Rool.Angle_Value= 0;
+//
+//  	pid_angular_rate_pitch = 0;
+//  	pid_angular_rate_yaw = 0;
+//  	pid_angular_rate_rool = 0;
+//
+//  	MYDRON.PITCH_STA = 0;
+//  	MYDRON.ROOL_STA = 0;
+//  	MYDRON.YAW_STA = 0;
 
   	//ax = 0,ay = 0,az = 0, gx = 0, gy = 0, gz = 0;
   //	ax_ang = 0,ay_ang = 0,az_ang = 0, gx_ang = 0, gy_ang = 0, gz_ang = 0;
   	//accelx_cal = 0, accely_cal = 0, accelz_cal = 0, gyrox_cal = 0, gyroy_cal = 0, gyroz_cal = 0;
 
 
-
-  	now_pitch = 0;//pitch -> x
-  	now_rool = 0;//rool -> y
-  	now_yaw = 0;
-  	wanted_pitch = 0;
-
-  	pitch_error = 0;
-  	rool_error = 0;
-  	yaw_error = 0;
-  	pitch_ar_error = 0;
-  	rool_ar_error = 0;
-  	yaw_ar_error = 0;
+//
+//  	MYDRON.Pitch.Now = 0;//pitch -> x
+//  	MYDRON.Rool.Now = 0;//rool -> y
+//  	MYDRON.Yaw.Now = 0;
+//  	wanted_pitch = 0;
+//
+//  	pitch_error = 0;
+//  	rool_error = 0;
+//  	yaw_error = 0;
+//  	pitch_ar_error = 0;
+//  	rool_ar_error = 0;
+//  	yaw_ar_error = 0;
 
 
   	NRF24_inte = 0;
@@ -601,14 +694,14 @@ d_yawfactor = 0;
 
 
   	RGB_LED_For_BAT(MYDRON.batterysize);
-  	if(MYDRON.dron_status.Battery == DRON_BATTERY_RUN_OUT)
+  	if(MYDRON.Status.Battery == DRON_BATTERY_RUN_OUT)
   	{
   		LED_R_1;
   		while(1){
 
   		}
   	}
-  	if(MYDRON.dron_status.Battery == DRON_BATTERY_CRIT_VAL){
+  	if(MYDRON.Status.Battery == DRON_BATTERY_CRIT_VAL){
   		LED_R_1;
 
   		while(1){
@@ -670,7 +763,7 @@ d_yawfactor = 0;
 			}
 		}
 		LED_Y_1;
-		BMP180_CALIBRATION(&startpres);
+		BMP180_CALIBRATION(&BMP180.startpres);
 		LED_Y_0;
 	/////////////////////////////// HMC5883L
 		if(HMC5883L_Init(&hi2c5) == 0){
@@ -687,14 +780,14 @@ d_yawfactor = 0;
 
 
 
-		MYDRON.dron_status.Connection = DRON_CONNECTED;
-		MYDRON.dron_status.position = DRON_POSITION_OK;
-
-
-		MYDRON.THRUST = 0;
-		MYDRON.PITCH = 0;
-		MYDRON.ROOL = 0;
-		MYDRON.YAW = 0;
+//		MYDRON.Status.Connection = DRON_CONNECTED;
+//		MYDRON.dron_status.position = DRON_POSITION_OK;
+//
+//
+//		MYDRON.THRUST = 0;
+//		MYDRON.PITCH = 0;
+//		MYDRON.ROOL = 0;
+//		MYDRON.YAW = 0;
 
 
 
@@ -766,7 +859,7 @@ d_yawfactor = 0;
 
 	  	RGB_LED_For_BAT(MYDRON.batterysize);
 
-	  	if(MYDRON.dron_status.Battery == DRON_BATTERY_RUN_OUT)
+	  	if(MYDRON.Status.Battery == DRON_BATTERY_RUN_OUT)
 	  	{
 	  		LED_R_1;
 	  		while(1){
@@ -774,7 +867,7 @@ d_yawfactor = 0;
 	  		}
 	  	}
 
-	  	if(MYDRON.dron_status.Battery == DRON_BATTERY_CRIT_VAL){
+	  	if(MYDRON.Status.Battery == DRON_BATTERY_CRIT_VAL){
 	  		LED_R_1;
 	  		while(1){
 	  		}
@@ -786,18 +879,18 @@ d_yawfactor = 0;
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(MYDRON.dron_status.Battery == DRON_BATTERY_RUN_OUT){
+	  if(MYDRON.Status.Battery == DRON_BATTERY_RUN_OUT){
 	  			LED_R_1;
-	  			thrust_limit = MYDRON.THRUST;
+	  			MYDRON.Thrust.Thrust_Limit = MYDRON.Thrust.Now;
 	  		}
-	  		if(MYDRON.dron_status.Battery == DRON_BATTERY_OK){
-	  			thrust_limit = 10000;
+	  		if(MYDRON.Status.Battery == DRON_BATTERY_OK){
+	  			MYDRON.Thrust.Thrust_Limit = 10000;
 	  		}
-	  		if(MYDRON.dron_status.Battery == DRON_BATTERY_CRIT_VAL){
+	  		if(MYDRON.Status.Battery == DRON_BATTERY_CRIT_VAL){
 	  			ESC_POWER_1;
 	  			LED_R_1;
 	  			f_close(&fil);
-	  			while(MYDRON.dron_status.Battery == DRON_BATTERY_CRIT_VAL){
+	  			while(MYDRON.Status.Battery == DRON_BATTERY_CRIT_VAL){
 	  				HAL_Delay(10);
 	  				Get_batteryvalue();
 	  			}
@@ -808,30 +901,6 @@ d_yawfactor = 0;
 	  			interpretcommand();
 	  			executecommand(command, UASRT_PID_VAL);
 	  			LED_7_0;
-
-	  			PID_FAC_Pitch[0] = p_pitchfactor;
-	  			PID_FAC_Pitch[1] = i_pitchfactor;
-	  			PID_FAC_Pitch[2] = d_pitchfactor;
-
-	  			PID_FAC_Angular_Rate_Pitch[0] = p_angular_rate_pitchfactor;
-	  			PID_FAC_Angular_Rate_Pitch[1] = i_angular_rate_pitchfactor;
-	  			PID_FAC_Angular_Rate_Pitch[2] = d_angular_rate_pitchfactor;
-
-	  			PID_FAC_Rool[0] = p_roolfactor;
-	  			PID_FAC_Rool[1] = i_roolfactor;
-	  			PID_FAC_Rool[2] = d_roolfactor;
-
-	  			PID_FAC_Angular_Rate_Rool[0] = p_angular_rate_roolfactor;
-	  			PID_FAC_Angular_Rate_Rool[1] = i_angular_rate_roolfactor;
-	  			PID_FAC_Angular_Rate_Rool[2] = d_angular_rate_roolfactor;
-
-	  			PID_FAC_Yaw[0] = p_yawfactor;
-	  			PID_FAC_Yaw[1] = i_yawfactor;
-	  			PID_FAC_Yaw[2] = d_yawfactor;
-
-	  			PID_FAC_Angular_Rate_Yaw[0] = p_angular_rate_yawfactor;
-	  			PID_FAC_Angular_Rate_Yaw[1] = i_angular_rate_yawfactor;
-	  			PID_FAC_Angular_Rate_Yaw[2] = d_angular_rate_yawfactor;
 	  		}
 
 	  		if((TIM_inte_SD == 1) && (fresult == FR_OK) && (SD_enable_Flag == 1)){// 1ms, 1KHz
@@ -853,15 +922,7 @@ d_yawfactor = 0;
 	  		}
 
 
-	  		if(MYDRON.dron_status.Connection == DRON_DISCONNECTED){
-//	  			nRF24_TX_Mode();
-//	  			NRF24.NRF24_MODE = NRF24_Tx_Mode;
-//	  			nRF24_WriteTXPayload(NRF24.Txcode);
-//	  			nRF24_WaitTX();
-//
-//	  			nRF24_RX_Mode();
-//	  			NRF24.Status = NRF24_Ready;
-//	  			NRF24.NRF24_MODE = NRF24_Rx_Mode;
+	  		if(MYDRON.Status.Connection == DRON_DISCONNECTED){
 	  			if(NRF24.Step == 0){
 	  				NRF24.Step = 2;
 	  				NRF24.Status = NRF24_Ready;
@@ -992,7 +1053,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			if(NRF24.Step == 3 && NRF24.Timer_1 == 0){//todo
 				NRF24.Status = NRF24_Ready;
 				NRF24.NRF24_MODE = NRF24_Tx_Mode;
-				NRF24.TxData[10] = (MYDRON.dron_status.Connection == DRON_DISCONNECTED) ? 1: 0;
+				NRF24.TxData[10] = (MYDRON.Status.Connection == DRON_DISCONNECTED) ? 1: 0;
 
 				LED_6_1;
 				nRF24_WriteTXPayload_IT(NRF24.TxData);
@@ -1033,15 +1094,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			BMP180_start_measurment_temp_IT();
 			LED_5_0;
 
-
 			RGB_LED_For_BAT(MYDRON.batterysize);
 		}
-
+		if(i == 9){
+			BMP180_READ_temp_IT();
+		}
 		if(i == 10){//2
 			LED_5_1;
 			BMP180_start_measurment_pres_IT();
 			LED_5_0;
 		}
+
 
 		if(i == 36){
 			LED_5_1;
@@ -1050,9 +1113,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 
 		if(i == 40){//5
-			ampritude = startpres - pres;
+			BMP180_READ_pres_IT();
+			BMP180.ampritude = BMP180.startpres - BMP180.pres;
 
-			MYDRON.dronheight = (uint16_t)BMP180_GET_height();
+			MYDRON.dronheight = (int16_t)BMP180_GET_height();
 			convert_value_to_array(MYDRON.dronheight, NRF24.TxData, 0, 3);
 
 			Get_batteryvalue();
@@ -1073,13 +1137,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		if(NRF_TIM_Inte >= 1000){
 			LED_R_1;
-			MYDRON.dron_status.Connection = DRON_DISCONNECTED;
+			MYDRON.Status.Connection = DRON_DISCONNECTED;
 		}
-		if(MYDRON.dron_status.Connection == DRON_DISCONNECTED){
-			wanted_rool = 0;
-			wanted_pitch = 0;
-			wanted_yaw = 0;
-			wanted_thrust = DRON_SLOWFALING;
+		if(MYDRON.Status.Connection == DRON_DISCONNECTED){
+			MYDRON.Rool.Wanted = 0;
+			MYDRON.Pitch.Wanted = 0;
+			MYDRON.Yaw.Wanted = 0;
+			MYDRON.Thrust.Wanted = DRON_SLOWFALING;
 		}
 		(NRF24.Timer_1 != 0) ? NRF24.Timer_1--: 0;
 		(NRF24.Timer_2 != 0) ? NRF24.Timer_2--: 0;
@@ -1125,6 +1189,18 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)//pobieranie znakw z uart
 	}
 }
 
+void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c){
+//	if(BMP180.I2C_Tx_IRQ == 1){
+//		BMP180_READ_temp_IT();
+//		BMP180.I2C_Tx_IRQ = 0;
+//	}
+//	if(BMP180.I2C_Tx_IRQ == 2){
+//		BMP180_READ_pres_IT();
+//		BMP180.I2C_Tx_IRQ = 0;
+//	}
+}
+
+
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 	if(MPU6050.MPU6050_IRQ == 1){
 			MPU6050.MPU6050_IRQ = 0;
@@ -1135,65 +1211,67 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 			MPU6050_GET_ACCANDGYR_FILTRED(&data, Mag_Z);
 
 
-			now_pitch = data.x;
-			now_rool = data.y;
-			now_yaw = data.z;
+			MYDRON.Pitch.Now = data.x;
+			MYDRON.Rool.Now = data.y;
+			MYDRON.Yaw.Now = data.z;
 
 
-			wanted_rool = (float)wanted_rool_rx/10;
-			wanted_pitch = (float)wanted_pitch_rx/10;
-			wanted_yaw = 0;//(float)wanted_yaw_rx/10;
+			MYDRON.Rool.Wanted = (float)MYDRON.Rool.Wanted_rx/10;
+			MYDRON.Pitch.Wanted = (float)MYDRON.Pitch.Wanted_rx/10;
+			MYDRON.Yaw.Wanted = 0;//(float)MYDRON.Yaw.Wanted_rx/10;
 				  			/*
 				  				 * FDP
 				  				 */
-			wanted_rool = (wanted_rool * (FDP_FQ * looptime) / (1 + (FDP_FQ * looptime))) + (last_wanted_rool_rx * (1 / (1 + (FDP_FQ * looptime))));
-			wanted_pitch = (wanted_pitch * (FDP_FQ * looptime) / (1 + (FDP_FQ * looptime))) + (last_wanted_pitch_rx * (1 / (1 + (FDP_FQ * looptime))));
-			wanted_yaw = (wanted_yaw * (FDP_FQ * looptime) / (1 + (FDP_FQ * looptime))) + (last_wanted_yaw_rx * (1 / (1 + (FDP_FQ * looptime))));
+			MYDRON.Rool.Wanted = (MYDRON.Rool.Wanted * (FDP_FQ * looptime) / (1 + (FDP_FQ * looptime))) + (MYDRON.Rool.Last_Wanted_rx * (1 / (1 + (FDP_FQ * looptime))));
+			MYDRON.Pitch.Wanted = (MYDRON.Pitch.Wanted * (FDP_FQ * looptime) / (1 + (FDP_FQ * looptime))) + (MYDRON.Pitch.Last_Wanted_rx * (1 / (1 + (FDP_FQ * looptime))));
+			MYDRON.Yaw.Wanted = (MYDRON.Yaw.Wanted * (FDP_FQ * looptime) / (1 + (FDP_FQ * looptime))) + (MYDRON.Yaw.Last_Wanted_rx * (1 / (1 + (FDP_FQ * looptime))));
 
 
-			last_wanted_rool_rx = wanted_rool;
-			last_wanted_pitch_rx = wanted_pitch;
-			last_wanted_yaw_rx = wanted_yaw;
+			MYDRON.Rool.Last_Wanted_rx = MYDRON.Rool.Wanted;
+			MYDRON.Pitch.Last_Wanted_rx = MYDRON.Pitch.Wanted;
+			MYDRON.Yaw.Last_Wanted_rx= MYDRON.Yaw.Wanted;
 
 
-		  	pitch_error = wanted_pitch - now_pitch;
-		  	rool_error = wanted_rool - now_rool;
-		  	yaw_error = wanted_yaw - now_yaw;
-		  	pitch_ar_error = pid_pitch - MPU6050.Gyr.gx;
-		  	rool_ar_error = pid_rool - MPU6050.Gyr.gy;
-		  	yaw_ar_error = pid_yaw - MPU6050.Gyr.gz;
+			MYDRON.Pitch.Angle_Error = MYDRON.Pitch.Wanted - MYDRON.Pitch.Now;
+			MYDRON.Rool.Angle_Error = MYDRON.Rool.Wanted - MYDRON.Rool.Now;
+		  	MYDRON.Yaw.Angle_Error = MYDRON.Yaw.Wanted - MYDRON.Yaw.Now;
+		  	MYDRON.Pitch.Angular_Rate_Error = MYDRON.PID_Pitch.Angle_Value- MPU6050.Gyr.gx;
+		  	MYDRON.Rool.Angular_Rate_Error = MYDRON.PID_Rool.Angle_Value- MPU6050.Gyr.gy;
+		  	MYDRON.Yaw.Angular_Rate_Error = MYDRON.PID_Yaw.Angle_Value- MPU6050.Gyr.gz;
 
 
-			error_sum_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_pitch : error_sum_pitch + (pitch_error);//pitch_error -> pitch_error
-			error_sum_rool = (MYDRON.ROOL_STA != 0) ? error_sum_rool : error_sum_rool + (rool_error);//rool_error
-			error_sum_yaw = (MYDRON.YAW_STA != 0) ? error_sum_yaw : error_sum_yaw + (yaw_error);//yaw_error
+			MYDRON.Pitch.Angle_Error_Sum = (MYDRON.PID_Pitch.Status != 0) ? MYDRON.Pitch.Angle_Error_Sum : MYDRON.Pitch.Angle_Error_Sum + (MYDRON.Pitch.Angle_Error);//pitch_error -> pitch_error
+			MYDRON.Rool.Angle_Error_Sum = (MYDRON.PID_Rool.Status != 0) ? MYDRON.Rool.Angle_Error_Sum : MYDRON.Rool.Angle_Error_Sum + (MYDRON.Rool.Angle_Error);//rool_error
+			MYDRON.Yaw.Angle_Error_Sum = (MYDRON.PID_Yaw.Status != 0) ? MYDRON.Yaw.Angle_Error_Sum : MYDRON.Yaw.Angle_Error_Sum + (MYDRON.Yaw.Angle_Error);//yaw_error
 
-			error_sum_angular_rate_pitch = (MYDRON.PITCH_STA != 0) ? error_sum_angular_rate_pitch : error_sum_angular_rate_pitch + (pitch_ar_error);//pitch_ar_error
-			error_sum_angular_rate_rool = (MYDRON.ROOL_STA != 0) ? error_sum_angular_rate_rool : error_sum_angular_rate_rool + (rool_ar_error);
-			error_sum_angular_rate_yaw = (MYDRON.YAW_STA != 0) ? error_sum_angular_rate_yaw : error_sum_angular_rate_yaw + (yaw_ar_error);
-
-
-			PID_cal(&pid_pitch, PID_FAC_Pitch, 1);// angle control
-			PID_cal(&pid_rool, PID_FAC_Rool, 2);
-			PID_cal(&pid_yaw, PID_FAC_Yaw, 3);
-
-			PID_cal(&pid_angular_rate_pitch, PID_FAC_Angular_Rate_Pitch, 4);// angle rate control
-			PID_cal(&pid_angular_rate_rool, PID_FAC_Angular_Rate_Rool, 5);
-			PID_cal(&pid_angular_rate_yaw, PID_FAC_Angular_Rate_Yaw, 6);
+			MYDRON.Pitch.Angular_Rate_Error_Sum = (MYDRON.PID_Pitch.Status != 0) ? MYDRON.Pitch.Angular_Rate_Error_Sum : MYDRON.Pitch.Angular_Rate_Error_Sum + (MYDRON.Pitch.Angular_Rate_Error);//pitch_ar_error
+			MYDRON.Rool.Angular_Rate_Error_Sum = (MYDRON.PID_Rool.Status != 0) ? MYDRON.Rool.Angular_Rate_Error_Sum : MYDRON.Rool.Angular_Rate_Error_Sum + (MYDRON.Rool.Angular_Rate_Error);
+			MYDRON.Yaw.Angular_Rate_Error_Sum = (MYDRON.PID_Yaw.Status != 0) ? MYDRON.Yaw.Angular_Rate_Error_Sum : MYDRON.Yaw.Angular_Rate_Error_Sum + (MYDRON.Yaw.Angular_Rate_Error);
 
 
-			old_error_pitch = pitch_error;
-			old_error_rool = rool_error;
-			old_error_yaw = yaw_error;
+//			PID_cal(&MYDRON.PID_Pitch.Angle_Value, MYDRON.PID_Pitch.Angle_Factors, 1);// angle control
+//			PID_cal(&MYDRON.PID_Rool.Angle_Value, MYDRON.PID_Rool.Angle_Factors, 2);
+//			PID_cal(&MYDRON.PID_Yaw.Angle_Value, MYDRON.PID_Yaw.Angle_Factors, 3);
+//
+//			PID_cal(&MYDRON.PID_Pitch.Angular_Rate_Value, MYDRON.PID_Pitch.Angular_Rate_Factors, 4);// angle rate control
+//			PID_cal(&MYDRON.PID_Rool.Angular_Rate_Value, MYDRON.PID_Rool.Angular_Rate_Factors, 5);
+//			PID_cal(&MYDRON.PID_Yaw.Angular_Rate_Value, MYDRON.PID_Yaw.Angular_Rate_Factors, 6);
 
-			old_error_angular_rate_pitch = pitch_ar_error;
-			old_error_angular_rate_rool = rool_ar_error;
-			old_error_angular_rate_yaw = wanted_yaw - MPU6050.Gyr.gz;
+			PID_call(MYDRON);
 
 
-			MYDRON.ROOL 	= (pid_angular_rate_rool > 5000) ? ROOL_MAX_VAL(): (pid_angular_rate_rool < -5000) ? ROOL_MIN_VAL(): ROOL_GOOD_VAL();
-			MYDRON.PITCH 	= (pid_angular_rate_pitch > 5000) ? PITCH_MAX_VAL(): (pid_angular_rate_pitch < -5000) ? PITCH_MIN_VAL(): PITCH_GOOD_VAL();
-			MYDRON.YAW 		= (pid_angular_rate_yaw > 5000) ? YAW_MAX_VAL(): (pid_angular_rate_yaw < -5000) ? YAW_MIN_VAL(): YAW_GOOD_VAL();
+			MYDRON.Pitch.Old_Angle_Error = MYDRON.Pitch.Angle_Error;
+			MYDRON.Rool.Old_Angle_Error = MYDRON.Rool.Angle_Error;
+			MYDRON.Yaw.Old_Angle_Error = MYDRON.Yaw.Angle_Error;
+
+			MYDRON.Pitch.Old_Angle_Error = MYDRON.Pitch.Angular_Rate_Error;
+			MYDRON.Rool.Old_Angle_Error = MYDRON.Rool.Angular_Rate_Error;
+			MYDRON.Yaw.Old_Angle_Error = MYDRON.Yaw.Angular_Rate_Error;
+
+
+			MYDRON.Pitch.Value  	= (MYDRON.PID_Pitch.Angular_Rate_Value > 5000) ? PITCH_MAX_VAL(): (MYDRON.PID_Pitch.Angular_Rate_Value < -5000) ? PITCH_MIN_VAL(): PITCH_GOOD_VAL();
+			MYDRON.Rool.Value 	    = (MYDRON.PID_Rool.Angular_Rate_Value > 5000) ? ROOL_MAX_VAL(): (MYDRON.PID_Rool.Angular_Rate_Value < -5000) ? ROOL_MIN_VAL(): ROOL_GOOD_VAL();
+			MYDRON.Yaw.Value  		= (MYDRON.PID_Yaw.Angular_Rate_Value > 5000) ? YAW_MAX_VAL(): (MYDRON.PID_Yaw.Angular_Rate_Value < -5000) ? YAW_MIN_VAL(): YAW_GOOD_VAL();
 
 
 		/*
@@ -1209,39 +1287,39 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 
 
 			Thrust_filter(1);
-			if(MYDRON.THRUST > thrust_limit){
-				MYDRON.THRUST = thrust_limit;
+			if(MYDRON.Thrust.Now > MYDRON.Thrust.Thrust_Limit){
+				MYDRON.Thrust.Now = MYDRON.Thrust.Thrust_Limit;
 			}
 
 
-			Stack_Push(WartoscBezwgledna(PID_FAC_Pitch[4]));
-			Stack_Push(WartoscBezwgledna(PID_FAC_Rool[4]));
-			Stack_Push(now_pitch);
-			Stack_Push(now_rool);
+			Stack_Push(WartoscBezwgledna(MYDRON.PID_Pitch.Angle_Factors[4]));
+			Stack_Push(WartoscBezwgledna(MYDRON.PID_Pitch.Angle_Factors[4]));
+			Stack_Push(MYDRON.Pitch.Now);
+			Stack_Push(MYDRON.Rool.Now);
 
 
-			SPEED1 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL - MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : max_speed;//trust 7000 max
-			SPEED2 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL - MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : max_speed;//
-			SPEED3 = (((uint32_t)((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) + MYDRON.ROOL + MYDRON.PITCH - MYDRON.YAW + min_speed + 500) : max_speed;//
-			SPEED4 = (((uint32_t)((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500)) < max_speed) ? ((MYDRON.THRUST*0.7) - MYDRON.ROOL + MYDRON.PITCH + MYDRON.YAW + min_speed + 500) : max_speed;//
+			MYDRON.Thrust.Speed_1 = (((uint32_t)((MYDRON.Thrust.Now*0.7) + MYDRON.Rool.Value - MYDRON.Pitch.Value + MYDRON.Yaw.Value + min_speed + 500)) < max_speed) ? ((MYDRON.Thrust.Now*0.7) + MYDRON.Rool.Value - MYDRON.Pitch.Value + MYDRON.Yaw.Value + min_speed + 500) : max_speed;//trust 7000 max
+			MYDRON.Thrust.Speed_2 = (((uint32_t)((MYDRON.Thrust.Now*0.7) - MYDRON.Rool.Value - MYDRON.Pitch.Value - MYDRON.Yaw.Value + min_speed + 500)) < max_speed) ? ((MYDRON.Thrust.Now*0.7) - MYDRON.Rool.Value - MYDRON.Pitch.Value - MYDRON.Yaw.Value + min_speed + 500) : max_speed;//
+			MYDRON.Thrust.Speed_3 = (((uint32_t)((MYDRON.Thrust.Now*0.7) + MYDRON.Rool.Value + MYDRON.Pitch.Value - MYDRON.Yaw.Value + min_speed + 500)) < max_speed) ? ((MYDRON.Thrust.Now*0.7) + MYDRON.Rool.Value + MYDRON.Pitch.Value - MYDRON.Yaw.Value + min_speed + 500) : max_speed;//
+			MYDRON.Thrust.Speed_4 = (((uint32_t)((MYDRON.Thrust.Now*0.7) - MYDRON.Rool.Value + MYDRON.Pitch.Value + MYDRON.Yaw.Value + min_speed + 500)) < max_speed) ? ((MYDRON.Thrust.Now*0.7) - MYDRON.Rool.Value + MYDRON.Pitch.Value + MYDRON.Yaw.Value + min_speed + 500) : max_speed;//
 
-			if(SPEED1 != OLD_SPEED1){
-				ESC_1_SPEED(SPEED1);
+			if( MYDRON.Thrust.Speed_1 != MYDRON.Thrust.Old_Speed_1){
+				ESC_1_SPEED( MYDRON.Thrust.Speed_1);
 			}
-			if(SPEED2 != OLD_SPEED2){
-				ESC_2_SPEED(SPEED2);
+			if( MYDRON.Thrust.Speed_2 != MYDRON.Thrust.Old_Speed_2){
+				ESC_2_SPEED( MYDRON.Thrust.Speed_2);
 			}
-			if(SPEED3 != OLD_SPEED3){
-				ESC_3_SPEED(SPEED3);
+			if( MYDRON.Thrust.Speed_3 != MYDRON.Thrust.Old_Speed_3){
+				ESC_3_SPEED( MYDRON.Thrust.Speed_3);
 			}
-			if(SPEED4 != OLD_SPEED4){
-				ESC_4_SPEED(SPEED4);
+			if( MYDRON.Thrust.Speed_4 != MYDRON.Thrust.Old_Speed_4){
+				ESC_4_SPEED( MYDRON.Thrust.Speed_4);
 			}
 
-			OLD_SPEED1 = SPEED1;
-			OLD_SPEED2 = SPEED2;
-			OLD_SPEED3 = SPEED3;
-			OLD_SPEED4 = SPEED4;
+			MYDRON.Thrust.Old_Speed_1 = MYDRON.Thrust.Speed_1;
+			MYDRON.Thrust.Old_Speed_2 = MYDRON.Thrust.Speed_2;
+			MYDRON.Thrust.Old_Speed_3 = MYDRON.Thrust.Speed_3;
+			MYDRON.Thrust.Old_Speed_4 = MYDRON.Thrust.Speed_4;
 
 			LED_G_0;
 	}
@@ -1252,13 +1330,13 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 		Old_Mag_Z = Mag_Z;
 	}
 	if(BMP180_IRQ == 1){
-		temperature = BMP180_GET_temp_IT();
-		temp = BMP180_GET_temp(temperature);
+		BMP180.Raw_Data.temperature = BMP180_GET_temp_IT();
+		BMP180.temp = BMP180_GET_temp(BMP180.Raw_Data.temperature);
 		BMP180_IRQ = 0;
 	}
 	if(BMP180_IRQ == 2){
-		pressure = BMP180_GET_pres_IT();
-		pres = BMP180_GET_pres(pressure);
+		BMP180.Raw_Data.pressure = BMP180_GET_pres_IT();
+		BMP180.pres = BMP180_GET_pres(BMP180.Raw_Data.pressure);
 		BMP180_IRQ = 0;
 	}
 }
@@ -1300,13 +1378,13 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){//todo
 		}
 
 		if(loopnum == 10){
-			convert_array_to_value(NRF24.RxData, &wanted_pitch_v, 0, 2);//pitch
-			convert_array_to_value(NRF24.RxData, &wanted_roll_v, 3, 5);// pid_angular_rate_rool wanted_roll_v
+			convert_array_to_value(NRF24.RxData, &MYDRON.Pitch.Wanted_v, 0, 2);//pitch
+			convert_array_to_value(NRF24.RxData, &MYDRON.Rool.Wanted_v, 3, 5);// pid_angular_rate_rool wanted_roll_v
 			if(wobble_strenght == 1){
-				convert_array_to_value(NRF24.RxData, &wanted_thrust, 6, 8);//
+				convert_array_to_value(NRF24.RxData, &MYDRON.Thrust.Wanted, 6, 8);//
 			}
-			convert_array_to_value(NRF24.RxData, &wanted_yaw_v, 9, 11);//
-			MYDRON.dron_status.Connection = DRON_CONNECTED;
+			convert_array_to_value(NRF24.RxData, &MYDRON.Yaw.Wanted_v, 9, 11);//
+			MYDRON.Status.Connection = DRON_CONNECTED;
 
 			if(NRF24.RxData[23] == 1){
 				ESC_POWER_1;
@@ -1317,28 +1395,28 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){//todo
 					}
 			}
 
-			if(wanted_thrust == 9999){
-				MYDRON.THRUST_flag = THRUST_MAX;
+			if(MYDRON.Thrust.Wanted == 9999){
+				MYDRON.Thrust.Max_Flag = THRUST_MAX;
 		  	}
-			wanted_thrust = wanted_thrust * 20;
-			wanted_thrust = wanted_thrust - 10000;
-			if(wanted_thrust < 0){
-				wanted_thrust = 0;
+			MYDRON.Thrust.Wanted = MYDRON.Thrust.Wanted * 20;
+			MYDRON.Thrust.Wanted = MYDRON.Thrust.Wanted - 10000;
+			if(MYDRON.Thrust.Wanted < 0){
+				MYDRON.Thrust.Wanted = 0;
 			}
 
-			wanted_rool_rx = (wanted_roll_v - 500)*wanted_rool_factro;//wanted_rool_rx (-90 <-> 90)
-			wanted_pitch_rx = (wanted_pitch_v - 500)*wanted_pitch_factro;// (-450 <-> 450)
-			wanted_yaw_rx = (wanted_yaw_v - 500)*wanted_yaw_factro;// wanted yaw is in deg/s
+			MYDRON.Rool.Wanted_rx = (MYDRON.Rool.Wanted_v - 500)*MYDRON.Rool.Wanted_Factor;//MYDRON.Rool.Wanted_rx (-90 <-> 90)
+			MYDRON.Pitch.Wanted_rx = (MYDRON.Pitch.Wanted_v - 500)*MYDRON.Pitch.Wanted_Factor;// (-450 <-> 450)
+			MYDRON.Yaw.Wanted_rx = (MYDRON.Yaw.Wanted_v - 500)*MYDRON.Yaw.Wanted_Factor;// wanted yaw is in deg/s
 
-			wanted_rool_rx = (wanted_rool_rx >= 300) ? 300 : (wanted_rool_rx <= -300) ? -300 : wanted_rool_rx;
-			wanted_pitch_rx = (wanted_pitch_rx >= 300) ? 300 : (wanted_pitch_rx <= -300) ? -300 : wanted_pitch_rx;
-			wanted_yaw_rx = (wanted_yaw_rx >= 300) ? 300 : (wanted_yaw_rx <= -300) ? -300 : wanted_yaw_rx;
+			MYDRON.Rool.Wanted_rx = (MYDRON.Rool.Wanted_rx >= 300) ? 300 : (MYDRON.Rool.Wanted_rx <= -300) ? -300 : MYDRON.Rool.Wanted_rx;
+			MYDRON.Pitch.Wanted_rx = (MYDRON.Pitch.Wanted_rx >= 300) ? 300 : (MYDRON.Pitch.Wanted_rx <= -300) ? -300 : MYDRON.Pitch.Wanted_rx;
+			MYDRON.Yaw.Wanted_rx = (MYDRON.Yaw.Wanted_rx >= 300) ? 300 : (MYDRON.Yaw.Wanted_rx <= -300) ? -300 : MYDRON.Yaw.Wanted_rx;
 
 			NRF_TIM_Inte = 0;
 		}
 
 		if(loopnum > 0 && loopnum < 10){
-			MYDRON.dron_status.Connection = DRON_CONNECTION_ERROR;
+			MYDRON.Status.Connection = DRON_CONNECTION_ERROR;
 		}
 		LED_Y_0;
 	}
@@ -1549,9 +1627,9 @@ void convert_value_to_array3(float value, uint8_t *arraytoputin, uint8_t rangebe
  * SPEED3	5
  * SPEED4	5
  *
- * error_sum_pitch 7 8
- * error_sum_rool 7
- * error_sum_yaw 7
+ * MYDRON.Pitch.Angle_Error_pitch 7 8
+ * MYDRON.Pitch.Angle_Error_rool 7
+ * MYDRON.Pitch.Angle_Error_yaw 7
  *
  * data.x 6 7
  * data.y 6
@@ -1573,27 +1651,27 @@ void uSD_Card_SendData_To_Buffer(uint32_t a){
 	 DataToSendBuffer[(8 + (128*a))] = ' ';
 
 
-	convert_value_to_array2(SPEED1, DataToSendBuffer, (9 + (128*a)), (15 + (128*a)));
+	convert_value_to_array2(MYDRON.Thrust.Speed_1, DataToSendBuffer, (9 + (128*a)), (15 + (128*a)));
 	 DataToSendBuffer[(15 + (128*a))] = ' ';
-	convert_value_to_array2(SPEED2, DataToSendBuffer, (16 + (128*a)), (22 + (128*a)));
+	convert_value_to_array2(MYDRON.Thrust.Speed_2, DataToSendBuffer, (16 + (128*a)), (22 + (128*a)));
 	 DataToSendBuffer[(22 + (128*a))] = ' ';
-	convert_value_to_array2(SPEED3, DataToSendBuffer, (23 + (128*a)), (29 + (128*a)));
+	convert_value_to_array2(MYDRON.Thrust.Speed_3, DataToSendBuffer, (23 + (128*a)), (29 + (128*a)));
 	 DataToSendBuffer[(29 + (128*a))] = ' ';
-	convert_value_to_array2(SPEED4, DataToSendBuffer, (30 + (128*a)), (36 + (128*a)));
+	convert_value_to_array2(MYDRON.Thrust.Speed_4, DataToSendBuffer, (30 + (128*a)), (36 + (128*a)));
 	 DataToSendBuffer[(36 + (128*a))] = ' ';
 
-	convert_value_to_array3(wanted_rool, DataToSendBuffer, (37 + (128*a)), (45 + (128*a)));
+	convert_value_to_array3(MYDRON.Rool.Wanted, DataToSendBuffer, (37 + (128*a)), (45 + (128*a)));
 	 DataToSendBuffer[(45 + (128*a))] = ' ';
-	convert_value_to_array3(wanted_pitch, DataToSendBuffer, (46 + (128*a)), (54 + (128*a)));
+	convert_value_to_array3(MYDRON.Pitch.Wanted, DataToSendBuffer, (46 + (128*a)), (54 + (128*a)));
 	 DataToSendBuffer[(54 + (128*a))] = ' ';
-	convert_value_to_array3(wanted_yaw, DataToSendBuffer, (55 + (128*a)), (63 + (128*a)));
+	convert_value_to_array3(MYDRON.Yaw.Wanted, DataToSendBuffer, (55 + (128*a)), (63 + (128*a)));
 	 DataToSendBuffer[(63 + (128*a))] = ' ';
 
-	convert_value_to_array2(error_sum_pitch, DataToSendBuffer, (64 + (128*a)), (72 + (128*a)));
+	convert_value_to_array2(MYDRON.Pitch.Angle_Error_Sum, DataToSendBuffer, (64 + (128*a)), (72 + (128*a)));
 	 DataToSendBuffer[(72 + (128*a))] = ' ';
-	convert_value_to_array2(error_sum_rool, DataToSendBuffer, (73 + (128*a)), (81 + (128*a)));
+	convert_value_to_array2(MYDRON.Rool.Angle_Error_Sum, DataToSendBuffer, (73 + (128*a)), (81 + (128*a)));
 	 DataToSendBuffer[(81 + (128*a))] = ' ';
-	convert_value_to_array2(error_sum_yaw, DataToSendBuffer, (82 + (128*a)), (90 + (128*a)));
+	convert_value_to_array2(MYDRON.Yaw.Angle_Error_Sum, DataToSendBuffer, (82 + (128*a)), (90 + (128*a)));
 	 DataToSendBuffer[(90 + (128*a))] = ' ';
 
 	convert_value_to_array3(data.x, DataToSendBuffer, (91 + (128*a)), (98 + (128*a)));
@@ -1606,7 +1684,7 @@ void uSD_Card_SendData_To_Buffer(uint32_t a){
 
 	convert_value_to_array2(MYDRON.batterysize, DataToSendBuffer, (115 + (128*a)), (119 + (128*a)));
 	 DataToSendBuffer[(119 + (128*a))] = ' ';
-	convert_value_to_array2(MYDRON.dron_status.Connection, DataToSendBuffer, (120 + (128*a)), (122 + (128*a)));
+	convert_value_to_array2(MYDRON.Status.Connection, DataToSendBuffer, (120 + (128*a)), (122 + (128*a)));
 	 DataToSendBuffer[(122 + (128*a))] = ' ';
 	convert_value_to_array2(Mag_Z, DataToSendBuffer, (123 + (128*a)), (127 + (128*a)));
 	 DataToSendBuffer[(128 + (128*a))] = '\n';
@@ -1626,40 +1704,40 @@ void Stack_Push(float data){
 }
 
 int16_t ROOL_MAX_VAL(void){
-	MYDRON.ROOL_STA = 2;
+	MYDRON.PID_Rool.Status = 2;
 	return 5000;
 }
 int16_t ROOL_MIN_VAL(void){
-	MYDRON.ROOL_STA = 1;
+	MYDRON.PID_Rool.Status = 1;
 	return -5000;
 }
 int16_t PITCH_MAX_VAL(void){
-	MYDRON.PITCH_STA = 2;
+	MYDRON.PID_Pitch.Status = 2;
 	return 5000;
 }
 int16_t PITCH_MIN_VAL(void){
-	MYDRON.PITCH_STA = 1;
+	MYDRON.PID_Pitch.Status = 1;
 	return -5000;
 }
 int16_t YAW_MAX_VAL(void){
-	MYDRON.YAW_STA = 2;
+	MYDRON.PID_Yaw.Status = 2;
 	return 5000;
 }
 int16_t YAW_MIN_VAL(void){
-	MYDRON.YAW_STA = 1;
+	MYDRON.PID_Yaw.Status = 1;
 	return -5000;
 }
 int16_t ROOL_GOOD_VAL(void){
-	MYDRON.ROOL_STA = 0;
-	return pid_angular_rate_rool;
+	MYDRON.PID_Rool.Status = 0;
+	return MYDRON.PID_Rool.Angular_Rate_Value;
 }
 int16_t PITCH_GOOD_VAL(void){
-	MYDRON.PITCH_STA = 0;
-	return pid_angular_rate_pitch;
+	MYDRON.PID_Pitch.Status = 0;
+	return MYDRON.PID_Pitch.Angular_Rate_Value;
 }
 int16_t YAW_GOOD_VAL(void){
-	MYDRON.YAW_STA = 0;
-	return pid_angular_rate_yaw;
+	MYDRON.PID_Yaw.Status = 0;
+	return MYDRON.PID_Yaw.Angular_Rate_Value;
 }
 /* USER CODE END 4 */
 

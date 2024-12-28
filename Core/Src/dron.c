@@ -1,50 +1,50 @@
 #include "main.h"
 
 extern struct Dron MYDRON;
-extern float wanted_pitch;
-extern float wanted_rool;
-extern float wanted_yaw;
-extern int16_t wanted_thrust;
-extern float old_error_pitch;
-extern float old_error_rool;
-extern float old_error_yaw;
-extern float now_pitch;
-extern float now_rool;
-extern float now_yaw;
+//extern float wanted_pitch;
+//extern float wanted_rool;
+//extern float wanted_yaw;
+//extern int16_t wanted_thrust;
+//extern float old_error_pitch;
+//extern float old_error_rool;
+//extern float old_error_yaw;
+//extern float now_pitch;
+//extern float now_rool;
+//extern float now_yaw;
 extern uint32_t analogmess;
 extern float looptime;
-extern double thrust_values;
-extern int32_t error_sum_pitch;
-extern int32_t error_sum_rool;
-extern int32_t error_sum_yaw;
+//extern double thrust_values;
+//extern int32_t error_sum_pitch;
+//extern int32_t error_sum_rool;
+//extern int32_t error_sum_yaw;
 extern struct Stack Old_Data_stack;
-extern float PID_FAC_Pitch[5];
-extern float PID_FAC_Rool[5];
-extern float PID_FAC_Yaw[5];
-extern int32_t error_sum_angular_rate_pitch;
-extern int32_t error_sum_angular_rate_rool;
-extern int32_t error_sum_angular_rate_yaw;
-extern float old_error_angular_rate_pitch;// ruznica
-extern float old_error_angular_rate_rool;
-extern float old_error_angular_rate_yaw;
-extern float PID_FAC_Angular_Rate_Pitch[5];
-extern float PID_FAC_Angular_Rate_Rool[5];
-extern float PID_FAC_Angular_Rate_Yaw[5];
-extern float pid_pitch;
-extern float pid_yaw;
-extern float pid_rool;
-extern int16_t wanted_pitch_rx;
+//extern float PID_FAC_Pitch[5];
+//extern float PID_FAC_Rool[5];
+//extern float PID_FAC_Yaw[5];
+//extern int32_t error_sum_angular_rate_pitch;
+//extern int32_t error_sum_angular_rate_rool;
+//extern int32_t error_sum_angular_rate_yaw;
+//extern float old_error_angular_rate_pitch;// ruznica
+//extern float old_error_angular_rate_rool;
+//extern float old_error_angular_rate_yaw;
+//extern float PID_FAC_Angular_Rate_Pitch[5];
+//extern float PID_FAC_Angular_Rate_Rool[5];
+//extern float PID_FAC_Angular_Rate_Yaw[5];
+//extern float pid_pitch;
+//extern float pid_yaw;
+//extern float pid_rool;
+//extern int16_t wanted_pitch_rx;
 
 extern uint16_t FDP_D_Gain_AR;
 extern uint16_t FDP_D_Gain;
 
 
-extern float pitch_error;
-extern float rool_error;
-extern float yaw_error;
-extern float pitch_ar_error;
-extern float rool_ar_error;
-extern float yaw_ar_error;
+//extern float pitch_error;
+//extern float rool_error;
+//extern float yaw_error;
+//extern float pitch_ar_error;
+//extern float rool_ar_error;
+//extern float yaw_ar_error;
 
 /*
  * Thrust_filter
@@ -58,18 +58,18 @@ void Thrust_filter(double factor){
 	int16_t thrust_error;
 	double thrust_function;
 	uint8_t negflag = 0;
-	error_pitch = (float)(pitch_error);
-	error_rool 	= (float)(rool_error);
+	error_pitch = (float)(MYDRON.Pitch.Angle_Error);
+	error_rool 	= (float)(MYDRON.Rool.Angle_Error);
 
 	error_pitch = WartoscBezwgledna(error_pitch);
 	error_rool 	= WartoscBezwgledna(error_rool);
 
 	error_sum = pow(error_pitch + error_rool + 1, 5);
-	if(wanted_thrust > 10500){
-		wanted_thrust = 10500;
+	if(MYDRON.Thrust.Wanted > 10500){
+		MYDRON.Thrust.Wanted = 10500;
 	}
 
-	thrust_error = wanted_thrust - MYDRON.THRUST;
+	thrust_error = MYDRON.Thrust.Wanted - MYDRON.Thrust.Now;
 	if(thrust_error < 0){
 		thrust_error = WartoscBezwgledna(thrust_error);
 		negflag = 1;
@@ -86,18 +86,18 @@ void Thrust_filter(double factor){
 
 
 		if(thrust_add < 1 && thrust_add > -1){
-			thrust_values = thrust_values + thrust_add;
+			MYDRON.Thrust.Values = MYDRON.Thrust.Values + thrust_add;
 		}
 		else{
-			MYDRON.THRUST = MYDRON.THRUST + thrust_add;
+			MYDRON.Thrust.Now = MYDRON.Thrust.Now + thrust_add;
 		}
 
-		if(thrust_values >= 1 || thrust_values <= -1){
-			MYDRON.THRUST = MYDRON.THRUST + thrust_values;
-			thrust_values = 0;
+		if(MYDRON.Thrust.Values >= 1 || MYDRON.Thrust.Values <= -1){
+			MYDRON.Thrust.Now = MYDRON.Thrust.Now + MYDRON.Thrust.Values;
+			MYDRON.Thrust.Values = 0;
 		}
-		if(MYDRON.THRUST > 10000){//ograniczenie THRUST
-			MYDRON.THRUST = 10000;
+		if(MYDRON.Thrust.Now > 10000){//ograniczenie THRUST
+			MYDRON.Thrust.Now = 10000;
 		}
 	}
 }
@@ -152,7 +152,7 @@ float Wobble_Detect(void){
 	if(angle_pitch_error_sum < 1 && angle_pitch_error_sum > -1){
 		if(D_part_pitch > 100000){
 			wobble_strenght = 1 + (D_part_pitch/100000);
-			MYDRON.dron_status.wobble = WOBBLE_PITCH;
+			MYDRON.Status.Wobble = WOBBLE_PITCH;
 
 //			if(angle_rool_error_sum < 1 && angle_rool_error_sum > -1){ todo odkomentowac
 //				if(D_part_rool > 100000){
@@ -182,7 +182,7 @@ float Wobble_Detect(void){
 
 void Wobble_handler(void){
 	Thrust_filter(1);
-	if(MYDRON.dron_status.wobble == WOBBLE_PITCH){
+	if(MYDRON.Status.Wobble == WOBBLE_PITCH){
 //		PID_FAC_Pitch[0] = PID_FAC_Pitch[0] - 0.01;
 //		PID_FAC_Pitch[2] = PID_FAC_Pitch[2] + 1;
 //		if(PID_FAC_Pitch[0] < 1){
@@ -190,7 +190,7 @@ void Wobble_handler(void){
 //		}
 	}
 
-	if(MYDRON.dron_status.wobble == WOBBLE_ROOL){
+	if(MYDRON.Status.Wobble == WOBBLE_ROOL){
 //		PID_FAC_Rool[0] = PID_FAC_Rool[0] - 0.01;
 //		PID_FAC_Rool[2] = PID_FAC_Rool[2] + 1;
 //		if(PID_FAC_Rool[0] < 1){
@@ -198,7 +198,7 @@ void Wobble_handler(void){
 //		}
 	}
 
-	if(MYDRON.dron_status.wobble == WOBBLE_PITCHandROOL){
+	if(MYDRON.Status.Wobble == WOBBLE_PITCHandROOL){
 //		PID_FAC_Pitch[0] = PID_FAC_Pitch[0] - 0.01;
 //		PID_FAC_Pitch[2] = PID_FAC_Pitch[2] + 1;
 //		if(PID_FAC_Pitch[0] < 1){
@@ -225,7 +225,7 @@ float APV(float P_factor, float factor, uint8_t mov){
 	switch(mov){
 		case 1:
 
-			new_factor = P_factor - MYDRON.THRUST/factor;
+			new_factor = P_factor - MYDRON.Thrust.Now/factor;
 			if(new_factor < 1){
 				new_factor = 1;
 			}
@@ -233,7 +233,7 @@ float APV(float P_factor, float factor, uint8_t mov){
 
 		case 2:
 
-			new_factor = P_factor - MYDRON.THRUST/factor;
+			new_factor = P_factor - MYDRON.Thrust.Now/factor;
 			if(new_factor < 1){
 				new_factor = 1;
 			}
@@ -253,7 +253,7 @@ float ADV(float D_factor, float factor, uint8_t mov){
 	switch(mov){
 		case 1:
 
-			new_factor = D_factor - MYDRON.THRUST/factor;
+			new_factor = D_factor - MYDRON.Thrust.Now/factor;
 			if(new_factor < 1){
 				new_factor = 1;
 			}
@@ -261,7 +261,7 @@ float ADV(float D_factor, float factor, uint8_t mov){
 
 		case 2:
 
-			new_factor = D_factor - MYDRON.THRUST/factor;
+			new_factor = D_factor - MYDRON.Thrust.Now/factor;
 			if(new_factor < 1){
 				new_factor = 1;
 			}
@@ -271,144 +271,154 @@ float ADV(float D_factor, float factor, uint8_t mov){
 }
 
 void acceleration_stabilizer(float *g_ax, float *PID_FAC){//todo
-
-	*g_ax = PID_FAC[0]*(wanted_pitch - *g_ax);
-
-	*g_ax = *g_ax + PID_FAC[1]*error_sum_pitch*looptime;
-
-	*g_ax = *g_ax + PID_FAC[2]*((wanted_pitch - *g_ax) - old_error_pitch);
+//
+//	*g_ax = PID_FAC[0]*(wanted_pitch - *g_ax);
+//
+//	*g_ax = *g_ax + PID_FAC[1]*error_sum_pitch*looptime;
+//
+//	*g_ax = *g_ax + PID_FAC[2]*((wanted_pitch - *g_ax) - old_error_pitch);
 
 }
 
+void PID_call(Dron Paramiters){
+	Paramiters.PID_Pitch.Angle_Value = (Paramiters.Pitch.Angle_Error * Paramiters.PID_Pitch.Angle_Factors[0]) + (Paramiters.Pitch.Angle_Error_Sum * Paramiters.PID_Pitch.Angle_Factors[1] * looptime) + ((Paramiters.Pitch.Angle_Error - Paramiters.Pitch.Old_Angle_Error) * Paramiters.PID_Pitch.Angle_Factors[2]);
+	Paramiters.PID_Rool.Angle_Value = (Paramiters.Rool.Angle_Error * Paramiters.PID_Rool.Angle_Factors[0]) + (Paramiters.Rool.Angle_Error_Sum * Paramiters.PID_Rool.Angle_Factors[1] * looptime) + ((Paramiters.Rool.Angle_Error - Paramiters.Rool.Old_Angle_Error) * Paramiters.PID_Rool.Angle_Factors[2]);
+	Paramiters.PID_Yaw.Angle_Value = (Paramiters.Yaw.Angle_Error * Paramiters.PID_Yaw.Angle_Factors[0]) + (Paramiters.Yaw.Angle_Error_Sum * Paramiters.PID_Yaw.Angle_Factors[1] * looptime) + ((Paramiters.Yaw.Angle_Error - Paramiters.Yaw.Old_Angle_Error) * Paramiters.PID_Yaw.Angle_Factors[2]);
+
+	Paramiters.PID_Pitch.Angular_Rate_Value = (Paramiters.Pitch.Angular_Rate_Error * Paramiters.PID_Pitch.Angular_Rate_Factors[0]) + (Paramiters.Pitch.Angular_Rate_Error_Sum * Paramiters.PID_Pitch.Angular_Rate_Factors[1] * looptime) + ((Paramiters.Pitch.Angular_Rate_Error - Paramiters.Pitch.Old_Angular_Rate_Error) * Paramiters.PID_Pitch.Angular_Rate_Factors[2]);
+	Paramiters.PID_Rool.Angular_Rate_Value = (Paramiters.Rool.Angular_Rate_Error * Paramiters.PID_Rool.Angular_Rate_Factors[0]) + (Paramiters.Rool.Angular_Rate_Error_Sum * Paramiters.PID_Rool.Angular_Rate_Factors[1] * looptime) + ((Paramiters.Rool.Angular_Rate_Error - Paramiters.Rool.Old_Angular_Rate_Error) * Paramiters.PID_Rool.Angular_Rate_Factors[2]);
+	Paramiters.PID_Yaw.Angular_Rate_Value = (Paramiters.Yaw.Angular_Rate_Error * Paramiters.PID_Yaw.Angular_Rate_Factors[0]) + (Paramiters.Yaw.Angular_Rate_Error_Sum * Paramiters.PID_Yaw.Angular_Rate_Factors[1] * looptime) + ((Paramiters.Yaw.Angular_Rate_Error - Paramiters.Yaw.Old_Angular_Rate_Error) * Paramiters.PID_Yaw.Angular_Rate_Factors[2]);
+}
+
 void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry){//pitch = 1, rool = 2, yaw = 3
-	switch(pry){
-		case 1://pitch
-
-			*PID_var = PID_FAC[0]*(pitch_error);
-
-			*PID_var = *PID_var + PID_FAC[1]*error_sum_pitch*looptime;
-
-			PID_FAC[3] = PID_FAC[2]*((pitch_error) - old_error_pitch);//policzenie częsci D
-
-			//FDP
-			if(FDP_D_Gain > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
-				PID_FAC[4] = PID_FAC[3];//old d_fac
-			}
-
-			*PID_var = *PID_var + PID_FAC[3];
-
-//				if(*PID_var > 400){//PID_var jest w o/s, jezeli bendzei chcailo sie obracac szybciej niz.. przekroczy zakres pomiarowy akcelerometru
-//					*PID_var = 400;
-//				}
-//				if(*PID_var < -400){
-//					*PID_var = -400;
-//				}
-			break;
-
-		case 2://rool
-
-			*PID_var = PID_FAC[0]*(rool_error);
-
-			*PID_var = *PID_var + PID_FAC[1]*error_sum_rool*looptime;
-
-			PID_FAC[3] =  PID_FAC[2]*((rool_error) - old_error_rool);
-
-			//FDP
-			if(FDP_D_Gain > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
-				PID_FAC[4] = PID_FAC[3];//old d_fac
-			}
-
-			*PID_var = *PID_var + PID_FAC[3];
-
-//			if(*PID_var > 400){
-//				*PID_var = 400;
+//	switch(pry){
+//		case 1://pitch
+//
+//			*PID_var = PID_FAC[0]*(pitch_error);
+//
+//			*PID_var = *PID_var + PID_FAC[1]*error_sum_pitch*looptime;
+//
+//			PID_FAC[3] = PID_FAC[2]*((pitch_error) - old_error_pitch);//policzenie częsci D
+//
+//			//FDP
+//			if(FDP_D_Gain > 0){
+//				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
+//				PID_FAC[4] = PID_FAC[3];//old d_fac
 //			}
-//			if(*PID_var < -400){
-//				*PID_var = -400;
+//
+//			*PID_var = *PID_var + PID_FAC[3];
+//
+////				if(*PID_var > 400){//PID_var jest w o/s, jezeli bendzei chcailo sie obracac szybciej niz.. przekroczy zakres pomiarowy akcelerometru
+////					*PID_var = 400;
+////				}
+////				if(*PID_var < -400){
+////					*PID_var = -400;
+////				}
+//			break;
+//
+//		case 2://rool
+//
+//			*PID_var = PID_FAC[0]*(rool_error);
+//
+//			*PID_var = *PID_var + PID_FAC[1]*error_sum_rool*looptime;
+//
+//			PID_FAC[3] =  PID_FAC[2]*((rool_error) - old_error_rool);
+//
+//			//FDP
+//			if(FDP_D_Gain > 0){
+//				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
+//				PID_FAC[4] = PID_FAC[3];//old d_fac
 //			}
-			break;
-
-		case 3:
-
-			*PID_var = PID_FAC[0]*(yaw_error);
-
-			*PID_var = *PID_var + PID_FAC[1]*error_sum_yaw*looptime;
-
-			PID_FAC[3] = PID_FAC[2]*((yaw_error) - old_error_yaw);
-
-			//FDP
-			if(FDP_D_Gain > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
-				PID_FAC[4] = PID_FAC[3];//old d_fac
-			}
-
-			*PID_var = *PID_var + PID_FAC[3];
-
-//			if(*PID_var > 400){
-//				*PID_var = 400;
+//
+//			*PID_var = *PID_var + PID_FAC[3];
+//
+////			if(*PID_var > 400){
+////				*PID_var = 400;
+////			}
+////			if(*PID_var < -400){
+////				*PID_var = -400;
+////			}
+//			break;
+//
+//		case 3:
+//
+//			*PID_var = PID_FAC[0]*(yaw_error);
+//
+//			*PID_var = *PID_var + PID_FAC[1]*error_sum_yaw*looptime;
+//
+//			PID_FAC[3] = PID_FAC[2]*((yaw_error) - old_error_yaw);
+//
+//			//FDP
+//			if(FDP_D_Gain > 0){
+//				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain * looptime) / (1 + (FDP_D_Gain * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain * looptime))));
+//				PID_FAC[4] = PID_FAC[3];//old d_fac
 //			}
-//			if(*PID_var < -400){
-//				*PID_var = -400;
+//
+//			*PID_var = *PID_var + PID_FAC[3];
+//
+////			if(*PID_var > 400){
+////				*PID_var = 400;
+////			}
+////			if(*PID_var < -400){
+////				*PID_var = -400;
+////			}
+//			break;
+//
+//		case 4:// angular rates pitch
+//
+//			*PID_var = PID_FAC[0]*(pitch_ar_error);
+//
+//			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_pitch*looptime;
+//
+//
+//			PID_FAC[3] = PID_FAC[2]*((pitch_ar_error) - old_error_angular_rate_pitch);//policzenie częsci D
+//
+//			//FDP
+//			if(FDP_D_Gain_AR > 0){
+//				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
+//				PID_FAC[4] = PID_FAC[3];//old d_fac
 //			}
-			break;
-
-		case 4:// angular rates pitch
-
-			*PID_var = PID_FAC[0]*(pitch_ar_error);
-
-			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_pitch*looptime;
-
-
-			PID_FAC[3] = PID_FAC[2]*((pitch_ar_error) - old_error_angular_rate_pitch);//policzenie częsci D
-
-			//FDP
-			if(FDP_D_Gain_AR > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
-				PID_FAC[4] = PID_FAC[3];//old d_fac
-			}
-
-			*PID_var = *PID_var + PID_FAC[3];
-
-			break;
-
-		case 5:// angular rates rool
-
-			*PID_var = PID_FAC[0]*(rool_ar_error);
-
-			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_rool*looptime;
-
-			PID_FAC[3] =  PID_FAC[2]*((rool_ar_error) - old_error_angular_rate_rool);
-
-			//FDP
-			if(FDP_D_Gain_AR > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
-				PID_FAC[4] = PID_FAC[3];//old d_fac
-			}
-
-			*PID_var = *PID_var + PID_FAC[3];
-			break;
-
-		case 6:// angular rates yaw
-
-			*PID_var = PID_FAC[0]*(yaw_ar_error);
-
-			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_yaw*looptime;
-
-			PID_FAC[3] = PID_FAC[2]*((yaw_ar_error) - old_error_angular_rate_yaw);
-
-			//FDP
-			if(FDP_D_Gain_AR > 0){
-				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
-				PID_FAC[4] = PID_FAC[3];//old d_fac
-			}
-
-			*PID_var = *PID_var + PID_FAC[3];
-			break;
-		default:
-			break;
-	}
+//
+//			*PID_var = *PID_var + PID_FAC[3];
+//
+//			break;
+//
+//		case 5:// angular rates rool
+//
+//			*PID_var = PID_FAC[0]*(rool_ar_error);
+//
+//			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_rool*looptime;
+//
+//			PID_FAC[3] =  PID_FAC[2]*((rool_ar_error) - old_error_angular_rate_rool);
+//
+//			//FDP
+//			if(FDP_D_Gain_AR > 0){
+//				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
+//				PID_FAC[4] = PID_FAC[3];//old d_fac
+//			}
+//
+//			*PID_var = *PID_var + PID_FAC[3];
+//			break;
+//
+//		case 6:// angular rates yaw
+//
+//			*PID_var = PID_FAC[0]*(yaw_ar_error);
+//
+//			*PID_var = *PID_var + PID_FAC[1]*error_sum_angular_rate_yaw*looptime;
+//
+//			PID_FAC[3] = PID_FAC[2]*((yaw_ar_error) - old_error_angular_rate_yaw);
+//
+//			//FDP
+//			if(FDP_D_Gain_AR > 0){
+//				PID_FAC[3] = (PID_FAC[3] * (FDP_D_Gain_AR * looptime) / (1 + (FDP_D_Gain_AR * looptime))) + (PID_FAC[4] * (1 / (1 + (FDP_D_Gain_AR * looptime))));
+//				PID_FAC[4] = PID_FAC[3];//old d_fac
+//			}
+//
+//			*PID_var = *PID_var + PID_FAC[3];
+//			break;
+//		default:
+//			break;
+	//}
 }
 
 void Get_batteryvalue(void){
@@ -429,13 +439,13 @@ void Get_batteryvalue(void){
 	}
 
 	if(MYDRON.batterysize < 25){
-		MYDRON.dron_status.Battery = DRON_BATTERY_RUN_OUT;
+		MYDRON.Status.Battery = DRON_BATTERY_RUN_OUT;
 	}
 	if(MYDRON.batterysize <= 10){
-		MYDRON.dron_status.Battery = DRON_BATTERY_CRIT_VAL;
+		MYDRON.Status.Battery = DRON_BATTERY_CRIT_VAL;
 	}
 	if(MYDRON.batterysize >= 25){
-		MYDRON.dron_status.Battery = DRON_BATTERY_OK;
+		MYDRON.Status.Battery = DRON_BATTERY_OK;
 	}
 }
 

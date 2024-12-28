@@ -11,11 +11,51 @@
 #define BMP180_ADDRES 0xEE
 //#define BMP180_ADDRES_read 0xEF
 
-extern uint16_t AC4, AC5, AC6;
-extern int16_t  AC1, AC2, AC3, B1, B2, MB, MC, MD;
-extern uint32_t B4, B7, UP;
-extern int32_t temperature, pressure, UT, X1, X2, B5, B6, B3, X3;
-extern float temp, pres, ampritude;
+
+//extern int32_t temperature, pressure;
+//extern float temp, pres, ampritude;
+
+struct BMP180_Callibration_Regs_Struct{
+	uint16_t AC4;
+	uint16_t AC5;
+	uint16_t AC6;
+	int16_t AC1;
+	int16_t AC2;
+	int16_t AC3;
+	int16_t B1;
+	int16_t B2;
+	int16_t MB;
+	int16_t MC;
+	int16_t MD;
+	uint32_t B4;
+	uint32_t B7;
+	uint32_t UP;
+	int32_t UT;
+	int32_t X1;
+	int32_t X2;
+	int32_t B5;
+	int32_t B6;
+	int32_t B3;
+	int32_t X3;
+};
+
+struct BMP180_Raw_Data_Struct{
+	int32_t temperature;
+	int32_t pressure;
+};
+
+struct BMP180_Struct{
+	struct BMP180_Callibration_Regs_Struct Callibration_Regs;
+	struct BMP180_Raw_Data_Struct Raw_Data;
+	float temp;
+	float pres;
+	float ampritude;
+	float startpres;
+	uint8_t Data_Press_IT[3];
+	uint8_t Data_Temp_IT[2];
+	uint8_t BMP180_IRQ;
+	uint8_t I2C_Tx_IRQ;
+};
 
 // registers
 #define out_xlsb 0xF8

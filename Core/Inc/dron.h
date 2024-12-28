@@ -13,31 +13,106 @@
 
 
 struct Dronstatus{
-	uint16_t Connection;
-	uint16_t Battery;
-	uint16_t Code;
-	uint16_t engines;
-	uint16_t position;
-	uint16_t wobble;
+	uint8_t Connection;
+	uint8_t Battery;
+	uint8_t Code;
+	uint8_t Wobble;
 };
 
-struct Dron{
-	uint16_t batterysize;
-	uint16_t THRUST;
-	int16_t	PITCH;
-	int16_t ROOL;
-	int16_t YAW;
-	int16_t current_engeine_1;
-	int16_t current_engeine_2;
-	int16_t current_engeine_3;
-	int16_t current_engeine_4;
-	struct Dronstatus dron_status;
-	int16_t dronheight;
-	uint8_t THRUST_flag;
-	uint8_t PITCH_STA;//0 - ok; 1 - min; 2 - max
-	uint8_t ROOL_STA;
-	uint8_t YAW_STA;
+struct Dron_Pitch{
+	int16_t Wanted_rx;
+	int16_t Wanted_v;
+	float Last_Wanted_rx;
+	float Wanted;
+	float Wanted_Factor;
+	float Now;
+	float Angle_Error;
+	float Angular_Rate_Error;
+	float Old_Angle_Error;
+	float Old_Angular_Rate_Error;
+	int32_t Angle_Error_Sum;
+	int32_t Angular_Rate_Error_Sum;
+	int16_t Value;
 };
+struct Dron_Rool{
+	int16_t Wanted_rx;
+	int16_t Wanted_v;
+	float Last_Wanted_rx;
+	float Wanted;
+	float Wanted_Factor;
+	float Now;
+	float Angle_Error;
+	float Angular_Rate_Error;
+	float Old_Angle_Error;
+	float Old_Angular_Rate_Error;
+	int32_t Angle_Error_Sum;
+	int32_t Angular_Rate_Error_Sum;
+	int16_t Value;
+};
+struct Dron_Yaw{
+	int16_t Wanted_rx;
+	int16_t Wanted_v;
+	float Last_Wanted_rx;
+	float Wanted;
+	float Wanted_Factor;
+	float Now;
+	float Angle_Error;
+	float Angular_Rate_Error;
+	float Old_Angle_Error;
+	float Old_Angular_Rate_Error;
+	int32_t Angle_Error_Sum;
+	int32_t Angular_Rate_Error_Sum;
+	int16_t Value;
+};
+struct Dron_Thrust{
+	uint16_t Now;
+	int16_t Wanted;
+	int16_t Thrust_Limit;
+	double Values;
+	uint16_t Speed_1;
+	uint16_t Speed_2;
+	uint16_t Speed_3;
+	uint16_t Speed_4;
+	uint16_t Old_Speed_1;
+	uint16_t Old_Speed_2;
+	uint16_t Old_Speed_3;
+	uint16_t Old_Speed_4;
+	uint8_t Max_Flag;
+};
+struct PID_Pitch{
+	float Angle_Value;
+	float Angular_Rate_Value;
+	float Angle_Factors[5];
+	float Angular_Rate_Factors[5];
+	uint8_t Status;
+};
+struct PID_Rool{
+	float Angle_Value;
+	float Angular_Rate_Value;
+	float Angle_Factors[5];
+	float Angular_Rate_Factors[5];
+	uint8_t Status;
+};
+struct PID_Yaw{
+	float Angle_Value;
+	float Angular_Rate_Value;
+	float Angle_Factors[5];
+	float Angular_Rate_Factors[5];
+	uint8_t Status;
+};
+
+typedef struct Dron{
+	struct Dron_Pitch Pitch;
+	struct Dron_Rool Rool;
+	struct Dron_Yaw Yaw;
+	struct Dron_Thrust Thrust;
+	struct PID_Pitch PID_Pitch;
+	struct PID_Rool PID_Rool;
+	struct PID_Yaw PID_Yaw;
+	struct Dronstatus Status;
+	uint16_t batterysize;
+	int16_t dronheight;
+}Dron;
 
 enum DRON_StateTypeDef{
 	DRON_CONNECTED = 0x01,
@@ -74,6 +149,7 @@ struct Stack{   // sapisanie danych z ostatniej sekundy
 };
 
 void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry);
+void PID_call(Dron Paramiters);
 void IS_DRON_ON_GROUND(void);
 void Get_batteryvalue(void);
 void Thrust_filter(double factor);
