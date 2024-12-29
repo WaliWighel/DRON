@@ -19,7 +19,11 @@ uint8_t BMP180_read_ID(void){// comunication = 0x55
 
 uint8_t BMP180_init(I2C_HandleTypeDef*hi2c){
 	hi2c_BMP180 = hi2c;
+	uint8_t data;
 	BMP180_read_calliberation_data();
+	HAL_I2C_Mem_Read(hi2c_BMP180, BMP180_ADDRES, id_register, 1, &data, 1, 100);
+	data = data | 0x40;
+	HAL_I2C_Mem_Write(hi2c_BMP180, BMP180_ADDRES, 0xF4, 1, &data, 1, 1);//set oversampling to 2
 
 	uint8_t status = 0;
 	status = BMP180_read_ID();

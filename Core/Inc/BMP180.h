@@ -55,6 +55,7 @@ struct BMP180_Struct{
 	uint8_t Data_Temp_IT[2];
 	uint8_t BMP180_IRQ;
 	uint8_t I2C_Tx_IRQ;
+	uint8_t Timer;
 };
 
 // registers

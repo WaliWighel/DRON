@@ -186,12 +186,8 @@ void MPU6050_GET_ACCANDGYR_CALANDSCL(float *ax, float*ay, float*az, float*gx, fl
 }
 
 void MPU6050_GET_ACCANDGYR_CALANDSCL_IT(void){
-
-
 	HAL_I2C_Mem_Read_IT(hi2c_mpu6050, MPU6050_ADDRESS, MPU6050_RA_ACCEL_XOUT_H, 1, MPU6050.I2C_Data, 14);
 	MPU6050.MPU6050_IRQ = 1;
-
-
 }
 
 void MPU6050_GET_CALANDSCL_IT(void){
