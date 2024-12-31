@@ -142,11 +142,11 @@ enum DRON_StateTypeDef{
 	WOBBLE_PITCHandROOL = 0x12
 };
 
-struct Stack{   // sapisanie danych z ostatniej sekundy
+typedef struct Stack{   // sapisanie danych z ostatniej sekundy
 	float olddata[4010];
 	uint16_t start_pointer;
 	uint16_t end_pointer;
-};
+}Stack;
 
 void PID_cal(float *PID_var, float *PID_FAC, uint8_t pry);
 void PID_call(Dron Paramiters);

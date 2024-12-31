@@ -10,11 +10,7 @@
 
 
 static I2C_HandleTypeDef *hi2c_HMC5883L;
-
-extern uint8_t HMC5883L_Data_IT[6];
-extern uint8_t HMC583L_IRQ;
-extern float Mag_Y, Mag_X, Mag_Z, heading;
-//float HMC5883L_Scale = 0.92;
+extern HMC5883L_Struct HMC5883L;
 
 uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c){
 
@@ -94,18 +90,18 @@ int16_t HMC5883L_Get_Z_Start(void){
 }
 
 void HMC5883L_Get_Z_Start_IT(void){
-	HAL_I2C_Mem_Read_IT(hi2c_HMC5883L, HMC5883L_I2C_Address<<1, HMC5883L_Data_Output_X_MSB_Register, 1, (uint8_t *)HMC5883L_Data_IT, 6);
-	HMC583L_IRQ = 1;
+	HAL_I2C_Mem_Read_IT(hi2c_HMC5883L, HMC5883L_I2C_Address<<1, HMC5883L_Data_Output_X_MSB_Register, 1, (uint8_t *)HMC5883L.I2C_Data, 6);
+	HMC5883L.HMC583L_IRQ = 1;
 }
 
 void HMC5883L_Get_Z_End_IT(void){
 //	Mag_Z = (((int16_t)HMC5883L_Data_IT[2]<<8) | HMC5883L_Data_IT[3]) * 2.56;// 2.56 - scale
 //	Mag_X = (((int16_t)HMC5883L_Data_IT[0]<<8) | HMC5883L_Data_IT[1]) * 2.56;
 //	Mag_Y = (((int16_t)HMC5883L_Data_IT[4]<<8) | HMC5883L_Data_IT[5]) * 2.56;
-		Mag_X = (((int16_t)HMC5883L_Data_IT[1]<<8) | HMC5883L_Data_IT[0]) * 2.56;//important fake HMC5883L, msb -> lsb
-		Mag_Z = (((int16_t)HMC5883L_Data_IT[3]<<8) | HMC5883L_Data_IT[2]) * 2.56;// 2.56 - scale
-		Mag_Y = (((int16_t)HMC5883L_Data_IT[5]<<8) | HMC5883L_Data_IT[4]) * 2.56;
-	heading = (atan2(Mag_X, Mag_Y))*180/M_PI;
+		HMC5883L.Directions.X = (((int16_t)HMC5883L.I2C_Data[1]<<8) | HMC5883L.I2C_Data[0]) * 2.56;//important fake HMC5883L, msb -> lsb
+		HMC5883L.Directions.Z = (((int16_t)HMC5883L.I2C_Data[3]<<8) | HMC5883L.I2C_Data[2]) * 2.56;// 2.56 - scale
+		HMC5883L.Directions.Y = (((int16_t)HMC5883L.I2C_Data[5]<<8) | HMC5883L.I2C_Data[4]) * 2.56;
+		HMC5883L.Directions.Heading = (atan2(HMC5883L.Directions.X, HMC5883L.Directions.Y))*180/M_PI;
 }
 
 

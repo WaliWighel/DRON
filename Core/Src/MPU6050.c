@@ -13,16 +13,8 @@
 static I2C_HandleTypeDef *hi2c_mpu6050;
 
 extern float looptime;
-//extern uint8_t MPU6050_IRQ;
-//extern uint8_t MPU6050_IT_DATA[14];
-extern struct MPU6050_Struct MPU6050;
-//extern float OldXs[4];
-//extern float OldYs[4];
-//extern float OldZs[4];
-//
-//extern float xval;
-//extern float yval;
-//extern float zval;
+extern MPU6050_Struct MPU6050;
+
 
 
 uint8_t MPU6050_INIT(I2C_HandleTypeDef*hi2c){

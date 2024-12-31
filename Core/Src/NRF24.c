@@ -11,7 +11,7 @@ static SPI_HandleTypeDef *hspi_nrf;
 static uint8_t addr_p0_backup[NRF24_ADDR_SIZE];
 
 extern volatile uint8_t nrf24_rx_flag, nrf24_tx_flag, nrf24_mr_flag;
-extern struct NRF24_Struct NRF24;
+extern NRF24_Struct NRF24;
 
 //
 // BASIC READ/WRITE FUNCTIONS

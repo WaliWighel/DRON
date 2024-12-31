@@ -85,67 +85,32 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-///////// MPU6050
-IRAM struct MPU6050_Struct MPU6050;
-
-///////// HMC5883L
-
-IRAM float Mag_Z;//todo
-IRAM float Mag_Y, Mag_X;
-IRAM float heading;
-IRAM float Old_Mag_Z = 0;
-
-#define FDP_Mag_Z_FQ 2
-
-IRAM int16_t Mag_Offset_val;
-IRAM uint8_t HMC5883L_Data_IT[6];
+IRAM MPU6050_Struct MPU6050;
+IRAM Complementary_Filter data;
+IRAM BMP180_Struct BMP180;
+IRAM NRF24_Struct NRF24;
+IRAM Dron MYDRON;
+IRAM Stack Old_Data_stack;
+IRAM HMC5883L_Struct HMC5883L;
 
 ///////// main
 IRAM int TIM_inte_SD = 0, TIM_inte = 0;
 IRAM uint8_t STARTUP = 1;
 IRAM uint32_t NRF_TIM_Inte = 0;
 RAM1 uint32_t analogmess;
-
-IRAM Complementary_Filter data;
-
-///////// BMP180
-
-IRAM struct BMP180_Struct BMP180;
-/////////// nrf24
-
-
-
-IRAM struct NRF24_Struct NRF24;
-
-/////// dron
-
-IRAM struct Dron MYDRON;
-
-
-IRAM struct Stack Old_Data_stack;
-
-
-
-		#define FDP_FQ 2
-
-
-////////Filtry
-
-
+IRAM uint32_t i = 0, loopnum = 0;
+IRAM uint8_t NRF24_Messages_SC = 0;
+IRAM uint8_t NRF24_inte = 0;
 IRAM uint16_t FDP_D_Gain_AR = 0;
 IRAM uint16_t FDP_D_Gain = 0;
-
-//////// PID
-
-
-
-
 const float looptime = 0.001;
-// ESC
-
+IRAM float wobble_strenght = 1;
 const uint16_t DRON_SLOWFALING = 3000;
 IRAM uint8_t DRON_ON_GRUND;
 
+
+#define FDP_Mag_Z_FQ 2
+#define FDP_FQ 2
 
 ///////////// USART
 
@@ -167,18 +132,6 @@ IRAM uint32_t Mainloop_Number = 0;
 IRAM uint32_t SD_In_Use = 0;
 RAM1 uint8_t DataToSendBuffer[129000];//129
 IRAM uint8_t SD_enable_Flag = 0;
-IRAM float wobble_strenght = 1;
-IRAM uint8_t /*MPU6050_IRQ = 0,*/ HMC583L_IRQ = 0/* BMP180_IRQ = 0*/;
-
-
-
-
-IRAM uint32_t i = 0, loopnum = 0;
-
-
-IRAM uint8_t NRF24_Messages_SC = 0;
-IRAM uint8_t NRF24_inte = 0;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -244,8 +197,7 @@ int main(void)
   	  ESC_POWER_1;
 
 
-  	  STARTUP = 1;
-
+  	STARTUP = 1;
   	DRON_ON_GRUND = 1;
 
   	MPU6050.Acc.Acc_Scale = 8192;
@@ -266,6 +218,15 @@ int main(void)
   	MPU6050.Gyr.gy = 0;
   	MPU6050.Gyr.gz = 0;
   	MPU6050.MPU6050_IRQ = 0;
+
+
+
+  	data.x = 0;
+  	data.y = 0;
+  	data.z = 0;
+  	data.ox = 0;
+  	data.oy = 0;
+  	data.oz = 0;
 
 
 
@@ -293,6 +254,7 @@ int main(void)
 
 	MYDRON.dronheight = 0;
 	MYDRON.batterysize = 0;
+
 	MYDRON.Pitch.Angle_Error_Sum = 0;
 	MYDRON.Pitch.Angle_Error = 0;
 	MYDRON.Pitch.Angular_Rate_Error = 0;
@@ -306,6 +268,7 @@ int main(void)
 	MYDRON.Pitch.Wanted_Factor = 0.65;
 	MYDRON.Pitch.Wanted_rx = 0;
 	MYDRON.Pitch.Wanted_v = 0;
+
 	MYDRON.Rool.Angle_Error_Sum = 0;
 	MYDRON.Rool.Angle_Error = 0;
 	MYDRON.Rool.Angular_Rate_Error = 0;
@@ -319,6 +282,7 @@ int main(void)
 	MYDRON.Rool.Wanted_Factor = 0.66;
 	MYDRON.Rool.Wanted_rx = 0;
 	MYDRON.Rool.Wanted_v = 0;
+
 	MYDRON.Yaw.Angle_Error_Sum = 0;
 	MYDRON.Yaw.Angle_Error = 0;
 	MYDRON.Yaw.Angular_Rate_Error = 0;
@@ -332,6 +296,7 @@ int main(void)
 	MYDRON.Yaw.Wanted_Factor = 0.6;
 	MYDRON.Yaw.Wanted_rx = 0;
 	MYDRON.Yaw.Wanted_v = 0;
+
 	MYDRON.PID_Pitch.Angle_Factors[0] = 6;
 	MYDRON.PID_Pitch.Angle_Factors[1] = 8;
 	MYDRON.PID_Pitch.Angle_Factors[2] = 25;
@@ -344,6 +309,7 @@ int main(void)
 	MYDRON.PID_Pitch.Angular_Rate_Factors[4] = 0;
 	MYDRON.PID_Pitch.Angle_Value = 0;
 	MYDRON.PID_Pitch.Angular_Rate_Value = 0;
+
 	MYDRON.PID_Rool.Angle_Factors[0] = 5;
 	MYDRON.PID_Rool.Angle_Factors[1] = 10;
 	MYDRON.PID_Rool.Angle_Factors[2] = 0;
@@ -356,6 +322,7 @@ int main(void)
 	MYDRON.PID_Rool.Angular_Rate_Factors[4] = 0;
 	MYDRON.PID_Rool.Angle_Value = 0;
 	MYDRON.PID_Rool.Angular_Rate_Value = 0;
+
 	MYDRON.PID_Yaw.Angle_Factors[0] = 10;
 	MYDRON.PID_Yaw.Angle_Factors[1] = 0;
 	MYDRON.PID_Yaw.Angle_Factors[2] = 0;
@@ -368,6 +335,7 @@ int main(void)
 	MYDRON.PID_Yaw.Angular_Rate_Factors[4] = 0;
 	MYDRON.PID_Yaw.Angle_Value = 0;
 	MYDRON.PID_Yaw.Angular_Rate_Value = 0;
+
 	MYDRON.Thrust.Now = 0;
 	MYDRON.Thrust.Old_Speed_1 = min_speed;
 	MYDRON.Thrust.Old_Speed_2 = min_speed;
@@ -380,34 +348,38 @@ int main(void)
 	MYDRON.Thrust.Thrust_Limit = 10000;
 	MYDRON.Thrust.Values = 0;
 	MYDRON.Thrust.Wanted = 0;
+
 	MYDRON.Status.Battery = DRON_BATTERY_OK;
 	MYDRON.Status.Code = DRON_CODE_OK;
 	MYDRON.Status.Connection = DRON_CONNECTED;
 	MYDRON.Status.Wobble = NO_WOBBLE;
 
 
-  	Mag_Z = 0;
+
+	HMC5883L.Directions.Heading = 0;
+	HMC5883L.Directions.Old_X = 0;
+	HMC5883L.Directions.Old_Y = 0;
+	HMC5883L.Directions.Old_Z = 0;
+	HMC5883L.Directions.X = 0;
+	HMC5883L.Directions.Y = 0;
+	HMC5883L.Directions.Z = 0;
+	HMC5883L.HMC583L_IRQ = 0;
+	HMC5883L.Off_Set_Values.X = 0;
+	HMC5883L.Off_Set_Values.Y = 0;
+	HMC5883L.Off_Set_Values.Z = 0;
+
+
+
   	TIM_inte_SD = 0, TIM_inte = 0;
   	NRF_TIM_Inte = 0;
-
   	FDP_D_Gain_AR = 0;
   	FDP_D_Gain = 0;
-
   	commandready = 0;
   	command_ch_num = 0;
   	Mainloop_Number = 0;
   	SD_In_Use = 0;
   	wobble_strenght = 1;
   	i = 0, loopnum = 0;
-
-  	data.ox = 0;
-  	data.x = 0;
-  	data.oy = 0;
-  	data.y = 0;
-  	data.oz = 0;
-  	data.z = 0;
-
-
   	NRF24_inte = 0;
 
 
@@ -536,21 +508,10 @@ int main(void)
 			}
 		}
 		LED_Y_1;
-		Mag_Offset_val = HMC5883L_Calibration();
+		HMC5883L.Off_Set_Values.Z = HMC5883L_Calibration();
 		LED_Y_0;
 
 		LED_5_0;
-
-
-
-//		MYDRON.Status.Connection = DRON_CONNECTED;
-//		MYDRON.dron_status.position = DRON_POSITION_OK;
-//
-//
-//		MYDRON.THRUST = 0;
-//		MYDRON.PITCH = 0;
-//		MYDRON.ROOL = 0;
-//		MYDRON.YAW = 0;
 
 
 
@@ -995,7 +956,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 
 			MPU6050_GET_CALANDSCL_IT();
 			MPU6050_GET_ACCEL_TO_ANGLE();
-			MPU6050_GET_ACCANDGYR_FILTRED(&data, Mag_Z);
+			MPU6050_GET_ACCANDGYR_FILTRED(&data, HMC5883L.Directions.Z);
 
 
 
@@ -1103,11 +1064,11 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 
 			LED_G_0;
 	}
-	if(HMC583L_IRQ == 1){
-		HMC583L_IRQ = 0;
+	if(HMC5883L.HMC583L_IRQ == 1){
+		HMC5883L.HMC583L_IRQ = 0;
 		HMC5883L_Get_Z_End_IT();
-		Mag_Z = (Mag_Z * (FDP_Mag_Z_FQ * 0.1) / (1 + (FDP_Mag_Z_FQ * 0.1))) + (Old_Mag_Z * (1 / (1 + (FDP_Mag_Z_FQ * 0.1)))); // 0.1 to looptime, co 100ms odczyt
-		Old_Mag_Z = Mag_Z;
+		HMC5883L.Directions.Z = (HMC5883L.Directions.Z * (FDP_Mag_Z_FQ * 0.1) / (1 + (FDP_Mag_Z_FQ * 0.1))) + (HMC5883L.Directions.Old_Z * (1 / (1 + (FDP_Mag_Z_FQ * 0.1)))); // 0.1 to looptime, co 100ms odczyt
+		HMC5883L.Directions.Old_Z = HMC5883L.Directions.Z;
 	}
 	if(BMP180.BMP180_IRQ == 1){
 		BMP180.Timer = 1;
@@ -1140,13 +1101,12 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef * hspi){
 
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){//todo
 	if(STARTUP == 0 && NRF24.SPI_Rx_Inte == 1 && NRF24.Step == 1){
-		NRF24.SPI_Rx_Inte = 0;
 
+		NRF24.SPI_Rx_Inte = 0;
 		LED_6_1;
 		nRF24_ReadRXPaylaod_IT_End();
 		LED_6_0;
 		NRF24.Step++;//step 2
-
 		NRF24.Timer_1 = 2;
 
 		LED_Y_1;
@@ -1467,7 +1427,7 @@ void uSD_Card_SendData_To_Buffer(uint32_t a){
 	 DataToSendBuffer[(119 + (128*a))] = ' ';
 	convert_value_to_array2(MYDRON.Status.Connection, DataToSendBuffer, (120 + (128*a)), (122 + (128*a)));
 	 DataToSendBuffer[(122 + (128*a))] = ' ';
-	convert_value_to_array2(Mag_Z, DataToSendBuffer, (123 + (128*a)), (127 + (128*a)));
+	convert_value_to_array2(HMC5883L.Directions.Z, DataToSendBuffer, (123 + (128*a)), (127 + (128*a)));
 	 DataToSendBuffer[(128 + (128*a))] = '\n';
 }
 

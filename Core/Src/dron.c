@@ -1,50 +1,18 @@
 #include "main.h"
 
-extern struct Dron MYDRON;
-//extern float wanted_pitch;
-//extern float wanted_rool;
-//extern float wanted_yaw;
-//extern int16_t wanted_thrust;
-//extern float old_error_pitch;
-//extern float old_error_rool;
-//extern float old_error_yaw;
-//extern float now_pitch;
-//extern float now_rool;
-//extern float now_yaw;
+extern Dron MYDRON;
+extern Stack Old_Data_stack;
+
 extern uint32_t analogmess;
 extern float looptime;
-//extern double thrust_values;
-//extern int32_t error_sum_pitch;
-//extern int32_t error_sum_rool;
-//extern int32_t error_sum_yaw;
-extern struct Stack Old_Data_stack;
-//extern float PID_FAC_Pitch[5];
-//extern float PID_FAC_Rool[5];
-//extern float PID_FAC_Yaw[5];
-//extern int32_t error_sum_angular_rate_pitch;
-//extern int32_t error_sum_angular_rate_rool;
-//extern int32_t error_sum_angular_rate_yaw;
-//extern float old_error_angular_rate_pitch;// ruznica
-//extern float old_error_angular_rate_rool;
-//extern float old_error_angular_rate_yaw;
-//extern float PID_FAC_Angular_Rate_Pitch[5];
-//extern float PID_FAC_Angular_Rate_Rool[5];
-//extern float PID_FAC_Angular_Rate_Yaw[5];
-//extern float pid_pitch;
-//extern float pid_yaw;
-//extern float pid_rool;
-//extern int16_t wanted_pitch_rx;
+
+
+
 
 extern uint16_t FDP_D_Gain_AR;
 extern uint16_t FDP_D_Gain;
 
 
-//extern float pitch_error;
-//extern float rool_error;
-//extern float yaw_error;
-//extern float pitch_ar_error;
-//extern float rool_ar_error;
-//extern float yaw_ar_error;
 
 /*
  * Thrust_filter

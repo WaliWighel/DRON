@@ -7,7 +7,7 @@
 #include "main.h"
 
 static I2C_HandleTypeDef *hi2c_BMP180;
-extern struct BMP180_Struct BMP180;
+extern BMP180_Struct BMP180;
 //extern uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
 //extern uint8_t BMP180_IRQ;
 

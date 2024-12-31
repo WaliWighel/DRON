@@ -64,24 +64,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-//extern float ax,ay,az, gx, gy, gz;
-//extern float ax_ang,ay_ang,az_ang, gx_ang, gy_ang, gz_ang;
-//extern float accelx_cal, accely_cal, accelz_cal, gyrox_cal, gyroy_cal, gyroz_cal;
-//extern uint8_t MPU6050_IT_DATA[14];
-
-extern struct MPU6050_Struct MPU6050;
-
-extern float Gyr_Scale, Acc_Scale;//float Gyr_Scale = 65.5, Acc_Scale = 4096;
-//////// W_filter
-//float OldXs[16];
-//float OldYs[16];
-//float OldZs[16];
-//
-//float xval ;
-//float yval ;
-//float zval ;
-
-///////// HMC5883L
+extern  MPU6050_Struct MPU6050;
 
 extern float Mag_Z;
 extern float Old_Mag_Z ;
@@ -98,145 +81,22 @@ extern uint32_t NRF_TIM_Inte ;
 
 extern Complementary_Filter data;
 
-///////// BMP180
-//extern uint16_t AC4, AC5, AC6;
-//extern int16_t  AC1, AC2, AC3, B1, B2, MB, MC, MD;
-//extern uint32_t B4, B7, UP;
-//extern int32_t temperature, pressure, UT, X1, X2, B5, B6, B3, X3;
-//extern float temp , pres , startpres , ampritude ;
-//extern uint8_t BMP180_Press_IT[3], BMP180_Temp_IT[2];
 
-/////////// nrf24
-//extern uint8_t RxData[32];
-//extern uint8_t Txcode[32];
-//extern uint8_t TxData[32];
-//extern uint8_t Rxcode[32];
 extern uint32_t analogmess;
-//extern uint8_t xz[9];
+
+extern  Dron MYDRON;
+
+
+
+
+
+extern Stack Old_Data_stack;
+
 //
-//extern uint8_t nRF24_Rx_Mode ;
-
-
-/////// dron
-
-extern struct Dron MYDRON;
-
-
-
-
-
-extern struct Stack Old_Data_stack;
-
-//extern int16_t wanted_pitch_rx;// chcainy stan
-//extern int16_t wanted_rool_rx;
-//extern int16_t wanted_yaw_rx;
-//extern int16_t wanted_gz;
-//
-//extern float last_wanted_pitch_rx ;// chcainy stan
-//extern float last_wanted_rool_rx ;
-//extern float last_wanted_yaw_rx ;
-//
-//		#define FDP_FQ 2
-
-//extern int16_t wanted_thrust ;
-//extern int16_t thrust_limit;
-//
-
-//extern double thrust_values;
-//
-//extern float wanted_pitch ;// chcainy stan
-//extern float wanted_rool ;
-//extern float wanted_yaw ;
-//
-//		extern  float wanted_rool_factr;//95 //- 99
-//		extern  float wanted_pitch_factro;// ok              35 / -35
-//		extern  float wanted_yaw_factro;//95//-101
-//
-//////////Filtry
 
 
 extern uint16_t FDP_Out ;
 extern uint16_t FDP_D_Gain ;
-
-//////// PID
-
-//extern float now_pitch ;// oktualny stan
-//extern float now_rool ;
-//extern float now_yaw ;
-//
-//extern float old_error_pitch ;// ruznica
-//extern float old_error_rool ;
-//extern float old_error_yaw ;
-//
-//extern float old_error_angular_rate_pitch ;// ruznica
-//extern float old_error_angular_rate_rool ;
-//extern float old_error_angular_rate_yaw ;
-//
-//extern int32_t error_sum_pitch ;
-//extern int32_t error_sum_rool ;
-//extern int32_t error_sum_yaw ;
-//
-//extern int32_t error_sum_angular_rate_pitch ;
-//extern int32_t error_sum_angular_rate_rool ;
-//extern int32_t error_sum_angular_rate_yaw ;
-//
-//extern float pid_pitch;
-//extern float pid_yaw;
-//extern float pid_rool;
-//
-//extern float pid_angular_rate_pitch;
-//extern float pid_angular_rate_yaw;
-//extern float pid_angular_rate_rool;
-//
-
-///////////////////////////////////////////////////////////////////////////
-//extern float p_pitchfactor;
-//extern float p_roolfactor;
-//extern float p_yawfactor ;
-/////////////////////////////////////////////////////////////////////////////
-//extern float i_pitchfactor;
-//extern float i_roolfactor;
-//extern float i_yawfactor ;
-/////////////////////////////////////////////////////////////////////////////
-//extern float d_pitchfactor;
-//extern float d_roolfactor ;
-//extern float d_yawfactor ;
-/////////////////////////////////////////////////////////////////////////////
-//extern float PID_FAC_Pitch[5];
-//extern float PID_FAC_Rool[5];
-//extern float PID_FAC_Yaw[5];
-//
-//
-/////////////////////////////////////////////////////////////////////////////
-//extern float p_angular_rate_pitchfactor;
-//extern float p_angular_rate_roolfactor;
-//extern float p_angular_rate_yawfactor;
-/////////////////////////////////////////////////////////////////////////////
-//extern float i_angular_rate_pitchfactor ;
-//extern float i_angular_rate_roolfactor ;
-//extern float i_angular_rate_yawfactor ;
-/////////////////////////////////////////////////////////////////////////////
-//extern float d_angular_rate_pitchfactor;
-//extern float d_angular_rate_roolfactor;
-//extern float d_angular_rate_yawfactor;
-/////////////////////////////////////////////////////////////////////////////
-//extern float PID_FAC_Angular_Rate_Pitch[5];
-//extern float PID_FAC_Angular_Rate_Rool[5];
-//extern float PID_FAC_Angular_Rate_Yaw[5];
-
-
-extern float looptime;
-// ESC
-
-//extern uint16_t SPEED1 ;
-//extern uint16_t SPEED2 ;
-//extern uint16_t SPEED3 ;
-//extern uint16_t SPEED4 ;
-//
-//extern uint16_t OLD_SPEED1;
-//extern uint16_t OLD_SPEED2;
-//extern uint16_t OLD_SPEED3;
-//extern uint16_t OLD_SPEED4;
 
 extern uint16_t DRON_SLOWFALING;
 extern uint8_t DRON_ON_GRUND;
@@ -263,15 +123,9 @@ extern uint32_t SD_In_Use ;
 extern uint8_t DataToSendBuffer[129000];//129
 extern uint8_t SD_enable_Flag ;
 extern float wobble_strenght;
-//extern uint8_t MPU6050_IRQ , HMC583L_IRQ , BMP180_IRQ ;
-
-
-
 
 extern int i , loopnum ;
-//extern int16_t MYDRON.Rool.WantedMYDRON.Rool.Wanted ;
-//extern int16_t wanted_pitch_v ;
-//extern int16_t wanted_yaw_v ;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

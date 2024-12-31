@@ -54,13 +54,13 @@ struct MPU6050_Gyr_Struct{
 	float gyr_z_cal;
 };
 
-struct MPU6050_Struct{
+typedef struct MPU6050_Struct{
 	struct MPU6050_Acc_Struct Acc;
 	struct MPU6050_Gyr_Struct Gyr;
 	uint8_t I2C_Data[14];
 	uint8_t MPU6050_IRQ;
 	uint8_t Status;
-};
+}MPU6050_Struct;
 
 enum MPU6050_Status{
 	I2C_In_Use = 0x01,

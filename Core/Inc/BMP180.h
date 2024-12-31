@@ -44,7 +44,7 @@ struct BMP180_Raw_Data_Struct{
 	int32_t pressure;
 };
 
-struct BMP180_Struct{
+typedef struct BMP180_Struct{
 	struct BMP180_Callibration_Regs_Struct Callibration_Regs;
 	struct BMP180_Raw_Data_Struct Raw_Data;
 	float temp;
@@ -56,7 +56,7 @@ struct BMP180_Struct{
 	uint8_t BMP180_IRQ;
 	uint8_t I2C_Tx_IRQ;
 	uint8_t Timer;
-};
+}BMP180_Struct;
 
 // registers
 #define out_xlsb 0xF8

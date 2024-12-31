@@ -33,6 +33,30 @@
 
 
 
+struct HMC5883L_Directions{
+	float Z;
+	float Y;
+	float X;
+	float Old_Z;
+	float Old_Y;
+	float Old_X;
+	float Heading;
+};
+
+struct HMC5883L_Off_Set_Values{
+	float Z;
+	float Y;
+	float X;
+};
+
+typedef struct HMC5883L_Struct{
+	struct HMC5883L_Directions Directions;
+	struct HMC5883L_Off_Set_Values Off_Set_Values;
+	uint8_t I2C_Data[6];
+	uint8_t HMC583L_IRQ;
+}HMC5883L_Struct;
+
+
 
 uint8_t HMC5883L_Init(I2C_HandleTypeDef*hi2c);
 
