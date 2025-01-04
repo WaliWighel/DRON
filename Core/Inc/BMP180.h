@@ -56,6 +56,8 @@ typedef struct BMP180_Struct{
 	uint8_t BMP180_IRQ;
 	uint8_t I2C_Tx_IRQ;
 	uint8_t Timer;
+	uint16_t Timer_1;
+	uint8_t Step;
 }BMP180_Struct;
 
 // registers

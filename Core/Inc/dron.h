@@ -30,8 +30,8 @@ struct Dron_Pitch{
 	float Angular_Rate_Error;
 	float Old_Angle_Error;
 	float Old_Angular_Rate_Error;
-	int32_t Angle_Error_Sum;
-	int32_t Angular_Rate_Error_Sum;
+	double Angle_Error_Sum;
+	double Angular_Rate_Error_Sum;
 	int16_t Value;
 };
 struct Dron_Rool{
@@ -45,8 +45,8 @@ struct Dron_Rool{
 	float Angular_Rate_Error;
 	float Old_Angle_Error;
 	float Old_Angular_Rate_Error;
-	int32_t Angle_Error_Sum;
-	int32_t Angular_Rate_Error_Sum;
+	double Angle_Error_Sum;
+	double Angular_Rate_Error_Sum;
 	int16_t Value;
 };
 struct Dron_Yaw{
@@ -60,8 +60,8 @@ struct Dron_Yaw{
 	float Angular_Rate_Error;
 	float Old_Angle_Error;
 	float Old_Angular_Rate_Error;
-	int32_t Angle_Error_Sum;
-	int32_t Angular_Rate_Error_Sum;
+	double Angle_Error_Sum;
+	double Angular_Rate_Error_Sum;
 	int16_t Value;
 };
 struct Dron_Thrust{

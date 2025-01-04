@@ -104,15 +104,15 @@ extern uint8_t DRON_ON_GRUND;
 
 ///////////// USART
 
-extern uint8_t UASRT_PID_VAL[15];
-extern char command[1];
-extern uint8_t words[10];
-
-extern uint8_t commandready ;
-extern uint8_t command_ch_num ;
-extern uint8_t Received;
-
-///////////// uSD
+//extern uint8_t UASRT_PID_VAL[15];
+//extern char command[1];
+//extern uint8_t words[10];
+//
+//extern uint8_t commandready ;
+//extern uint8_t command_ch_num ;
+//extern uint8_t Received;
+//
+/////////////// uSD
 extern FATFS fs;
 extern FRESULT fresult;
 extern FIL fil;
@@ -156,6 +156,8 @@ extern DMA_HandleTypeDef hdma_spi2_tx;
 extern SPI_HandleTypeDef hspi1;
 extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim23;
+extern TIM_HandleTypeDef htim24;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
@@ -477,6 +479,34 @@ void I2C5_EV_IRQHandler(void)
   /* USER CODE BEGIN I2C5_EV_IRQn 1 */
 
   /* USER CODE END I2C5_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM23 global interrupt.
+  */
+void TIM23_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM23_IRQn 0 */
+
+  /* USER CODE END TIM23_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim23);
+  /* USER CODE BEGIN TIM23_IRQn 1 */
+
+  /* USER CODE END TIM23_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM24 global interrupt.
+  */
+void TIM24_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM24_IRQn 0 */
+
+  /* USER CODE END TIM24_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim24);
+  /* USER CODE BEGIN TIM24_IRQn 1 */
+
+  /* USER CODE END TIM24_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

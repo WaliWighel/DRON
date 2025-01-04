@@ -95,9 +95,6 @@ void HMC5883L_Get_Z_Start_IT(void){
 }
 
 void HMC5883L_Get_Z_End_IT(void){
-//	Mag_Z = (((int16_t)HMC5883L_Data_IT[2]<<8) | HMC5883L_Data_IT[3]) * 2.56;// 2.56 - scale
-//	Mag_X = (((int16_t)HMC5883L_Data_IT[0]<<8) | HMC5883L_Data_IT[1]) * 2.56;
-//	Mag_Y = (((int16_t)HMC5883L_Data_IT[4]<<8) | HMC5883L_Data_IT[5]) * 2.56;
 		HMC5883L.Directions.X = (((int16_t)HMC5883L.I2C_Data[1]<<8) | HMC5883L.I2C_Data[0]) * 2.56;//important fake HMC5883L, msb -> lsb
 		HMC5883L.Directions.Z = (((int16_t)HMC5883L.I2C_Data[3]<<8) | HMC5883L.I2C_Data[2]) * 2.56;// 2.56 - scale
 		HMC5883L.Directions.Y = (((int16_t)HMC5883L.I2C_Data[5]<<8) | HMC5883L.I2C_Data[4]) * 2.56;

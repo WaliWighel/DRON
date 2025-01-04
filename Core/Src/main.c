@@ -92,6 +92,7 @@ IRAM NRF24_Struct NRF24;
 IRAM Dron MYDRON;
 IRAM Stack Old_Data_stack;
 IRAM HMC5883L_Struct HMC5883L;
+IRAM USART_Struct USART;
 
 ///////// main
 IRAM int TIM_inte_SD = 0, TIM_inte = 0;
@@ -112,18 +113,8 @@ IRAM uint8_t DRON_ON_GRUND;
 #define FDP_Mag_Z_FQ 2
 #define FDP_FQ 2
 
-///////////// USART
-
-IRAM uint8_t UASRT_PID_VAL[15];//todo
-IRAM char command[1];
-IRAM uint8_t words[10];
-
-IRAM uint8_t commandready = 0;
-IRAM uint8_t command_ch_num = 0;
-IRAM uint8_t Received;
-
 ///////////// uSD
-RAM1 FATFS fs;//todo
+RAM1 FATFS fs;
 RAM1 FRESULT fresult;
 RAM1 FIL fil;
 RAM1 UINT br, bw;
@@ -193,6 +184,8 @@ int main(void)
   MX_FATFS_Init();
   MX_TIM2_Init();
   MX_SPI1_Init();
+  MX_TIM23_Init();
+  MX_TIM24_Init();
   /* USER CODE BEGIN 2 */
   	  ESC_POWER_1;
 
@@ -249,6 +242,8 @@ int main(void)
 	BMP180.temp = 0;
 	BMP180.Raw_Data.pressure = 0;
 	BMP180.Raw_Data.temperature = 0;
+	BMP180.Timer_1 = 0;
+	BMP180.Step = 0;
 
 
 
@@ -374,8 +369,6 @@ int main(void)
   	NRF_TIM_Inte = 0;
   	FDP_D_Gain_AR = 0;
   	FDP_D_Gain = 0;
-  	commandready = 0;
-  	command_ch_num = 0;
   	Mainloop_Number = 0;
   	SD_In_Use = 0;
   	wobble_strenght = 1;
@@ -576,11 +569,13 @@ int main(void)
 		ESC_INT(&htim3);
 
 		LED_7_1;
-		HAL_UART_Receive_IT(&huart1, &Received, 1);
+		HAL_UART_Receive_IT(&huart1, &USART.Received, 1);
 		LED_7_0;
 
-//		HAL_TIM_Base_Start_IT(&htim2); // przerwanie co 1 ms
 
+		HAL_TIM_Base_Start_IT(&htim24);//przerwanie co 100ms
+
+		Get_batteryvalue();
 	  	RGB_LED_For_BAT(MYDRON.batterysize);
 
 	  	if(MYDRON.Status.Battery == DRON_BATTERY_RUN_OUT)
@@ -620,10 +615,10 @@ int main(void)
 	  			}
 	  		}
 
-	  		if(commandready == 1){
+	  		if(USART.commandready == 1){
 	  			LED_7_1;
 	  			interpretcommand();
-	  			executecommand(command, UASRT_PID_VAL);
+	  			executecommand(USART.command, USART.UASRT_PID_VAL);
 	  			LED_7_0;
 	  		}
 
@@ -644,30 +639,6 @@ int main(void)
 
 	  			Mainloop_Number = Mainloop_Number < 1000 ? Mainloop_Number+1 : 0;
 	  		}
-
-
-			if(i == 0){
-				LED_5_1;
-				BMP180_start_measurment_temp_IT();
-				LED_5_0;
-			}
-			if(i == 5){
-				LED_5_1;
-				BMP180_READ_temp_IT();
-				LED_5_0;
-			}
-			if(BMP180.Timer == 0 && BMP180.BMP180_IRQ == 3){
-				LED_5_1;
-				BMP180_start_measurment_pres_IT();
-				LED_5_0;
-				BMP180.BMP180_IRQ = 0;
-				BMP180.Timer = 8;
-			}
-			if(BMP180.Timer == 0 && BMP180.I2C_Tx_IRQ == 2){
-				LED_5_1;
-				BMP180_READ_pres_IT();
-				LED_5_0;
-			}
 
 
 	  		if(MYDRON.Status.Connection == DRON_DISCONNECTED){
@@ -784,6 +755,24 @@ void PeriphCommonClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+	if(htim == &htim24){//100ms
+		BMP180_start_measurment_temp_IT();
+		BMP180.Step++;//Step 1
+	}
+	if(htim == &htim23){//0.5 ms
+		if(BMP180.Timer_1 == 9){//4.5ms
+			HAL_TIM_Base_Stop_IT(&htim23);
+			BMP180_READ_temp_IT();
+			BMP180.Step++;//Step 3
+		}
+		if(BMP180.Timer_1 == 61){//25.5ms
+			HAL_TIM_Base_Stop_IT(&htim23);
+			BMP180_READ_pres_IT();
+			BMP180.Step++;//Step 6
+		}
+		BMP180.Timer_1++;
+	}
+
 	if(htim == &htim2)// 1 ms
 	{
 		TIM_inte_SD = 1;
@@ -838,20 +827,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 		if(i == 0){// na calosc 100ms
-
-
 			RGB_LED_For_BAT(MYDRON.batterysize);
 		}
-//		if(i == 9){
-//
-//		}
-//		if(i == 10){//2
-//			LED_5_1;
-//			BMP180_READ_temp_IT();
-//			LED_5_0;
-//		}
-
-
 		if(i == 36){
 			LED_5_1;
 			HMC5883L_Get_Z_Start_IT();
@@ -859,14 +836,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 
 		if(i == 40){//5
-			//BMP180_READ_pres_IT();
-			BMP180.ampritude = BMP180.startpres - BMP180.pres;
-
-			MYDRON.dronheight = (int16_t)BMP180_GET_height();
-			convert_value_to_array(MYDRON.dronheight, NRF24.TxData, 0, 3);
-
 			Get_batteryvalue();
-
+			convert_value_to_array(MYDRON.dronheight, NRF24.TxData, 0, 3);
 			convert_value_to_array(MYDRON.batterysize, NRF24.TxData, 3, 6);
 
 			for(int i = 0; i < 10; i++){
@@ -891,9 +862,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			MYDRON.Yaw.Wanted = 0;
 			MYDRON.Thrust.Wanted = DRON_SLOWFALING;
 		}
-		(NRF24.Timer_1 != 0) ? NRF24.Timer_1--: 0;
-		(NRF24.Timer_2 != 0) ? NRF24.Timer_2--: 0;
-		(BMP180.Timer != 0) ? BMP180.Timer--: 0;
+		NRF24.Timer_1 != 0 ? NRF24.Timer_1--: 0;
+		NRF24.Timer_2 != 0 ? NRF24.Timer_2--: 0;
+		BMP180.Timer != 0 ? BMP180.Timer--: 0;
 	}
 }
 
@@ -914,37 +885,37 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)//pobieranie znakw z uart
 {
-	words[command_ch_num] = Received;
+	USART.words[USART.command_ch_num] = USART.Received;
 
-	if(words[command_ch_num] == '\r')
+	if(USART.words[USART.command_ch_num] == '\r')
 	{
 		char Y = '\n';
 		HAL_UART_Transmit(&huart1, (uint8_t *)&Y, 1, 100);
 		Y = '\r';
 		HAL_UART_Transmit(&huart1, (uint8_t *)&Y, 1, 100);
-		words[command_ch_num] = 0;
-		commandready = 1;
+		USART.words[USART.command_ch_num] = 0;
+		USART.commandready = 1;
 	}
 
-	HAL_UART_Transmit_IT(&huart1, (uint8_t *)&words[command_ch_num], 1);
-	HAL_UART_Receive_IT(&huart1, &Received, 1);
-	command_ch_num++;
+	HAL_UART_Transmit_IT(&huart1, (uint8_t *)&USART.words[USART.command_ch_num], 1);
+	HAL_UART_Receive_IT(&huart1, &USART.Received, 1);
+	USART.command_ch_num++;
 
-	if(commandready == 1)
+	if(USART.commandready == 1)
 	{
-		command_ch_num = 0;
+		USART.command_ch_num = 0;
 	}
 }
 
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c){
-//	if(BMP180.I2C_Tx_IRQ == 1){
-//		BMP180_READ_temp_IT();
-//		BMP180.I2C_Tx_IRQ = 0;
-//	}
-//	if(BMP180.I2C_Tx_IRQ == 2){
-//		BMP180_READ_pres_IT();
-//		BMP180.I2C_Tx_IRQ = 0;
-//	}
+	if(BMP180.Step == 1){
+		HAL_TIM_Base_Start_IT(&htim23);
+		BMP180.Step++;//Step 2
+	}
+	if(BMP180.Step == 4){
+		HAL_TIM_Base_Start_IT(&htim23);
+		BMP180.Step++;//Step 5
+	}
 }
 
 
@@ -1070,16 +1041,19 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
 		HMC5883L.Directions.Z = (HMC5883L.Directions.Z * (FDP_Mag_Z_FQ * 0.1) / (1 + (FDP_Mag_Z_FQ * 0.1))) + (HMC5883L.Directions.Old_Z * (1 / (1 + (FDP_Mag_Z_FQ * 0.1)))); // 0.1 to looptime, co 100ms odczyt
 		HMC5883L.Directions.Old_Z = HMC5883L.Directions.Z;
 	}
-	if(BMP180.BMP180_IRQ == 1){
-		BMP180.Timer = 1;
+	if(BMP180.Step == 3){
 		BMP180.Raw_Data.temperature = BMP180_GET_temp_IT();
 		BMP180.temp = BMP180_GET_temp(BMP180.Raw_Data.temperature);
-		BMP180.BMP180_IRQ = 3;
+		BMP180_start_measurment_pres_IT();
+		BMP180.Step++;// Step 4
 	}
-	if(BMP180.BMP180_IRQ == 2){
+	if(BMP180.Step == 6){
 		BMP180.Raw_Data.pressure = BMP180_GET_pres_IT();
 		BMP180.pres = BMP180_GET_pres(BMP180.Raw_Data.pressure);
-		BMP180.BMP180_IRQ = 0;
+		BMP180.ampritude = BMP180.startpres - BMP180.pres;
+		MYDRON.dronheight = (int16_t)BMP180_GET_height();
+		BMP180.Timer_1 = 0;
+		BMP180.Step = 0;
 	}
 }
 
@@ -1092,14 +1066,12 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef * hspi){
 		//
 		NRF24.Status = NRF24_Ready;
 		NRF24.Timer_1 = 1;
-		//NRF24.Message_Status = 2;
 		NRF24.SPI_Tx_Inte = 0;
 		NRF24.Step++;//Step 5
-
 	}
 }
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){//todo
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi){
 	if(STARTUP == 0 && NRF24.SPI_Rx_Inte == 1 && NRF24.Step == 1){
 
 		NRF24.SPI_Rx_Inte = 0;
@@ -1170,7 +1142,6 @@ void convert_array_to_value(uint8_t arrayfrom[], int16_t *value , uint8_t rangeb
 	for(int y = 0; y < range+1; y++){
 		*value = *value + arrayfrom[rangebegin+y]*pow(10, range - y);
 	}
-
 }
 
 
@@ -1217,8 +1188,6 @@ float WartoscBezwgledna(float a){
 	a = (a < 0) ? a*(-1) : a;
 	return a;
 }
-
-
 
 int _write(int file, char *ptr, int len)
 {

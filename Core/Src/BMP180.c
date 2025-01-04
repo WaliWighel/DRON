@@ -19,11 +19,13 @@ uint8_t BMP180_read_ID(void){// comunication = 0x55
 
 uint8_t BMP180_init(I2C_HandleTypeDef*hi2c){
 	hi2c_BMP180 = hi2c;
-	uint8_t data;
+	//uint8_t data;
+	//data = 0xF4;
+
+	//HAL_I2C_Mem_Write(hi2c_BMP180, BMP180_ADDRES, 0xF4, 1, &data, 1, 1);//important set oversampling to 3
 	BMP180_read_calliberation_data();
-	HAL_I2C_Mem_Read(hi2c_BMP180, BMP180_ADDRES, id_register, 1, &data, 1, 100);
-	data = data | 0x40;
-	HAL_I2C_Mem_Write(hi2c_BMP180, BMP180_ADDRES, 0xF4, 1, &data, 1, 1);//set oversampling to 2
+//4	HAL_I2C_Mem_Read(hi2c_BMP180, BMP180_ADDRES, id_register, 1, &data, 1, 100);
+
 
 	uint8_t status = 0;
 	status = BMP180_read_ID();
@@ -48,7 +50,7 @@ uint16_t BMP180_READ_temp(void){
 uint32_t BMP180_READ_pres(void){
 	uint8_t data[3];
 	HAL_I2C_Mem_Read(hi2c_BMP180, BMP180_ADDRES, out_msb, 1, data, 3, 1000);
-	return (((data[0]<<16)|(data[1]<<8)|data[2]) >> 5);
+	return BMP180.Callibration_Regs.UP = (((data[0]<<16)|(data[1]<<8)|data[2]) >> 5);
 }
 
 void BMP180_READ_temp_IT(void){
@@ -62,12 +64,12 @@ void BMP180_READ_pres_IT(void){
 }
 
 uint16_t BMP180_GET_temp_IT(void){
-	BMP180.Callibration_Regs.UT = ((BMP180.Data_Temp_IT[0]<<8) | BMP180.Data_Temp_IT[1]);
+	BMP180.Callibration_Regs.UT = ((BMP180.Data_Temp_IT[0]<<8) + BMP180.Data_Temp_IT[1]);
 	return BMP180.Callibration_Regs.UT;
 }
 
 uint32_t BMP180_GET_pres_IT(void){
-	return (((BMP180.Data_Press_IT[0]<<16)|(BMP180.Data_Press_IT[1]<<8)|BMP180.Data_Press_IT[2]) >> 5);
+	return BMP180.Callibration_Regs.UP = (((BMP180.Data_Press_IT[0]<<16) + (BMP180.Data_Press_IT[1]<<8) + BMP180.Data_Press_IT[2]) >> 5);
 }
 
 //void BMP180_measurment(uint16_t *temp, uint16_t *pres){
@@ -104,7 +106,6 @@ void BMP180_start_measurment_temp_IT(void){
 }
 
 void BMP180_read_calliberation_data(void){
-
 	uint8_t Callib_Data[22] = {0};
 	uint16_t Callib_Start = 0xAA;
 	HAL_I2C_Mem_Read(hi2c_BMP180, BMP180_ADDRES, Callib_Start, 1, Callib_Data, 22, 100);
@@ -133,14 +134,10 @@ float BMP180_GET_temp(uint16_t temperature){
 
 float BMP180_GET_pres(uint16_t pressure){
 	float pres;
-	BMP180.Callibration_Regs.UP = BMP180_READ_pres();
-	BMP180.Callibration_Regs.X1 = (((BMP180.Callibration_Regs.UT-BMP180.Callibration_Regs.AC6) * BMP180.Callibration_Regs.AC5)/32768);//
-	BMP180.Callibration_Regs.X2 = ((BMP180.Callibration_Regs.MC*(2048)) / (BMP180.Callibration_Regs.X1+BMP180.Callibration_Regs.MD));
-	BMP180.Callibration_Regs.B5 = BMP180.Callibration_Regs.X1+BMP180.Callibration_Regs.X2;
 	BMP180.Callibration_Regs.B6 = BMP180.Callibration_Regs.B5-4000;
-	BMP180.Callibration_Regs.X1 = (BMP180.Callibration_Regs.B2 * (BMP180.Callibration_Regs.B6*BMP180.Callibration_Regs.B6/(4096)))/(2048);
+	BMP180.Callibration_Regs.X1 = (BMP180.Callibration_Regs.B2 * BMP180.Callibration_Regs.B6/4096)/2048;
 	BMP180.Callibration_Regs.X2 = BMP180.Callibration_Regs.AC2*BMP180.Callibration_Regs.B6/(2048);
-	BMP180.Callibration_Regs.X3 = BMP180.Callibration_Regs.X1+BMP180.Callibration_Regs.X2;
+	BMP180.Callibration_Regs.X3 = BMP180.Callibration_Regs.X1 + BMP180.Callibration_Regs.X2;
 	BMP180.Callibration_Regs.B3 = (((BMP180.Callibration_Regs.AC1*4+BMP180.Callibration_Regs.X3)<<3)+2)/4;
 	BMP180.Callibration_Regs.X1 = BMP180.Callibration_Regs.AC3*BMP180.Callibration_Regs.B6/8192;
 	BMP180.Callibration_Regs.X2 = (BMP180.Callibration_Regs.B1 * (BMP180.Callibration_Regs.B6*BMP180.Callibration_Regs.B6/(4096)))/(65536);
@@ -157,6 +154,8 @@ float BMP180_GET_pres(uint16_t pressure){
 	BMP180.Callibration_Regs.X1 = (BMP180.Callibration_Regs.X1*3038)/(65536);
 	BMP180.Callibration_Regs.X2 = (-7357*pres)/(65536);
 	pres = pres + (BMP180.Callibration_Regs.X1+BMP180.Callibration_Regs.X2+3791)/(16);
+
+
 	return pres;
 }
 
@@ -176,8 +175,10 @@ void BMP180_CALIBRATION(float *firstpres){
 }
 
 float BMP180_GET_height(void){
-	float height = 0, factor; // metry
-	factor = 11.3; // na 1m cisnienie spada o 11,3 pa
-	height = (BMP180.ampritude/factor);
+	float height; // metry
+//	factor = 11.3; // na 1m cisnienie spada o 11,3 pa
+//	height = (BMP180.ampritude/factor);
+	height = 44330*(1-pow((BMP180.pres/BMP180.startpres), 1/5.255));
+
 	return height;
 }
